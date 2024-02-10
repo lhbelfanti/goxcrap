@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+
 	"goxcrap/cmd/auth"
 	"goxcrap/cmd/scrapper"
 )
@@ -11,6 +13,8 @@ func Init(s scrapper.Scrapper) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("Login completed")
 
 	return nil
 }

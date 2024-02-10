@@ -6,25 +6,38 @@ import (
 
 type (
 	Scrapper struct {
-		Driver      selenium.WebDriver
-		Credentials LoginCredentials
-		PageLoader  PageLoader
+		Driver                 selenium.WebDriver
+		Credentials            LoginCredentials
+		TakeScreenshot         TakeScreenshot
+		LoadPage               LoadPage
+		WaitAndRetrieveElement WaitAndRetrieveElement
 	}
 
 	LoginCredentials struct {
 		Email    string
 		Password string
+		Username string
 	}
 )
 
 // New creates a new Scrapper struct
-func New(driver selenium.WebDriver, email, password string, pageLoader PageLoader) Scrapper {
+func New(
+	driver selenium.WebDriver,
+	email, password, username string,
+	takeScreenshot TakeScreenshot,
+	pageLoader LoadPage,
+	waitAndRetrieveElement WaitAndRetrieveElement,
+) Scrapper {
+
 	return Scrapper{
 		Driver: driver,
 		Credentials: LoginCredentials{
 			Email:    email,
 			Password: password,
+			Username: username,
 		},
-		PageLoader: pageLoader,
+		TakeScreenshot:         takeScreenshot,
+		LoadPage:               pageLoader,
+		WaitAndRetrieveElement: waitAndRetrieveElement,
 	}
 }
