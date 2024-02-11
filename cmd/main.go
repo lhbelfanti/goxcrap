@@ -2,37 +2,38 @@ package main
 
 import (
 	"log"
-	"os"
 	"time"
 
-	"github.com/joho/godotenv"
-
-	"goxcrap/cmd/app"
-	scrap "goxcrap/cmd/scrapper"
+	"goxcrap/cmd/auth"
+	"goxcrap/cmd/element"
+	"goxcrap/cmd/env"
+	"goxcrap/cmd/page"
+	"goxcrap/cmd/scrapper"
 	"goxcrap/internal/chromedriver"
 	"goxcrap/internal/setup"
 )
 
 func main() {
-	/* Dependencies */
-	service := setup.Must(chromedriver.InitWebDriverService())
+	/* --- Dependencies --- */
+	service := setup.Init(chromedriver.InitWebDriverService())
 	defer chromedriver.StopWebDriverService(service)
-	driver := setup.Must(chromedriver.InitWebDriver())
+	driver := setup.Init(chromedriver.InitWebDriver())
 
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	//takeScreenshot := debug.MakeTakeScreenshot(driver) // Debug tool
 
-	email := os.Getenv("EMAIL")
-	password := os.Getenv("PASSWORD")
-	username := os.Getenv("USERNAME")
-	loadPage := scrap.MakeLoadPage(driver)
-	waitAndRetrieveElement := scrap.MakeWaitAndRetrieveElement(driver)
-	takeScreenshot := scrap.MakeTakeScreenshot(driver)
-	scrapper := scrap.New(driver, email, password, username, takeScreenshot, loadPage, waitAndRetrieveElement)
+	variables := setup.Init(env.LoadVariables())
 
-	/* Program */
-	err := app.Init(scrapper)
+	loadPage := page.MakeLoad(driver)
+
+	waitAndRetrieveElement := element.MakeWaitAndRetrieve(driver)
+	retrieveAndFillInput := element.MakeRetrieveAndFillInput(waitAndRetrieveElement)
+	retrieveAndClickButton := element.MakeRetrieveAndClickButton(waitAndRetrieveElement)
+
+	// Functions
+	login := auth.MakeLogin(variables, loadPage, retrieveAndFillInput, retrieveAndClickButton)
+
+	/* --- Scrapper --- */
+	err := scrapper.Init(login)
 	if err != nil {
 		log.Fatal(err)
 	}

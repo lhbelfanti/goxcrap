@@ -6,9 +6,6 @@ import (
 )
 
 const (
-	FailedToRetrieveInput  string = "Failed to retrieve %s input"
-	FailedToClickInput     string = "Failed to click %s input"
-	FailedToFillInput      string = "Failed to fill input with %s"
 	FailedToRetrieveButton string = "Failed to retrieve %s button"
 	FailedToClickButton    string = "Failed to click %s button"
 )

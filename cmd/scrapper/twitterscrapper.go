@@ -1,15 +1,14 @@
-package app
+package scrapper
 
 import (
 	"fmt"
 
 	"goxcrap/cmd/auth"
-	"goxcrap/cmd/scrapper"
 )
 
 // Init starts the twitter scrapper
-func Init(s scrapper.Scrapper) error {
-	err := auth.Login(s)
+func Init(login auth.Login) error {
+	err := login()
 	if err != nil {
 		return err
 	}
