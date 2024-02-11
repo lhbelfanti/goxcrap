@@ -54,7 +54,7 @@ func Login(scrapper scrapper.Scrapper) error {
 
 	err = ExecuteUnusualActivityFlow(scrapper)
 	if err != nil {
-		return err
+		fmt.Println(err.Error())
 	}
 
 	passwordInput, err := scrapper.WaitAndRetrieveElement(selenium.ByName, passwordInputName, elementTimeout)
