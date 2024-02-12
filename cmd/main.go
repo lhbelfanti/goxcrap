@@ -25,7 +25,8 @@ func main() {
 
 	loadPage := page.MakeLoad(driver)
 
-	waitAndRetrieveElement := element.MakeWaitAndRetrieve(driver)
+	waitAndRetrieveCondition := element.MakeWaitAndRetrieveCondition()
+	waitAndRetrieveElement := element.MakeWaitAndRetrieve(driver, waitAndRetrieveCondition)
 	retrieveAndFillInput := element.MakeRetrieveAndFillInput(waitAndRetrieveElement)
 	retrieveAndClickButton := element.MakeRetrieveAndClickButton(waitAndRetrieveElement)
 
