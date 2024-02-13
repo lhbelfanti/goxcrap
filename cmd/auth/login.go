@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/tebeka/selenium"
+
 	"goxcrap/cmd/element"
 	"goxcrap/cmd/env"
 	"goxcrap/cmd/page"
@@ -25,41 +26,45 @@ const (
 type Login func() error
 
 // MakeLogin creates a new Login
-func MakeLogin(envVariables env.Variables, loadPage page.Load, retrieveAndFillInput element.RetrieveAndFillInput, retrieveAndClickButton element.RetrieveAndClickButton) Login {
+func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveElement element.WaitAndRetrieve, retrieveAndFillInput element.RetrieveAndFillInput, retrieveAndClickButton element.RetrieveAndClickButton) Login {
 	return func() error {
 		err := loadPage(logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
 			return err
 		}
 
-		err = retrieveAndFillInput(selenium.ByName, emailInputName, "email", envVariables.Email, elementTimeout, NewAuthError)
+		err = retrieveAndFillInput(selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout, NewAuthError)
 		if err != nil {
 			return err
 		}
 
-		err = retrieveAndClickButton(selenium.ByXPATH, nextButtonXPath, "next", elementTimeout, NewAuthError)
+		err = retrieveAndClickButton(selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout, NewAuthError)
 		if err != nil {
 			return err
 		}
 
-		// -- 'There was an unusual activity in your account' flow
-		err = retrieveAndFillInput(selenium.ByName, usernameInputName, "username", envVariables.Username, elementTimeout, NewAuthError)
+		_, err = waitAndRetrieveElement(selenium.ByName, passwordInputName, elementTimeout)
+		if err != nil {
+			// If the password input element is not rendered it is probably because the flow
+			// 'There was an unusual activity in your account', was triggered. So we need to fill the username input,
+			// and then we can fill the password input
+			err = retrieveAndFillInput(selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout, NewAuthError)
+			if err != nil {
+				return err
+			}
+
+			err = retrieveAndClickButton(selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout, NewAuthError)
+			if err != nil {
+				return err
+			}
+		}
+
+		err = retrieveAndFillInput(selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout, NewAuthError)
 		if err != nil {
 			return err
 		}
 
-		err = retrieveAndClickButton(selenium.ByXPATH, unusualActivityNextButtonXPath, "next", elementTimeout, NewAuthError)
-		if err != nil {
-			return err
-		}
-		// 'There was an unusual activity in your account' flow --
-
-		err = retrieveAndFillInput(selenium.ByName, passwordInputName, "password", envVariables.Password, elementTimeout, NewAuthError)
-		if err != nil {
-			return err
-		}
-
-		err = retrieveAndClickButton(selenium.ByXPATH, logInButtonXPath, "log in", elementTimeout, NewAuthError)
+		err = retrieveAndClickButton(selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout, NewAuthError)
 		if err != nil {
 			return err
 		}

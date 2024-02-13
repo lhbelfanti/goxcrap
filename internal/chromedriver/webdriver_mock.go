@@ -1,4 +1,4 @@
-package element
+package chromedriver
 
 import (
 	"time"

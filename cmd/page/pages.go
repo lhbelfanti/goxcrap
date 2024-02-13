@@ -16,12 +16,12 @@ func MakeLoad(driver selenium.WebDriver) Load {
 	return func(relativeURL string, timeout time.Duration) error {
 		err := driver.SetPageLoadTimeout(timeout)
 		if err != nil {
-			return newPageError(FailedToSetPageLoadTimeout, err)
+			return NewPageError(FailedToSetPageLoadTimeout, err)
 		}
 
 		err = driver.Get(TwitterURL + relativeURL)
 		if err != nil {
-			return newPageError(FailedToRetrievePage, err)
+			return NewPageError(FailedToRetrievePage, err)
 		}
 
 		return nil

@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	"goxcrap/cmd/auth"
 	"goxcrap/cmd/element"
 	"goxcrap/cmd/env"
@@ -21,7 +23,8 @@ func main() {
 
 	//takeScreenshot := debug.MakeTakeScreenshot(driver) // Debug tool
 
-	variables := setup.Init(env.LoadVariables())
+	setup.Init(0, godotenv.Load())
+	variables := env.LoadVariables()
 
 	loadPage := page.MakeLoad(driver)
 
@@ -31,7 +34,7 @@ func main() {
 	retrieveAndClickButton := element.MakeRetrieveAndClickButton(waitAndRetrieveElement)
 
 	// Functions
-	login := auth.MakeLogin(variables, loadPage, retrieveAndFillInput, retrieveAndClickButton)
+	login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
 
 	/* --- Scrapper --- */
 	err := scrapper.Init(login)
