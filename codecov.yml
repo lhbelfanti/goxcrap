@@ -1,0 +1,3 @@
+ignore:
+  - "**/mocks.go"
+  - "**/*_mock.go"
