@@ -13,7 +13,7 @@ func TestInit_success(t *testing.T) {
 	want := "test"
 	got := setup.Init(want, nil)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }
 
 func TestInit_fails(t *testing.T) {

@@ -23,5 +23,5 @@ func TestLoadVariables_success(t *testing.T) {
 	}
 	got := env.LoadVariables()
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }

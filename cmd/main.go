@@ -11,6 +11,7 @@ import (
 	"goxcrap/cmd/env"
 	"goxcrap/cmd/page"
 	"goxcrap/cmd/scrapper"
+	"goxcrap/cmd/search"
 	"goxcrap/internal/chromedriver"
 	"goxcrap/internal/setup"
 )
@@ -35,9 +36,10 @@ func main() {
 
 	// Functions
 	login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
+	getSearchCriteria := search.MakeGetSearchCriteria()
 
 	/* --- Scrapper --- */
-	err := scrapper.Init(login)
+	err := scrapper.Execute(login, getSearchCriteria)
 	if err != nil {
 		log.Fatal(err)
 	}

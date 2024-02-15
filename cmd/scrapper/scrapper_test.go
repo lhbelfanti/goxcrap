@@ -8,21 +8,26 @@ import (
 
 	"goxcrap/cmd/auth"
 	"goxcrap/cmd/scrapper"
+	"goxcrap/cmd/search"
 )
 
-func TestInit_success(t *testing.T) {
+func TestExecute_success(t *testing.T) {
 	mockLogin := auth.MockMakeLogin(nil)
+	mockCriteria := search.MockCriteria()
+	mockGetSearchCriteria := search.MockMakeGetSearchCriteria(mockCriteria)
 
-	got := scrapper.Init(mockLogin)
+	got := scrapper.Execute(mockLogin, mockGetSearchCriteria)
 
 	assert.Nil(t, got)
 }
 
-func TestInit_failsWhenLoginThrowsError(t *testing.T) {
+func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
 	want := errors.New("error while executing login")
 	mockLogin := auth.MockMakeLogin(want)
+	mockCriteria := search.MockCriteria()
+	mockGetSearchCriteria := search.MockMakeGetSearchCriteria(mockCriteria)
 
-	got := scrapper.Init(mockLogin)
+	got := scrapper.Execute(mockLogin, mockGetSearchCriteria)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }

@@ -25,7 +25,7 @@ func TestWaitAndRetrieve_success(t *testing.T) {
 	got, err := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
 
 	assert.Nil(t, err)
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }
 
 func TestWaitAndRetrieve_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {

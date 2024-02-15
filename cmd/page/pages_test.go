@@ -32,7 +32,7 @@ func TestLoad_failsWhenSetPageLoadTimeoutThrowsError(t *testing.T) {
 	want := page.NewPageError(page.FailedToSetPageLoadTimeout, err)
 	got := load("/test", 10*time.Minute)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }
 
 func TestLoad_failsWhenGetThrowsError(t *testing.T) {
@@ -45,5 +45,5 @@ func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 	want := page.NewPageError(page.FailedToRetrievePage, err)
 	got := load("/test", 10*time.Minute)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }

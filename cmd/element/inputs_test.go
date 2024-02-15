@@ -32,7 +32,7 @@ func TestRetrieveAndFillInput_failsWhenWaitAndRetrieveElementThrowsError(t *test
 	want := element.NewElementError(fmt.Sprintf(element.FailedToRetrieveInput, "test"), err)
 	got := retrieveAndClickButton(selenium.ByName, "name", "test", "input", 10*time.Minute, element.NewElementError)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }
 
 func TestRetrieveAndFillInput_failsWhenInputClickThrowsError(t *testing.T) {
@@ -45,7 +45,7 @@ func TestRetrieveAndFillInput_failsWhenInputClickThrowsError(t *testing.T) {
 	want := element.NewElementError(fmt.Sprintf(element.FailedToClickInput, "test"), err)
 	got := retrieveAndClickButton(selenium.ByName, "name", "test", "input", 10*time.Minute, element.NewElementError)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }
 
 func TestRetrieveAndFillInput_failsWhenInputSendKeysThrowsError(t *testing.T) {
@@ -59,5 +59,5 @@ func TestRetrieveAndFillInput_failsWhenInputSendKeysThrowsError(t *testing.T) {
 	want := element.NewElementError(fmt.Sprintf(element.FailedToFillInput, "test"), err)
 	got := retrieveAndClickButton(selenium.ByName, "name", "test", "input", 10*time.Minute, element.NewElementError)
 
-	assert.Equal(t, got, want)
+	assert.Equal(t, want, got)
 }

@@ -2,6 +2,8 @@ package search
 
 import (
 	"fmt"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -10,7 +12,7 @@ type (
 	Criteria struct {
 		ID               string
 		AllOfTheseWords  []string
-		ThisExactPhrase  []string
+		ThisExactPhrase  string
 		AnyOfTheseWords  []string
 		NoneOfTheseWords []string
 		TheseHashtags    []string
@@ -43,6 +45,21 @@ func Of(t time.Time) Date {
 	return d
 }
 
+// In returns the time corresponding to time 00:00:00 of the date in the location
+func (d Date) In(loc *time.Location) time.Time {
+	return time.Date(d.Year, d.Month, d.Day, 0, 0, 0, 0, loc)
+}
+
+// String returns the date in RFC3339 full-date format.
+func (d Date) String() string {
+	return fmt.Sprintf("%04d-%02d-%02d", d.Year, d.Month, d.Day)
+}
+
+// AddDays returns the date that is n days in the future. n can also be negative to go into the past
+func (d Date) AddDays(n int) Date {
+	return Of(d.In(time.UTC).AddDate(0, 0, n))
+}
+
 // ParseDates parses both Since and Until strings in RFC3339 full-date format and returns the date value it represents
 func (c Criteria) ParseDates() (Date, Date, error) {
 	since, err := ParseDate(c.Since)
@@ -58,17 +75,63 @@ func (c Criteria) ParseDates() (Date, Date, error) {
 	return since, until, nil
 }
 
-// In returns the time corresponding to time 00:00:00 of the date in the location
-func (d Date) In(loc *time.Location) time.Time {
-	return time.Date(d.Year, d.Month, d.Day, 0, 0, 0, 0, loc)
+// ConvertIntoQueryString uses the Criteria properties to transform them into a query string for a Twitter search
+func (c Criteria) ConvertIntoQueryString() string {
+	queryString := "q="
+
+	queryString += strings.Join(c.AllOfTheseWords, " ")
+
+	if c.ThisExactPhrase != "" {
+		queryString += addSpaceSeparatorIfNotFirstProperty(queryString)
+		queryString += "\"" + c.ThisExactPhrase + "\""
+	}
+
+	if len(c.AnyOfTheseWords) > 0 {
+		queryString += addSpaceSeparatorIfNotFirstProperty(queryString)
+		queryString += "(" + strings.Join(c.AnyOfTheseWords, " OR ") + ")"
+	}
+
+	if len(c.NoneOfTheseWords) > 0 {
+		noneOfTheseWords := addSpaceSeparatorIfNotFirstProperty(queryString)
+		if noneOfTheseWords == "" {
+			noneOfTheseWords += "-"
+		}
+		noneOfTheseWords += strings.Join(c.NoneOfTheseWords, " ")
+		queryString += strings.Replace(noneOfTheseWords, " ", " -", -1)
+	}
+
+	if len(c.TheseHashtags) > 0 {
+		queryString += addSpaceSeparatorIfNotFirstProperty(queryString)
+		queryString += "(" + strings.Join(c.TheseHashtags, " OR ") + ")"
+	}
+
+	if c.Language != "" {
+		queryString += addSpaceSeparatorIfNotFirstProperty(queryString)
+		queryString += "lang:" + c.Language
+	}
+
+	if c.Until != "" {
+		queryString += addSpaceSeparatorIfNotFirstProperty(queryString)
+		queryString += "until:" + c.Until
+	}
+
+	if c.Since != "" {
+		queryString += addSpaceSeparatorIfNotFirstProperty(queryString)
+		queryString += "since:" + c.Since
+	}
+
+	queryString += "&src=typed_query"
+
+	urlPath := &url.URL{Path: queryString}
+	escapedQuery := strings.Replace(urlPath.EscapedPath(), "%28", "(", -1)
+	escapedQuery = strings.Replace(escapedQuery, "%29", ")", -1)
+	return escapedQuery
 }
 
-// String returns the date in RFC3339 full-date format.
-func (d Date) String() string {
-	return fmt.Sprintf("%04d-%02d-%02d", d.Year, d.Month, d.Day)
-}
+func addSpaceSeparatorIfNotFirstProperty(queryString string) string {
+	if queryString != "q=" {
+		return " "
+	}
 
-// AddDays returns the date that is n days in the future. n can also be negative to go into the past
-func (d Date) AddDays(n int) Date {
-	return Of(d.In(time.UTC).AddDate(0, 0, n))
+	return ""
 }
