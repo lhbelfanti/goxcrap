@@ -60,6 +60,23 @@ func (d Date) AddDays(n int) Date {
 	return Of(d.In(time.UTC).AddDate(0, 0, n))
 }
 
+// After returns true if the Date d is after the Date other, based on their year, month, and day properties
+func (d Date) After(other Date) bool {
+	if d.Year > other.Year {
+		return true
+	} else if d.Year < other.Year {
+		return false
+	}
+
+	if d.Month > other.Month {
+		return true
+	} else if d.Month < other.Month {
+		return false
+	}
+
+	return d.Day > other.Day
+}
+
 // ParseDates parses both Since and Until strings in RFC3339 full-date format and returns the date value it represents
 func (c Criteria) ParseDates() (Date, Date, error) {
 	since, err := ParseDate(c.Since)

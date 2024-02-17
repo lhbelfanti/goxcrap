@@ -1,9 +1,9 @@
 package search
 
-type GetSearchCriteria func() []Criteria
+type GetAdvanceSearchCriteria func() []Criteria
 
-// MakeGetSearchCriteria creates a new GetSearchCriteria
-func MakeGetSearchCriteria() GetSearchCriteria {
+// MakeGetAdvanceSearchCriteria creates a new GetAdvanceSearchCriteria
+func MakeGetAdvanceSearchCriteria() GetAdvanceSearchCriteria {
 	return func() []Criteria {
 		return []Criteria{
 			{

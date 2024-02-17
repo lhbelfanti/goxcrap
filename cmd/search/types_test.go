@@ -100,6 +100,25 @@ func TestDate_AddDays(t *testing.T) {
 	}
 }
 
+func TestDate_After(t *testing.T) {
+	for _, test := range []struct {
+		date1 search.Date
+		date2 search.Date
+		want  bool
+	}{
+		{search.Date{Year: 2024, Month: 2, Day: 15}, search.Date{Year: 2024, Month: 2, Day: 14}, true},
+		{search.Date{Year: 2024, Month: 2, Day: 14}, search.Date{Year: 2024, Month: 2, Day: 15}, false},
+		{search.Date{Year: 2024, Month: 2, Day: 15}, search.Date{Year: 2024, Month: 2, Day: 15}, false},
+		{search.Date{Year: 2024, Month: 3, Day: 14}, search.Date{Year: 2024, Month: 2, Day: 14}, true},
+		{search.Date{Year: 2024, Month: 2, Day: 14}, search.Date{Year: 2024, Month: 3, Day: 15}, false},
+		{search.Date{Year: 2025, Month: 2, Day: 15}, search.Date{Year: 2024, Month: 2, Day: 14}, true},
+		{search.Date{Year: 2024, Month: 2, Day: 14}, search.Date{Year: 2025, Month: 2, Day: 15}, false},
+	} {
+		got := test.date1.After(test.date2)
+		assert.Equal(t, test.want, got)
+	}
+}
+
 func TestCriteria_ParseDates(t *testing.T) {
 	for _, test := range []struct {
 		criteria search.Criteria

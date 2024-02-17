@@ -1,7 +1,7 @@
 package search
 
-// MockMakeGetSearchCriteria mocks the function MakeGetSearchCriteria and the values returned by GetSearchCriteria
-func MockMakeGetSearchCriteria(criteria []Criteria) GetSearchCriteria {
+// MockMakeGetAdvanceSearchCriteria mocks the function MakeGetAdvanceSearchCriteria and the values returned by GetAdvanceSearchCriteria
+func MockMakeGetAdvanceSearchCriteria(criteria []Criteria) GetAdvanceSearchCriteria {
 	return func() []Criteria {
 		return criteria
 	}
@@ -21,5 +21,12 @@ func MockCriteria() []Criteria {
 			Since:            "2006-01-01",
 			Until:            "2024-01-01",
 		},
+	}
+}
+
+// MockMakeExecuteAdvanceSearch mocks the function MakeExecuteAdvanceSearch and the value returned by ExecuteAdvanceSearch
+func MockMakeExecuteAdvanceSearch(err error) ExecuteAdvanceSearch {
+	return func(searchCriteria Criteria) error {
+		return err
 	}
 }

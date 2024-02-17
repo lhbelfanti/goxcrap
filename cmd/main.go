@@ -36,10 +36,11 @@ func main() {
 
 	// Functions
 	login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
-	getSearchCriteria := search.MakeGetSearchCriteria()
+	getSearchCriteria := search.MakeGetAdvanceSearchCriteria()
+	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
 
 	/* --- Scrapper --- */
-	err := scrapper.Execute(login, getSearchCriteria)
+	err := scrapper.Execute(login, getSearchCriteria, executeAdvanceSearch)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -14,9 +14,34 @@ import (
 func TestExecute_success(t *testing.T) {
 	mockLogin := auth.MockMakeLogin(nil)
 	mockCriteria := search.MockCriteria()
-	mockGetSearchCriteria := search.MockMakeGetSearchCriteria(mockCriteria)
+	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
+	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(nil)
 
-	got := scrapper.Execute(mockLogin, mockGetSearchCriteria)
+	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch)
+
+	assert.Nil(t, got)
+}
+
+func TestExecute_successSkippingCriteriaDueAnErrorInParseDates(t *testing.T) {
+	mockLogin := auth.MockMakeLogin(nil)
+	mockCriteria := search.MockCriteria()
+	mockCriteria[0].Since = "error"
+	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
+	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(nil)
+
+	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch)
+
+	assert.Nil(t, got)
+}
+
+func TestExecute_successSkippingCriteriaDueAnErrorInExecuteAdvanceSearch(t *testing.T) {
+	mockLogin := auth.MockMakeLogin(nil)
+	mockCriteria := search.MockCriteria()
+	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
+	err := errors.New("error while executing ExecuteAdvanceSearch")
+	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(err)
+
+	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch)
 
 	assert.Nil(t, got)
 }
@@ -25,9 +50,10 @@ func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
 	want := errors.New("error while executing login")
 	mockLogin := auth.MockMakeLogin(want)
 	mockCriteria := search.MockCriteria()
-	mockGetSearchCriteria := search.MockMakeGetSearchCriteria(mockCriteria)
+	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
+	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(nil)
 
-	got := scrapper.Execute(mockLogin, mockGetSearchCriteria)
+	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch)
 
 	assert.Equal(t, want, got)
 }
