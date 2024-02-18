@@ -8,14 +8,14 @@ func MakeGetAdvanceSearchCriteria() GetAdvanceSearchCriteria {
 		return []Criteria{
 			{
 				ID:               "Example",
-				AllOfTheseWords:  []string{"casa", "perro"},
-				ThisExactPhrase:  "mi mascota",
-				AnyOfTheseWords:  []string{"cachorro"},
+				AllOfTheseWords:  []string{"casa"},
+				ThisExactPhrase:  "",
+				AnyOfTheseWords:  []string{"perro"},
 				NoneOfTheseWords: []string{"gato"},
-				TheseHashtags:    []string{"#mascotas", "#canino"},
+				TheseHashtags:    nil,
 				Language:         "es",
-				Since:            "2006-01-01",
-				Until:            "2024-01-01",
+				Since:            "2024-01-01",
+				Until:            "2024-01-02",
 			},
 		}
 	}

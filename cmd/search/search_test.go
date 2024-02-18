@@ -12,8 +12,9 @@ import (
 
 func TestExecuteAdvanceSearch_success(t *testing.T) {
 	mockLoadPage := page.MockMakeLoad(nil)
-	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 	mockCriteria := search.MockCriteria()[0]
+
+	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
 	got := executeAdvanceSearch(mockCriteria)
 
@@ -23,8 +24,9 @@ func TestExecuteAdvanceSearch_success(t *testing.T) {
 func TestExecuteAdvanceSearch_failsWhenLoadPageThrowsError(t *testing.T) {
 	err := errors.New("error while executing loadPage")
 	mockLoadPage := page.MockMakeLoad(err)
-	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 	mockCriteria := search.MockCriteria()[0]
+
+	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
 	want := search.NewSearchError(search.FailedToLoadAdvanceSearchPage, err)
 	got := executeAdvanceSearch(mockCriteria)

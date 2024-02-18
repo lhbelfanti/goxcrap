@@ -1,13 +1,14 @@
 package main
 
 import (
+	"goxcrap/cmd/tweets"
 	"log"
 	"time"
 
 	"github.com/joho/godotenv"
 
 	"goxcrap/cmd/auth"
-	"goxcrap/cmd/element"
+	"goxcrap/cmd/elements"
 	"goxcrap/cmd/env"
 	"goxcrap/cmd/page"
 	"goxcrap/cmd/scrapper"
@@ -29,18 +30,22 @@ func main() {
 
 	loadPage := page.MakeLoad(driver)
 
-	waitAndRetrieveCondition := element.MakeWaitAndRetrieveCondition()
-	waitAndRetrieveElement := element.MakeWaitAndRetrieve(driver, waitAndRetrieveCondition)
-	retrieveAndFillInput := element.MakeRetrieveAndFillInput(waitAndRetrieveElement)
-	retrieveAndClickButton := element.MakeRetrieveAndClickButton(waitAndRetrieveElement)
+	waitAndRetrieveCondition := elements.MakeWaitAndRetrieveCondition()
+	waitAndRetrieveAllCondition := elements.MakeWaitAndRetrieveAllCondition()
+	waitAndRetrieveElement := elements.MakeWaitAndRetrieve(driver, waitAndRetrieveCondition)
+	waitAndRetrieveElements := elements.MakeWaitAndRetrieveAll(driver, waitAndRetrieveAllCondition)
+	retrieveAndFillInput := elements.MakeRetrieveAndFillInput(waitAndRetrieveElement)
+	retrieveAndClickButton := elements.MakeRetrieveAndClickButton(waitAndRetrieveElement)
 
 	// Functions
 	login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
 	getSearchCriteria := search.MakeGetAdvanceSearchCriteria()
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
+	getTweetInformation := tweets.MakeGetTweetInformation()
+	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, getTweetInformation)
 
 	/* --- Scrapper --- */
-	err := scrapper.Execute(login, getSearchCriteria, executeAdvanceSearch)
+	err := scrapper.Execute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)
 	if err != nil {
 		log.Fatal(err)
 	}

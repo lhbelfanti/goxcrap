@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"goxcrap/cmd/auth"
-	"goxcrap/cmd/element"
+	"goxcrap/cmd/elements"
 	"goxcrap/cmd/env"
 	"goxcrap/cmd/page"
 )
@@ -20,13 +20,14 @@ func TestMain(m *testing.M) {
 }
 
 func TestLogin_success(t *testing.T) {
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, nil)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(nil, "")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(nil, "")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(nil, "")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(nil, "")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -35,13 +36,14 @@ func TestLogin_success(t *testing.T) {
 
 func TestLogin_successWhenWaitAndRetrievePasswordElementThrowsError(t *testing.T) {
 	err := errors.New("error while executing waitAndRetrieveElement")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, err)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(nil, "")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(nil, "")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, err)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(nil, "")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(nil, "")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -50,13 +52,14 @@ func TestLogin_successWhenWaitAndRetrievePasswordElementThrowsError(t *testing.T
 
 func TestLogin_failsWhenLoadPageThrowsError(t *testing.T) {
 	want := errors.New("error while executing loadPage")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(want)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, nil)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(nil, "")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(nil, "")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(nil, "")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(nil, "")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -65,13 +68,14 @@ func TestLogin_failsWhenLoadPageThrowsError(t *testing.T) {
 
 func TestLogin_failsWhenRetrieveAndFillEmailInputThrowsError(t *testing.T) {
 	want := errors.New("error while executing retrieveAndFillEmailInput")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, nil)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(want, "email input")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(nil, "")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(want, "email input")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(nil, "")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -80,13 +84,14 @@ func TestLogin_failsWhenRetrieveAndFillEmailInputThrowsError(t *testing.T) {
 
 func TestLogin_failsWhenRetrieveAndClickEmailNextButtonThrowsError(t *testing.T) {
 	want := errors.New("error while executing retrieveAndClickEmailNextButton")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, nil)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(nil, "")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(want, "email next button")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(nil, "")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(want, "email next button")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -95,13 +100,14 @@ func TestLogin_failsWhenRetrieveAndClickEmailNextButtonThrowsError(t *testing.T)
 
 func TestLogin_failsWhenRetrieveAndFillUsernameInputThrowsError(t *testing.T) {
 	want := errors.New("error while executing retrieveAndFillUsernameInput")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, errors.New("error while executing waitAndRetrieveElement"))
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(want, "username input")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(nil, "")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, errors.New("error while executing waitAndRetrieveElement"))
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(want, "username input")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(nil, "")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -110,13 +116,14 @@ func TestLogin_failsWhenRetrieveAndFillUsernameInputThrowsError(t *testing.T) {
 
 func TestLogin_failsWhenRetrieveAndClickUsernameNextButtonThrowsError(t *testing.T) {
 	want := errors.New("error while executing retrieveAndClickUsernameNextButton")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, errors.New("error while executing waitAndRetrieveElement"))
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(nil, "")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(want, "username next button")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, errors.New("error while executing waitAndRetrieveElement"))
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(nil, "")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(want, "username next button")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -125,13 +132,14 @@ func TestLogin_failsWhenRetrieveAndClickUsernameNextButtonThrowsError(t *testing
 
 func TestLogin_failsWhenRetrieveAndFillPasswordInputThrowsError(t *testing.T) {
 	want := errors.New("error while executing retrieveAndFillPasswordInput")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, nil)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(want, "password input")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(nil, "")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(want, "password input")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(nil, "")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 
@@ -140,13 +148,14 @@ func TestLogin_failsWhenRetrieveAndFillPasswordInputThrowsError(t *testing.T) {
 
 func TestLogin_failsWhenRetrieveAndClickLogInButtonThrowsError(t *testing.T) {
 	want := errors.New("error while executing retrieveAndClickLogInButton")
-	mockWebElement := new(element.MockWebElement)
-	envVariables := env.LoadVariables()
+	mockWebElement := new(elements.MockWebElement)
+	mockEnvVariables := env.LoadVariables()
 	mockLoadPage := page.MockMakeLoad(nil)
-	mockWaitAndRetrieveElement := element.MockMakeWaitAndRetrieve(mockWebElement, nil)
-	mockRetrieveAndFillInput := element.MockMakeRetrieveAndFillInput(nil, "")
-	mockRetrieveAndClickButton := element.MockMakeRetrieveAndClickButton(want, "log in button")
-	login := auth.MakeLogin(envVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
+	mockWaitAndRetrieveElement := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockRetrieveAndFillInput := elements.MockMakeRetrieveAndFillInput(nil, "")
+	mockRetrieveAndClickButton := elements.MockMakeRetrieveAndClickButton(want, "log in button")
+
+	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
 	got := login()
 

@@ -1,4 +1,4 @@
-package element
+package elements
 
 import (
 	"errors"
@@ -8,6 +8,7 @@ import (
 const (
 	FailedToExecuteWaitWithTimeout string = "Failed to execute driver.WaitWithTimeout"
 	FailedToRetrieveElement        string = "Failed to retrieve element"
+	FailedToRetrieveElements       string = "Failed to retrieve elements"
 
 	FailedToRetrieveInput string = "Failed to retrieve %s input"
 	FailedToClickInput    string = "Failed to click %s input"

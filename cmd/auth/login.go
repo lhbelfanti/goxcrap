@@ -5,7 +5,7 @@ import (
 
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/element"
+	"goxcrap/cmd/elements"
 	"goxcrap/cmd/env"
 	"goxcrap/cmd/page"
 )
@@ -26,7 +26,7 @@ const (
 type Login func() error
 
 // MakeLogin creates a new Login
-func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveElement element.WaitAndRetrieve, retrieveAndFillInput element.RetrieveAndFillInput, retrieveAndClickButton element.RetrieveAndClickButton) Login {
+func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveElement elements.WaitAndRetrieve, retrieveAndFillInput elements.RetrieveAndFillInput, retrieveAndClickButton elements.RetrieveAndClickButton) Login {
 	return func() error {
 		err := loadPage(logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {

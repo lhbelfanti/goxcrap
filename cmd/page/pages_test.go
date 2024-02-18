@@ -16,6 +16,7 @@ func TestLoad_success(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("SetPageLoadTimeout", mock.Anything).Return(nil)
 	mockWebDriver.On("Get", mock.Anything).Return(nil)
+
 	load := page.MakeLoad(mockWebDriver)
 
 	got := load("/test", 10*time.Minute)
@@ -27,6 +28,7 @@ func TestLoad_failsWhenSetPageLoadTimeoutThrowsError(t *testing.T) {
 	err := errors.New("error while executing driver.SetPageLoadTimeout")
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("SetPageLoadTimeout", mock.Anything).Return(err)
+
 	load := page.MakeLoad(mockWebDriver)
 
 	want := page.NewPageError(page.FailedToSetPageLoadTimeout, err)
@@ -40,6 +42,7 @@ func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("SetPageLoadTimeout", mock.Anything).Return(nil)
 	mockWebDriver.On("Get", mock.Anything).Return(err)
+
 	load := page.MakeLoad(mockWebDriver)
 
 	want := page.NewPageError(page.FailedToRetrievePage, err)

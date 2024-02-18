@@ -1,7 +1,6 @@
 package env_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -10,12 +9,9 @@ import (
 	"goxcrap/cmd/env"
 )
 
-func TestMain(m *testing.M) {
-	_ = godotenv.Load()
-	os.Exit(m.Run())
-}
-
 func TestLoadVariables_success(t *testing.T) {
+	_ = godotenv.Load()
+
 	want := env.Variables{
 		Email:    "email",
 		Password: "password",

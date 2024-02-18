@@ -1,7 +1,7 @@
 package tweets
 
 type Tweet struct {
+	ID     string
 	Text   string
-	Links  []string
 	Images []string
 }

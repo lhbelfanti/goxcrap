@@ -1,4 +1,4 @@
-package element
+package elements
 
 import (
 	"github.com/stretchr/testify/mock"
