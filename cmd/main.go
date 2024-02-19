@@ -1,7 +1,6 @@
 package main
 
 import (
-	"goxcrap/cmd/tweets"
 	"log"
 	"time"
 
@@ -13,6 +12,7 @@ import (
 	"goxcrap/cmd/page"
 	"goxcrap/cmd/scrapper"
 	"goxcrap/cmd/search"
+	"goxcrap/cmd/tweets"
 	"goxcrap/internal/chromedriver"
 	"goxcrap/internal/setup"
 )

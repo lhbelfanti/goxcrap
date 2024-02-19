@@ -13,6 +13,7 @@ import (
 const (
 	pageLoaderTimeout              time.Duration = 10 * time.Second
 	elementTimeout                 time.Duration = 10 * time.Second
+	passwordElementTimeout         time.Duration = 5 * time.Second
 	logInPageRelativeURL           string        = "/i/flow/login"
 	emailInputName                 string        = "text"
 	nextButtonXPath                string        = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[6]"
@@ -43,7 +44,7 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			return err
 		}
 
-		_, err = waitAndRetrieveElement(selenium.ByName, passwordInputName, elementTimeout)
+		_, err = waitAndRetrieveElement(selenium.ByName, passwordInputName, passwordElementTimeout)
 		if err != nil {
 			// If the password input element is not rendered it is probably because the flow
 			// 'There was an unusual activity in your account', was triggered. So we need to fill the username input,

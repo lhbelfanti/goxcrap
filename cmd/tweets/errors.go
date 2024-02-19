@@ -10,7 +10,9 @@ const (
 
 	FailedToObtainTweetElement          = "Failed to obtain tweet element"
 	FailedToObtainTweetTextElement      = "Failed to obtain tweet text element"
-	FailedToObtainTweetText             = "Failed to obtain tweet text"
+	FailedToObtainTweetTextParts        = "Failed to obtain tweet text parts"
+	FailedToObtainTweetTextPartTagName  = "Failed to obtain tweet text part tag name"
+	FailedToObtainTweetTextFromSpan     = "Failed to obtain tweet text from span"
 	FailedToObtainTweetTimestampElement = "Failed to obtain tweet timestamp element"
 	FailedToObtainTweetTimestamp        = "Failed to obtain tweet timestamp"
 )

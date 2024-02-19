@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	articlesXPath   string        = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div/div/div[1]/div/div/article"
+	articlesXPath   string        = "//article"
 	articlesTimeout time.Duration = 10 * time.Second
 )
 
