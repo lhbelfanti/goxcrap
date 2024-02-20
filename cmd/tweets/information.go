@@ -30,11 +30,15 @@ func MakeGetTweetInformation() GetTweetInformation {
 			return Tweet{}, err
 		}
 
-		// TODO: Get Timestamp
+		tweetTimestamp, err := getTweetTimestamp(tweetElement)
+		if err != nil {
+			return Tweet{}, err
+		}
+
 		// TODO: Get Images
 
 		tweetTextHash := md5.Sum([]byte(tweetText))
-		tweetTimestampHash := md5.Sum([]byte("tweetTimestamp"))
+		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
 		tweetID := hex.EncodeToString(tweetTextHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
 
 		return Tweet{
@@ -87,4 +91,20 @@ func getTweetText(tweetElement selenium.WebElement) (string, error) {
 	}
 
 	return tweetText, nil
+}
+
+// getTweetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element
+func getTweetTimestamp(tweetElement selenium.WebElement) (string, error) {
+	tweetTimestampElement, err := tweetElement.FindElement(selenium.ByXPATH, "div[position()=1]/div/div/div/div/div[position()=2]/div/div[position()=3]/a/time")
+	if err != nil {
+		fmt.Println("Error finding tweet timestamp element:", err)
+		return "", NewTweetsError(FailedToObtainTweetTimestampElement, err)
+	}
+
+	tweetTimestamp, err := tweetTimestampElement.GetAttribute("datetime")
+	if err != nil {
+		return "", NewTweetsError(FailedToObtainTweetTimestamp, err)
+	}
+
+	return tweetTimestamp, nil
 }
