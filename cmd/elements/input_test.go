@@ -16,7 +16,7 @@ func TestRetrieveAndFillInput_success(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockWebElement.On("Click").Return(nil)
 	mockWebElement.On("SendKeys", "input").Return(nil)
-	mockWaitAndRetrieve := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
@@ -27,7 +27,7 @@ func TestRetrieveAndFillInput_success(t *testing.T) {
 
 func TestRetrieveAndFillInput_failsWhenWaitAndRetrieveElementThrowsError(t *testing.T) {
 	err := errors.New("error while executing waitAndRetrieveElement")
-	mockWaitAndRetrieve := elements.MockMakeWaitAndRetrieve(nil, err)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(nil, err)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
@@ -41,7 +41,7 @@ func TestRetrieveAndFillInput_failsWhenInputClickThrowsError(t *testing.T) {
 	err := errors.New("error while executing input.Click")
 	mockWebElement := new(elements.MockWebElement)
 	mockWebElement.On("Click").Return(err)
-	mockWaitAndRetrieve := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
@@ -56,7 +56,7 @@ func TestRetrieveAndFillInput_failsWhenInputSendKeysThrowsError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockWebElement.On("Click").Return(nil)
 	mockWebElement.On("SendKeys", "input").Return(err)
-	mockWaitAndRetrieve := elements.MockMakeWaitAndRetrieve(mockWebElement, nil)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 

@@ -18,7 +18,7 @@ func TestWaitAndRetrieve_success(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(nil)
 	mockWebDriver.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(want), nil)
-	mockWaitAndRetrieveCondition := elements.MockMakeWaitAndRetrieveCondition(true)
+	mockWaitAndRetrieveCondition := elements.MockWaitAndRetrieveCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
 
@@ -31,7 +31,7 @@ func TestWaitAndRetrieve_success(t *testing.T) {
 func TestWaitAndRetrieve_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(errors.New("error"))
-	mockWaitAndRetrieveCondition := elements.MockMakeWaitAndRetrieveCondition(true)
+	mockWaitAndRetrieveCondition := elements.MockWaitAndRetrieveCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
 
@@ -45,7 +45,7 @@ func TestWaitAndRetrieve_failsFindElementThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(nil)
 	mockWebDriver.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWebElement), errors.New("error"))
-	mockWaitAndRetrieveCondition := elements.MockMakeWaitAndRetrieveCondition(true)
+	mockWaitAndRetrieveCondition := elements.MockWaitAndRetrieveCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
 
@@ -83,15 +83,13 @@ func TestWaitAndRetrieveCondition_successWithReturnValueFalseWhenFindElementsThr
 	assert.Nil(t, err)
 }
 
-// ---
-
 func TestWaitAndRetrieveAll_success(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	want := []selenium.WebElement{selenium.WebElement(mockWebElement)}
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(nil)
 	mockWebDriver.On("FindElements", mock.Anything, mock.Anything).Return(want, nil)
-	mockWaitAndRetrieveAllCondition := elements.MockMakeWaitAndRetrieveAllCondition(true)
+	mockWaitAndRetrieveAllCondition := elements.MockWaitAndRetrieveAllCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
 
@@ -104,7 +102,7 @@ func TestWaitAndRetrieveAll_success(t *testing.T) {
 func TestWaitAndRetrieveAll_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(errors.New("error"))
-	mockWaitAndRetrieveAllCondition := elements.MockMakeWaitAndRetrieveAllCondition(true)
+	mockWaitAndRetrieveAllCondition := elements.MockWaitAndRetrieveAllCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
 
@@ -118,7 +116,7 @@ func TestWaitAndRetrieveAll_failsFindElementThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(nil)
 	mockWebDriver.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockWebElement)}, errors.New("error"))
-	mockWaitAndRetrieveAllCondition := elements.MockMakeWaitAndRetrieveAllCondition(true)
+	mockWaitAndRetrieveAllCondition := elements.MockWaitAndRetrieveAllCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
 

@@ -13,12 +13,12 @@ import (
 )
 
 func TestExecute_success(t *testing.T) {
-	mockLogin := auth.MockMakeLogin(nil)
+	mockLogin := auth.MockLogin(nil)
 	mockCriteria := search.MockCriteria()
-	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
-	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(nil)
+	mockGetSearchCriteria := search.MockGetAdvanceSearchCriteria(mockCriteria)
+	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
 	mockTweet := tweets.MockTweet()
-	mockRetrieveAllTweets := tweets.MockMakeRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
+	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
 	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
 
@@ -26,13 +26,13 @@ func TestExecute_success(t *testing.T) {
 }
 
 func TestExecute_successSkippingCriteriaDueAnErrorInParseDates(t *testing.T) {
-	mockLogin := auth.MockMakeLogin(nil)
+	mockLogin := auth.MockLogin(nil)
 	mockCriteria := search.MockCriteria()
 	mockCriteria[0].Since = "error"
-	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
-	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(nil)
+	mockGetSearchCriteria := search.MockGetAdvanceSearchCriteria(mockCriteria)
+	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
 	mockTweet := tweets.MockTweet()
-	mockRetrieveAllTweets := tweets.MockMakeRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
+	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
 	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
 
@@ -40,13 +40,13 @@ func TestExecute_successSkippingCriteriaDueAnErrorInParseDates(t *testing.T) {
 }
 
 func TestExecute_successSkippingCriteriaDueAnErrorInExecuteAdvanceSearch(t *testing.T) {
-	mockLogin := auth.MockMakeLogin(nil)
+	mockLogin := auth.MockLogin(nil)
 	mockCriteria := search.MockCriteria()
-	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
+	mockGetSearchCriteria := search.MockGetAdvanceSearchCriteria(mockCriteria)
 	err := errors.New("error while executing ExecuteAdvanceSearch")
-	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(err)
+	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(err)
 	mockTweet := tweets.MockTweet()
-	mockRetrieveAllTweets := tweets.MockMakeRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
+	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
 	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
 
@@ -55,12 +55,12 @@ func TestExecute_successSkippingCriteriaDueAnErrorInExecuteAdvanceSearch(t *test
 
 func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
 	want := errors.New("error while executing login")
-	mockLogin := auth.MockMakeLogin(want)
+	mockLogin := auth.MockLogin(want)
 	mockCriteria := search.MockCriteria()
-	mockGetSearchCriteria := search.MockMakeGetAdvanceSearchCriteria(mockCriteria)
-	mockExecuteAdvanceSearch := search.MockMakeExecuteAdvanceSearch(nil)
+	mockGetSearchCriteria := search.MockGetAdvanceSearchCriteria(mockCriteria)
+	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
 	mockTweet := tweets.MockTweet()
-	mockRetrieveAllTweets := tweets.MockMakeRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
+	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
 	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
 

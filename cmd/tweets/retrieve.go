@@ -18,7 +18,7 @@ const (
 type RetrieveAll func() ([]Tweet, error)
 
 // MakeRetrieveAll creates a new RetrieveAll
-func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetInformation GetTweetInformation) RetrieveAll {
+func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, gatherTweetInformation GatherTweetInformation) RetrieveAll {
 	return func() ([]Tweet, error) {
 		articles, err := waitAndRetrieveElements(selenium.ByXPATH, articlesXPath, articlesTimeout)
 		if err != nil {
@@ -27,7 +27,7 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 
 		var tweets []Tweet
 		for _, article := range articles {
-			tweet, err := getTweetInformation(article)
+			tweet, err := gatherTweetInformation(article)
 			if err != nil {
 				fmt.Println(err)
 				continue

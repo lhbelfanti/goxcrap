@@ -8,11 +8,12 @@ import (
 
 const timestampXPath string = "div/div/div[2]/div[2]/div[1]/div/div[1]/div/div/div[2]/div/div[3]/a/time"
 
-// GetTweetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element
-type GetTweetTimestamp func(tweetArticleElement selenium.WebElement) (string, error)
+// GetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element.
+// It will only be used to create a unique ID for the tweet
+type GetTimestamp func(tweetArticleElement selenium.WebElement) (string, error)
 
-// MakeGetTweetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element
-func MakeGetTweetTimestamp() GetTweetTimestamp {
+// MakeGetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element
+func MakeGetTimestamp() GetTimestamp {
 	return func(tweetArticleElement selenium.WebElement) (string, error) {
 		tweetTimestampElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(timestampXPath))
 		if err != nil {

@@ -8,43 +8,54 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-const (
-	tweetElementCSSSelector string = "div > div > div:nth-child(2) > div:nth-child(2)"
-)
+const replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 
-// GetTweetInformation retrieves the tweet information from the given tweet element
-type GetTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
+// GatherTweetInformation retrieves the tweet information from the given tweet element
+type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
-// MakeGetTweetInformation creates a new GetTweetInformation
-func MakeGetTweetInformation() GetTweetInformation {
+// MakeGetTweetInformation creates a new GatherTweetInformation
+func MakeGetTweetInformation(getTimestamp GetTimestamp, getAuthor GetAuthor) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
-		// Find the tweet element
-		tweetElement, err := tweetArticleElement.FindElement(selenium.ByCSSSelector, tweetElementCSSSelector)
-		if err != nil {
-			fmt.Println("Error finding tweet element:", err)
-			return Tweet{}, NewTweetsError(FailedToObtainTweetElement, err)
-		}
-
-		tweetText, err := getTweetText(tweetElement)
+		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
 			return Tweet{}, err
 		}
 
-		tweetTimestamp, err := getTweetTimestamp(tweetElement)
+		tweetTimestamp, err := getTimestamp(tweetArticleElement)
 		if err != nil {
 			return Tweet{}, err
 		}
 
-		// TODO: Get Images
+		isAReply := true
+		_, err = tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
+		if err != nil {
+			isAReply = false
+		}
 
-		tweetTextHash := md5.Sum([]byte(tweetText))
+		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
-		tweetID := hex.EncodeToString(tweetTextHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
+		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
 
 		return Tweet{
-			ID:   tweetID,
-			Text: tweetText,
-			//Images: tweetImages,
+			ID:        tweetID,
+			Timestamp: "",
+			IsAReply:  isAReply,
+			HasQuote:  false,
+			Data: Data{
+				HasText:   false,
+				HasImages: false,
+				Text:      "",
+				Images:    nil,
+			},
+			Quote: Quote{
+				IsAReply: false,
+				Data: Data{
+					HasText:   false,
+					HasImages: false,
+					Text:      "",
+					Images:    nil,
+				},
+			},
 		}, nil
 	}
 }
@@ -93,18 +104,28 @@ func getTweetText(tweetElement selenium.WebElement) (string, error) {
 	return tweetText, nil
 }
 
-// getTweetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element
-func getTweetTimestamp(tweetElement selenium.WebElement) (string, error) {
-	tweetTimestampElement, err := tweetElement.FindElement(selenium.ByXPATH, "div[position()=1]/div/div/div/div/div[position()=2]/div/div[position()=3]/a/time")
+func getTweetImages(tweetElement selenium.WebElement) ([]string, error) {
+	tweetImagesElement, err := tweetElement.FindElement(selenium.ByXPATH, "div[position()=3]/div/div/div/div/div/div")
 	if err != nil {
-		fmt.Println("Error finding tweet timestamp element:", err)
-		return "", NewTweetsError(FailedToObtainTweetTimestampElement, err)
+		fmt.Println("Error finding tweet images element:", err)
+		return nil, NewTweetsError(FailedToObtainTweetImagesElement, err)
 	}
 
-	tweetTimestamp, err := tweetTimestampElement.GetAttribute("datetime")
+	tweetImagesElements, err := tweetImagesElement.FindElements(selenium.ByTagName, "img")
 	if err != nil {
-		return "", NewTweetsError(FailedToObtainTweetTimestamp, err)
+		fmt.Println("Error finding tweet images:", err)
+		return nil, NewTweetsError(FailedToObtainTweetImages, err)
 	}
 
-	return tweetTimestamp, nil
+	tweetImages := make([]string, 0, len(tweetImagesElements))
+	for _, tweetImage := range tweetImagesElements {
+		tweetUrl, err := tweetImage.GetAttribute("src")
+		if err != nil {
+			return nil, NewTweetsError(FailedToObtainTweetSrcFromImage, err)
+		}
+
+		tweetImages = append(tweetImages, tweetUrl)
+	}
+
+	return tweetImages, nil
 }
