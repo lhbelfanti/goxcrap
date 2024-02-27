@@ -2,12 +2,14 @@ package tweets_test
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/tebeka/selenium"
+
 	"goxcrap/cmd/elements"
 	"goxcrap/cmd/tweets"
-	"testing"
 )
 
 func TestGetAuthor_success(t *testing.T) {
