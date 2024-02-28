@@ -43,7 +43,7 @@ func main() {
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
 	getTweetTimestamp := tweets.MakeGetTimestamp()
 	getTweetAuthor := tweets.MakeGetAuthor()
-	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetTimestamp, getTweetAuthor)
+	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp)
 	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation)
 
 	/* --- Scrapper --- */

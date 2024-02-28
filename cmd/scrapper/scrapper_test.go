@@ -2,7 +2,6 @@ package scrapper_test
 
 import (
 	"errors"
-	"goxcrap/cmd/tweets"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,6 +9,7 @@ import (
 	"goxcrap/cmd/auth"
 	"goxcrap/cmd/scrapper"
 	"goxcrap/cmd/search"
+	"goxcrap/cmd/tweets"
 )
 
 func TestExecute_success(t *testing.T) {

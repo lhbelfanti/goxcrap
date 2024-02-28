@@ -2,11 +2,11 @@ package scrapper
 
 import (
 	"fmt"
-	"goxcrap/cmd/tweets"
 	"time"
 
 	"goxcrap/cmd/auth"
 	"goxcrap/cmd/search"
+	"goxcrap/cmd/tweets"
 )
 
 // Execute starts the twitter scrapper

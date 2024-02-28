@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// MockLoad mocks the function MakeLoad and the values returned by Load
+// MockLoad mocks Load function
 func MockLoad(err error) Load {
 	return func(relativeURL string, timeout time.Duration) error {
 		return err

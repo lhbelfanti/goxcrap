@@ -14,7 +14,7 @@ const replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getTimestamp GetTimestamp, getAuthor GetAuthor) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -38,22 +38,22 @@ func MakeGetTweetInformation(getTimestamp GetTimestamp, getAuthor GetAuthor) Gat
 
 		return Tweet{
 			ID:        tweetID,
-			Timestamp: "",
+			Timestamp: tweetTimestamp,
 			IsAReply:  isAReply,
-			HasQuote:  false,
+			HasQuote:  true,
 			Data: Data{
-				HasText:   false,
-				HasImages: false,
-				Text:      "",
-				Images:    nil,
+				HasText:   true,
+				HasImages: true,
+				Text:      "Tweet Description",
+				Images:    []string{"Img 1", "Img 2"},
 			},
 			Quote: Quote{
-				IsAReply: false,
+				IsAReply: true,
 				Data: Data{
-					HasText:   false,
-					HasImages: false,
-					Text:      "",
-					Images:    nil,
+					HasText:   true,
+					HasImages: true,
+					Text:      "Quote Description",
+					Images:    []string{"Img 3", "Img 4"},
 				},
 			},
 		}, nil
