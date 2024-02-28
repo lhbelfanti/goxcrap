@@ -14,7 +14,7 @@ const replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, getText GetText) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -26,11 +26,15 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp) Gat
 			return Tweet{}, err
 		}
 
-		isAReply := true
 		_, err = tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
-		if err != nil {
-			isAReply = false
-		}
+		isAReply := err == nil
+
+		// TODO: validate error to know if the element exists or not
+		// TODO: Redesign errors handling logic
+		/*		tweetText, err := getText(tweetArticleElement, isAReply)
+				if err != nil {
+					return Tweet{}, err
+				}*/
 
 		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
@@ -58,50 +62,6 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp) Gat
 			},
 		}, nil
 	}
-}
-
-// getTweetText retrieves the tweet text from the different elements inside the div
-func getTweetText(tweetElement selenium.WebElement) (string, error) {
-	tweetTextElement, err := tweetElement.FindElement(selenium.ByXPATH, "div[position()=2]/div")
-	if err != nil {
-		fmt.Println("Error finding tweet text element:", err)
-		return "", NewTweetsError(FailedToObtainTweetTextElement, err)
-	}
-
-	textParts, err := tweetTextElement.FindElements(selenium.ByCSSSelector, "span, img")
-	if err != nil {
-		fmt.Println("Error finding text parts:", err)
-		return "", NewTweetsError(FailedToObtainTweetTextParts, err)
-	}
-
-	var tweetText string
-	for _, textPart := range textParts {
-		tagName, err := textPart.TagName()
-		if err != nil {
-			fmt.Println("Error finding text part tag name:", err)
-			return "", NewTweetsError(FailedToObtainTweetTextPartTagName, err)
-		}
-
-		switch tagName {
-		case "span":
-			spanText, err := textPart.Text()
-			if err != nil {
-				fmt.Println("Error getting tweet text from span:", err)
-				return "", NewTweetsError(FailedToObtainTweetTextFromSpan, err)
-			}
-			tweetText += spanText
-		case "img":
-			alt, err := textPart.GetAttribute("alt")
-			if err != nil {
-				fmt.Println("Ignoring emoji. Error finding text part alt attribute", err)
-				continue
-			}
-
-			tweetText += alt
-		}
-	}
-
-	return tweetText, nil
 }
 
 func getTweetImages(tweetElement selenium.WebElement) ([]string, error) {
