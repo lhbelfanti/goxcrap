@@ -33,7 +33,6 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 		isAReply := err == nil
 
 		// TODO: validate error to know if the element exists or not
-		// TODO: Redesign errors handling logic
 		/*		tweetText, err := getText(tweetArticleElement, isAReply)
 				if err != nil {
 					return Tweet{}, err
