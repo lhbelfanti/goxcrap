@@ -2,6 +2,7 @@ package scrapper
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 
 	"goxcrap/cmd/auth"
@@ -15,16 +16,16 @@ func Execute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSearchC
 	if err != nil {
 		return err
 	}
-	fmt.Println("Log In completed")
+	slog.Info("Log In completed")
 
 	time.Sleep(10 * time.Second)
 
 	searchCriteria := getAdvanceSearchCriteria()
 	for _, criteria := range searchCriteria {
-		fmt.Printf("Criteria: '%s'\n", criteria.ID)
+		slog.Info(fmt.Sprintf("Criteria: %s", criteria.ID))
 		since, until, err := criteria.ParseDates()
 		if err != nil {
-			fmt.Printf("Error parsing dates: Since %s - Until %s - Error %v\n", criteria.Since, criteria.Until, err)
+			slog.Error(err.Error())
 			continue
 		}
 
@@ -34,7 +35,7 @@ func Execute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSearchC
 			currentCriteria.Until = current.AddDays(1).String()
 			err := executeAdvanceSearch(currentCriteria)
 			if err != nil {
-				fmt.Printf("Error while executing advance search - Error %v\n", err)
+				slog.Error(err.Error())
 				continue
 			}
 
@@ -42,7 +43,7 @@ func Execute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSearchC
 			for {
 				obtainedTweets, err := retrieveTweets()
 				if err != nil {
-					fmt.Printf("Error while executing retrieve tweets - Error %v\n", err)
+					slog.Error(err.Error())
 					continue
 				}
 
@@ -53,7 +54,7 @@ func Execute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSearchC
 			}
 		}
 
-		fmt.Printf("All the tweets of the criteria '%s' were retrieved", criteria.ID)
+		slog.Info(fmt.Sprintf("All the tweets of the criteria '%s' were retrieved", criteria.ID))
 	}
 
 	return nil

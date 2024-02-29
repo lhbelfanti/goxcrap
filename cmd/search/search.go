@@ -1,6 +1,7 @@
 package search
 
 import (
+	"log/slog"
 	"time"
 
 	"goxcrap/cmd/page"
@@ -19,7 +20,8 @@ func MakeExecuteAdvanceSearch(loadPage page.Load) ExecuteAdvanceSearch {
 		queryString := searchCriteria.ConvertIntoQueryString()
 		err := loadPage("/search?"+queryString, pageLoaderTimeout)
 		if err != nil {
-			return NewSearchError(FailedToLoadAdvanceSearchPage, err)
+			slog.Error(err.Error())
+			return FailedToLoadAdvanceSearchPage
 		}
 
 		return nil

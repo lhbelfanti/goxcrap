@@ -34,7 +34,7 @@ func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
 
 	getAuthor := tweets.MakeGetAuthor()
 
-	want := tweets.NewTweetsError(tweets.FailedToObtainTweetAuthorElement, err)
+	want := tweets.FailedToObtainTweetAuthorElement
 	_, got := getAuthor(mockWebElement)
 
 	assert.Equal(t, want, got)
@@ -49,7 +49,7 @@ func TestGetAuthor_failsWhenTextThrowsError(t *testing.T) {
 
 	getAuthor := tweets.MakeGetAuthor()
 
-	want := tweets.NewTweetsError(tweets.FailedToObtainTweetAuthor, err)
+	want := tweets.FailedToObtainTweetAuthor
 	_, got := getAuthor(mockWebElement)
 
 	assert.Equal(t, want, got)

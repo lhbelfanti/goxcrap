@@ -2,30 +2,17 @@ package elements
 
 import (
 	"errors"
-	"fmt"
 )
 
-const (
-	FailedToExecuteWaitWithTimeout string = "Failed to execute driver.WaitWithTimeout"
-	FailedToRetrieveElement        string = "Failed to retrieve element"
-	FailedToRetrieveElements       string = "Failed to retrieve elements"
+var (
+	FailedToExecuteWaitWithTimeout = errors.New("failed to execute driver.WaitWithTimeout")
+	FailedToRetrieveElement        = errors.New("failed to retrieve element")
+	FailedToRetrieveElements       = errors.New("failed to retrieve elements")
 
-	FailedToRetrieveInput string = "Failed to retrieve %s input"
-	FailedToClickInput    string = "Failed to click %s input"
-	FailedToFillInput     string = "Failed to fill input with %s"
+	FailedToRetrieveInput = errors.New("failed to retrieve input")
+	FailedToClickInput    = errors.New("failed to click input")
+	FailedToFillInput     = errors.New("failed to fill input")
 
-	FailedToRetrieveButton string = "Failed to retrieve %s button"
-	FailedToClickButton    string = "Failed to click %s button"
+	FailedToRetrieveButton = errors.New("failed to retrieve button")
+	FailedToClickButton    = errors.New("failed to click button")
 )
-
-type (
-	// ErrorCreator necessary function to create an error based on the current error and the specific package where it was triggered
-	ErrorCreator func(description string, err error) error
-)
-
-// NewElementError creates a new error based on a description and the error
-// It adds the package name to identify easily where the error comes from
-func NewElementError(description string, err error) error {
-	newError := fmt.Sprintf("Element: %s -> %v", description, err)
-	return errors.New(newError)
-}

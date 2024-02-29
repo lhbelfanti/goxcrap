@@ -1,15 +1,11 @@
 package search
 
-import (
-	"errors"
-	"fmt"
+import "errors"
+
+var (
+	FailedToLoadAdvanceSearchPage = errors.New("failed to load advance search page")
+
+	FailedToParseDate              = errors.New("failed to parse date")
+	FailedToParseCriteriaSinceDate = errors.New("failed to parse criteria.Since date")
+	FailedToParseCriteriaUntilDate = errors.New("failed to parse criteria.until date")
 )
-
-const FailedToLoadAdvanceSearchPage string = "Failed to load advance search page"
-
-// NewSearchError creates a new error based on a description and the error
-// It adds the package name to identify easily where the error comes from
-func NewSearchError(description string, err error) error {
-	newError := fmt.Sprintf("Search: %s -> %v", description, err)
-	return errors.New(newError)
-}

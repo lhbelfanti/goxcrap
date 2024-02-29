@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/tebeka/selenium"
@@ -11,16 +12,19 @@ import (
 )
 
 const (
-	pageLoaderTimeout              time.Duration = 10 * time.Second
-	elementTimeout                 time.Duration = 10 * time.Second
-	passwordElementTimeout         time.Duration = 5 * time.Second
-	logInPageRelativeURL           string        = "/i/flow/login"
-	emailInputName                 string        = "text"
-	nextButtonXPath                string        = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[6]"
-	passwordInputName              string        = "password"
-	logInButtonXPath               string        = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div"
-	usernameInputName              string        = "text"
-	unusualActivityNextButtonXPath string        = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div/div/div/div"
+	pageLoaderTimeout      time.Duration = 10 * time.Second
+	elementTimeout         time.Duration = 10 * time.Second
+	passwordElementTimeout time.Duration = 5 * time.Second
+
+	logInPageRelativeURL string = "/i/flow/login"
+
+	emailInputName    string = "text"
+	passwordInputName string = "password"
+	usernameInputName string = "text"
+
+	nextButtonXPath                string = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[6]"
+	logInButtonXPath               string = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div"
+	unusualActivityNextButtonXPath string = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div/div/div/div"
 )
 
 // Login finds de login button clicks it and then fill the email and password fields to log in the user
@@ -31,16 +35,19 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 	return func() error {
 		err := loadPage(logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
+			slog.Error(err.Error())
 			return err
 		}
 
-		err = retrieveAndFillInput(selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout, NewAuthError)
+		err = retrieveAndFillInput(selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout)
 		if err != nil {
+			slog.Error(err.Error())
 			return err
 		}
 
-		err = retrieveAndClickButton(selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout, NewAuthError)
+		err = retrieveAndClickButton(selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout)
 		if err != nil {
+			slog.Error(err.Error())
 			return err
 		}
 
@@ -49,24 +56,28 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			// If the password input element is not rendered it is probably because the flow
 			// 'There was an unusual activity in your account', was triggered. So we need to fill the username input,
 			// and then we can fill the password input
-			err = retrieveAndFillInput(selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout, NewAuthError)
+			err = retrieveAndFillInput(selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout)
 			if err != nil {
+				slog.Error(err.Error())
 				return err
 			}
 
-			err = retrieveAndClickButton(selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout, NewAuthError)
+			err = retrieveAndClickButton(selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout)
 			if err != nil {
+				slog.Error(err.Error())
 				return err
 			}
 		}
 
-		err = retrieveAndFillInput(selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout, NewAuthError)
+		err = retrieveAndFillInput(selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout)
 		if err != nil {
+			slog.Error(err.Error())
 			return err
 		}
 
-		err = retrieveAndClickButton(selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout, NewAuthError)
+		err = retrieveAndClickButton(selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout)
 		if err != nil {
+			slog.Error(err.Error())
 			return err
 		}
 

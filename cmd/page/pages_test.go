@@ -31,7 +31,7 @@ func TestLoad_failsWhenSetPageLoadTimeoutThrowsError(t *testing.T) {
 
 	load := page.MakeLoad(mockWebDriver)
 
-	want := page.NewPageError(page.FailedToSetPageLoadTimeout, err)
+	want := page.FailedToSetPageLoadTimeout
 	got := load("/test", 10*time.Minute)
 
 	assert.Equal(t, want, got)
@@ -45,7 +45,7 @@ func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 
 	load := page.MakeLoad(mockWebDriver)
 
-	want := page.NewPageError(page.FailedToRetrievePage, err)
+	want := page.FailedToRetrievePage
 	got := load("/test", 10*time.Minute)
 
 	assert.Equal(t, want, got)

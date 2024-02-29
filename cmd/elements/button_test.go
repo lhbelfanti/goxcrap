@@ -2,7 +2,6 @@ package elements_test
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 	"time"
 
@@ -19,7 +18,7 @@ func TestRetrieveAndClickButton_success(t *testing.T) {
 
 	retrieveAndClickButton := elements.MakeRetrieveAndClickButton(mockWaitAndRetrieve)
 
-	got := retrieveAndClickButton(selenium.ByName, "name", "element", 10*time.Minute, elements.NewElementError)
+	got := retrieveAndClickButton(selenium.ByName, "name", "element", 10*time.Minute)
 
 	assert.Nil(t, got)
 }
@@ -29,8 +28,8 @@ func TestRetrieveAndClickButton_failsWhenWaitAndRetrieveElementThrowsError(t *te
 	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(nil, err)
 	retrieveAndClickButton := elements.MakeRetrieveAndClickButton(mockWaitAndRetrieve)
 
-	want := elements.NewElementError(fmt.Sprintf(elements.FailedToRetrieveButton, "test"), err)
-	got := retrieveAndClickButton(selenium.ByName, "value", "test", 10*time.Minute, elements.NewElementError)
+	want := elements.FailedToRetrieveButton
+	got := retrieveAndClickButton(selenium.ByName, "value", "test", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }
@@ -42,8 +41,8 @@ func TestRetrieveAndClickButton_failsWhenButtonClickThrowsError(t *testing.T) {
 	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
 	retrieveAndClickButton := elements.MakeRetrieveAndClickButton(mockWaitAndRetrieve)
 
-	want := elements.NewElementError(fmt.Sprintf(elements.FailedToClickButton, "test"), err)
-	got := retrieveAndClickButton(selenium.ByName, "value", "test", 10*time.Minute, elements.NewElementError)
+	want := elements.FailedToClickButton
+	got := retrieveAndClickButton(selenium.ByName, "value", "test", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }

@@ -1,7 +1,7 @@
 package tweets
 
 import (
-	"fmt"
+	"log/slog"
 
 	"github.com/tebeka/selenium"
 )
@@ -17,13 +17,14 @@ func MakeGetTimestamp() GetTimestamp {
 	return func(tweetArticleElement selenium.WebElement) (string, error) {
 		tweetTimestampElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(timestampXPath))
 		if err != nil {
-			fmt.Println("Error finding tweet timestamp element:", err)
-			return "", NewTweetsError(FailedToObtainTweetTimestampElement, err)
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetTimestampElement
 		}
 
 		tweetTimestamp, err := tweetTimestampElement.GetAttribute("datetime")
 		if err != nil {
-			return "", NewTweetsError(FailedToObtainTweetTimestamp, err)
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetTimestamp
 		}
 
 		return tweetTimestamp, nil

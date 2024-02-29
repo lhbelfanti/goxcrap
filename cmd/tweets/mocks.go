@@ -9,6 +9,13 @@ func MockRetrieveAll(tweets []Tweet, err error) RetrieveAll {
 	}
 }
 
+// MockGatherTweetInformation mocks GatherTweetInformation function
+func MockGatherTweetInformation(tweet Tweet, err error) GatherTweetInformation {
+	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
+		return tweet, err
+	}
+}
+
 // MockTweet mocks a Tweet
 func MockTweet() Tweet {
 	return Tweet{
@@ -45,5 +52,12 @@ func MockGetAuthor(author string, err error) GetAuthor {
 func MockGetTimestamp(timestamp string, err error) GetTimestamp {
 	return func(element selenium.WebElement) (string, error) {
 		return timestamp, err
+	}
+}
+
+// MockGetText mocks GetText function
+func MockGetText(text string, err error) GetText {
+	return func(element selenium.WebElement, isAReply bool) (string, error) {
+		return text, err
 	}
 }

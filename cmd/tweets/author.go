@@ -1,7 +1,7 @@
 package tweets
 
 import (
-	"fmt"
+	"log/slog"
 
 	"github.com/tebeka/selenium"
 )
@@ -17,13 +17,14 @@ func MakeGetAuthor() GetAuthor {
 	return func(tweetArticleElement selenium.WebElement) (string, error) {
 		tweetAuthorElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(authorXPath))
 		if err != nil {
-			fmt.Println("Error finding tweet author element:", err)
-			return "", NewTweetsError(FailedToObtainTweetAuthorElement, err)
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetAuthorElement
 		}
 
 		tweetAuthor, err := tweetAuthorElement.Text()
 		if err != nil {
-			return "", NewTweetsError(FailedToObtainTweetAuthor, err)
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetAuthor
 		}
 
 		return tweetAuthor, nil

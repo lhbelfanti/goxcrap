@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 
 	"github.com/tebeka/selenium"
 )
@@ -18,12 +19,14 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
-			return Tweet{}, err
+			slog.Error(err.Error())
+			return Tweet{}, FailedToObtainTweetAuthorInformation
 		}
 
 		tweetTimestamp, err := getTimestamp(tweetArticleElement)
 		if err != nil {
-			return Tweet{}, err
+			slog.Error(err.Error())
+			return Tweet{}, FailedToObtainTweetTimestampInformation
 		}
 
 		_, err = tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
@@ -68,20 +71,20 @@ func getTweetImages(tweetElement selenium.WebElement) ([]string, error) {
 	tweetImagesElement, err := tweetElement.FindElement(selenium.ByXPATH, "div[position()=3]/div/div/div/div/div/div")
 	if err != nil {
 		fmt.Println("Error finding tweet images element:", err)
-		return nil, NewTweetsError(FailedToObtainTweetImagesElement, err)
+		return nil, FailedToObtainTweetImagesElement
 	}
 
 	tweetImagesElements, err := tweetImagesElement.FindElements(selenium.ByTagName, "img")
 	if err != nil {
 		fmt.Println("Error finding tweet images:", err)
-		return nil, NewTweetsError(FailedToObtainTweetImages, err)
+		return nil, FailedToObtainTweetImages
 	}
 
 	tweetImages := make([]string, 0, len(tweetImagesElements))
 	for _, tweetImage := range tweetImagesElements {
 		tweetUrl, err := tweetImage.GetAttribute("src")
 		if err != nil {
-			return nil, NewTweetsError(FailedToObtainTweetSrcFromImage, err)
+			return nil, FailedToObtainTweetSrcFromImage
 		}
 
 		tweetImages = append(tweetImages, tweetUrl)

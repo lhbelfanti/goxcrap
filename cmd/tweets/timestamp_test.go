@@ -34,7 +34,7 @@ func TestGetTimestamp_failsWhenFindElementThrowsError(t *testing.T) {
 
 	getTimestamp := tweets.MakeGetTimestamp()
 
-	want := tweets.NewTweetsError(tweets.FailedToObtainTweetTimestampElement, err)
+	want := tweets.FailedToObtainTweetTimestampElement
 	_, got := getTimestamp(mockWebElement)
 
 	assert.Equal(t, want, got)
@@ -49,7 +49,7 @@ func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
 
 	getTimestamp := tweets.MakeGetTimestamp()
 
-	want := tweets.NewTweetsError(tweets.FailedToObtainTweetTimestamp, err)
+	want := tweets.FailedToObtainTweetTimestamp
 	_, got := getTimestamp(mockWebElement)
 
 	assert.Equal(t, want, got)

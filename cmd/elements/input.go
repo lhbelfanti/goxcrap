@@ -1,31 +1,34 @@
 package elements
 
 import (
-	"fmt"
+	"log/slog"
 	"time"
 )
 
 type (
 	// RetrieveAndFillInput retrieves an input element, clicks on it, and fills it with the inputText param
-	RetrieveAndFillInput func(by, value, element, inputText string, timeout time.Duration, newError ErrorCreator) error
+	RetrieveAndFillInput func(by, value, element, inputText string, timeout time.Duration) error
 )
 
 // MakeRetrieveAndFillInput creates a new RetrieveAndFillInput
 func MakeRetrieveAndFillInput(waitAndRetrieveElement WaitAndRetrieve) RetrieveAndFillInput {
-	return func(by, value, element, inputText string, timeout time.Duration, newError ErrorCreator) error {
+	return func(by, value, element, inputText string, timeout time.Duration) error {
 		input, err := waitAndRetrieveElement(by, value, timeout)
 		if err != nil {
-			return newError(fmt.Sprintf(FailedToRetrieveInput, element), err)
+			slog.Error(err.Error(), slog.String("element", element))
+			return FailedToRetrieveInput
 		}
 
 		err = input.Click()
 		if err != nil {
-			return newError(fmt.Sprintf(FailedToClickInput, element), err)
+			slog.Error(err.Error(), slog.String("element", element))
+			return FailedToClickInput
 		}
 
 		err = input.SendKeys(inputText)
 		if err != nil {
-			return newError(fmt.Sprintf(FailedToFillInput, element), err)
+			slog.Error(err.Error(), slog.String("element", element))
+			return FailedToFillInput
 		}
 
 		return nil

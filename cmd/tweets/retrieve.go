@@ -1,7 +1,7 @@
 package tweets
 
 import (
-	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/tebeka/selenium"
@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	articlesXPath   string        = "//article"
 	articlesTimeout time.Duration = 10 * time.Second
+
+	articlesXPath string = "//article"
 )
 
 // RetrieveAll retrieves all the tweets from the current page
@@ -22,14 +23,15 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, gather
 	return func() ([]Tweet, error) {
 		articles, err := waitAndRetrieveElements(selenium.ByXPATH, articlesXPath, articlesTimeout)
 		if err != nil {
-			return nil, NewTweetsError(FailedToRetrieveArticles, err)
+			slog.Error(err.Error())
+			return nil, FailedToRetrieveArticles
 		}
 
 		var tweets []Tweet
 		for _, article := range articles {
 			tweet, err := gatherTweetInformation(article)
 			if err != nil {
-				fmt.Println(err)
+				slog.Error(err.Error())
 				continue
 			}
 

@@ -83,7 +83,7 @@ func TestGetText_failsWhenFindElementThrowsError(t *testing.T) {
 
 		getText := tweets.MakeGetText()
 
-		want := tweets.NewTweetsError(tweets.FailedToObtainTweetTextElement, err)
+		want := tweets.FailedToObtainTweetTextElement
 		_, got := getText(mockWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
@@ -106,7 +106,7 @@ func TestGetText_failsWhenFindElementsThrowsError(t *testing.T) {
 
 		getText := tweets.MakeGetText()
 
-		want := tweets.NewTweetsError(tweets.FailedToObtainTweetTextParts, err)
+		want := tweets.FailedToObtainTweetTextParts
 		_, got := getText(mockWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
@@ -130,7 +130,7 @@ func TestGetText_failsWhenTagNameThrowsError(t *testing.T) {
 
 		getText := tweets.MakeGetText()
 
-		want := tweets.NewTweetsError(tweets.FailedToObtainTweetTextPartTagName, err)
+		want := tweets.FailedToObtainTweetTextPartTagName
 		_, got := getText(mockWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
@@ -155,7 +155,7 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 
 		getText := tweets.MakeGetText()
 
-		want := tweets.NewTweetsError(tweets.FailedToObtainTweetTextFromSpan, err)
+		want := tweets.FailedToObtainTweetTextFromSpan
 		_, got := getText(mockWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)

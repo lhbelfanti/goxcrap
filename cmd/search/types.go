@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"log/slog"
 	"net/url"
 	"strings"
 	"time"
@@ -33,7 +34,8 @@ type (
 func ParseDate(s string) (Date, error) {
 	t, err := time.Parse("2006-01-02", s)
 	if err != nil {
-		return Date{}, err
+		slog.Error(err.Error())
+		return Date{}, FailedToParseDate
 	}
 	return Of(t), nil
 }
@@ -81,12 +83,14 @@ func (d Date) After(other Date) bool {
 func (c Criteria) ParseDates() (Date, Date, error) {
 	since, err := ParseDate(c.Since)
 	if err != nil {
-		return Date{}, Date{}, err
+		slog.Error(err.Error())
+		return Date{}, Date{}, FailedToParseCriteriaSinceDate
 	}
 
 	until, err := ParseDate(c.Until)
 	if err != nil {
-		return Date{}, Date{}, err
+		slog.Error(err.Error())
+		return Date{}, Date{}, FailedToParseCriteriaUntilDate
 	}
 
 	return since, until, nil

@@ -28,7 +28,7 @@ func TestExecuteAdvanceSearch_failsWhenLoadPageThrowsError(t *testing.T) {
 
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
-	want := search.NewSearchError(search.FailedToLoadAdvanceSearchPage, err)
+	want := search.FailedToLoadAdvanceSearchPage
 	got := executeAdvanceSearch(mockCriteria)
 
 	assert.Equal(t, want, got)

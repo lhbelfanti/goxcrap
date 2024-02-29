@@ -1,6 +1,7 @@
 package elements
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/tebeka/selenium"
@@ -15,7 +16,7 @@ type (
 
 	// WaitAndRetrieveAll waits for a slice of selenium.WebElement to be rendered in the page and retrieve them
 	WaitAndRetrieveAll func(by, value string, timeout time.Duration) ([]selenium.WebElement, error)
-	
+
 	// WaitAndRetrieveAllCondition is the function that returns the SeleniumCondition
 	WaitAndRetrieveAllCondition func(by, value string) SeleniumCondition
 
@@ -28,12 +29,14 @@ func MakeWaitAndRetrieve(driver selenium.WebDriver, condition WaitAndRetrieveCon
 	return func(by, value string, timeout time.Duration) (selenium.WebElement, error) {
 		err := driver.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
-			return nil, NewElementError(FailedToExecuteWaitWithTimeout, err)
+			slog.Error(err.Error())
+			return nil, FailedToExecuteWaitWithTimeout
 		}
 
 		element, err := driver.FindElement(by, value)
 		if err != nil {
-			return nil, NewElementError(FailedToRetrieveElement, err)
+			slog.Error(err.Error())
+			return nil, FailedToRetrieveElement
 		}
 
 		return element, err
@@ -59,12 +62,14 @@ func MakeWaitAndRetrieveAll(driver selenium.WebDriver, condition WaitAndRetrieve
 	return func(by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
 		err := driver.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
-			return nil, NewElementError(FailedToExecuteWaitWithTimeout, err)
+			slog.Error(err.Error())
+			return nil, FailedToExecuteWaitWithTimeout
 		}
 
 		elements, err := driver.FindElements(by, value)
 		if err != nil {
-			return nil, NewElementError(FailedToRetrieveElements, err)
+			slog.Error(err.Error())
+			return nil, FailedToRetrieveElements
 		}
 
 		return elements, err

@@ -1,7 +1,7 @@
 package tweets
 
 import (
-	"fmt"
+	"log/slog"
 
 	"github.com/tebeka/selenium"
 )
@@ -24,36 +24,36 @@ func MakeGetText() GetText {
 
 		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xpath))
 		if err != nil {
-			fmt.Println("Error finding tweet text element:", err)
-			return "", NewTweetsError(FailedToObtainTweetTextElement, err)
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetTextElement
 		}
 
 		textParts, err := tweetTextElement.FindElements(selenium.ByCSSSelector, "span, img")
 		if err != nil {
-			fmt.Println("Error finding text parts:", err)
-			return "", NewTweetsError(FailedToObtainTweetTextParts, err)
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetTextParts
 		}
 
 		var tweetText string
 		for _, textPart := range textParts {
 			tagName, err := textPart.TagName()
 			if err != nil {
-				fmt.Println("Error finding text part tag name:", err)
-				return "", NewTweetsError(FailedToObtainTweetTextPartTagName, err)
+				slog.Error(err.Error())
+				return "", FailedToObtainTweetTextPartTagName
 			}
 
 			switch tagName {
 			case "span":
 				spanText, err := textPart.Text()
 				if err != nil {
-					fmt.Println("Error getting tweet text from span:", err)
-					return "", NewTweetsError(FailedToObtainTweetTextFromSpan, err)
+					slog.Error(err.Error())
+					return "", FailedToObtainTweetTextFromSpan
 				}
 				tweetText += spanText
 			case "img":
 				alt, err := textPart.GetAttribute("alt")
 				if err != nil {
-					fmt.Println("Ignoring emoji. Error finding text part alt attribute", err)
+					slog.Error("Ignoring emoji: " + err.Error())
 					continue
 				}
 
