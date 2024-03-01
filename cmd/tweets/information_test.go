@@ -17,7 +17,7 @@ func TestGetTweetInformation_success(t *testing.T) {
 		isAReply         bool
 		findElementError error
 	}{
-		{isAReply: false, findElementError: errors.New("error")},
+		{isAReply: false, findElementError: errors.New("error while executing FindElement")},
 		{isAReply: true, findElementError: nil},
 	} {
 		mockGetAuthor := tweets.MockGetAuthor("author", nil)
@@ -39,7 +39,7 @@ func TestGetTweetInformation_success(t *testing.T) {
 }
 
 func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
-	mockGetAuthor := tweets.MockGetAuthor("", errors.New("error"))
+	mockGetAuthor := tweets.MockGetAuthor("", errors.New("error while executing GetAuthor"))
 	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
 	mockGetText := tweets.MockGetText("Tweet Text", nil)
 	mockWebElement := new(elements.MockWebElement)
@@ -54,7 +54,7 @@ func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
 
 func TestGetTweetInformation_failsWhenGetTimestampThrowsError(t *testing.T) {
 	mockGetAuthor := tweets.MockGetAuthor("author", nil)
-	mockGetTimestamp := tweets.MockGetTimestamp("", errors.New("error"))
+	mockGetTimestamp := tweets.MockGetTimestamp("", errors.New("error while executing GetTimestamp"))
 	mockGetText := tweets.MockGetText("Tweet Text", nil)
 	mockWebElement := new(elements.MockWebElement)
 

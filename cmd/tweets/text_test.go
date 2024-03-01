@@ -47,7 +47,6 @@ func TestGetText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		imgErr := errors.New("error")
 		mockWebElement := new(elements.MockWebElement)
 		mockTweetTextElement := new(elements.MockWebElement)
 		mockTextPartSpan := new(elements.MockWebElement)
@@ -57,7 +56,7 @@ func TestGetText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 		mockTextPartSpan.On("TagName").Return("span", nil)
 		mockTextPartSpan.On("Text").Return("text", nil)
 		mockTextPartImg.On("TagName").Return("img", nil)
-		mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", imgErr)
+		mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", errors.New("error while executing GetAttribute"))
 
 		getText := tweets.MakeGetText()
 
@@ -76,10 +75,9 @@ func TestGetText_failsWhenFindElementThrowsError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		err := errors.New("error")
 		mockWebElement := new(elements.MockWebElement)
 		mockTweetTextElement := new(elements.MockWebElement)
-		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextElement), err)
+		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextElement), errors.New("error while executing FindElement"))
 
 		getText := tweets.MakeGetText()
 
@@ -97,12 +95,11 @@ func TestGetText_failsWhenFindElementsThrowsError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		err := errors.New("error")
 		mockWebElement := new(elements.MockWebElement)
 		mockTweetTextElement := new(elements.MockWebElement)
 		mockTextPartSpan := new(elements.MockWebElement)
 		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextElement), nil)
-		mockTweetTextElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpan)}, err)
+		mockTweetTextElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpan)}, errors.New("error while executing FindElements"))
 
 		getText := tweets.MakeGetText()
 
@@ -120,13 +117,12 @@ func TestGetText_failsWhenTagNameThrowsError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		err := errors.New("error")
 		mockWebElement := new(elements.MockWebElement)
 		mockTweetTextElement := new(elements.MockWebElement)
 		mockTextPartSpan := new(elements.MockWebElement)
 		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextElement), nil)
 		mockTweetTextElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpan)}, nil)
-		mockTextPartSpan.On("TagName").Return("span", err)
+		mockTextPartSpan.On("TagName").Return("span", errors.New("error while executing TagName"))
 
 		getText := tweets.MakeGetText()
 
@@ -144,14 +140,13 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		err := errors.New("error")
 		mockWebElement := new(elements.MockWebElement)
 		mockTweetTextElement := new(elements.MockWebElement)
 		mockTextPartSpan := new(elements.MockWebElement)
 		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextElement), nil)
 		mockTweetTextElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpan)}, nil)
 		mockTextPartSpan.On("TagName").Return("span", nil)
-		mockTextPartSpan.On("Text").Return("text", err)
+		mockTextPartSpan.On("Text").Return("text", errors.New("error while executing Text"))
 
 		getText := tweets.MakeGetText()
 

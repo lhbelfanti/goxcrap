@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	normalTweetTextXPath string = "div/div/div[2]/div[2]/div[2]/div"
-	replyTweetTextXPath  string = "div/div/div[2]/div[2]/div[3]/div"
+	tweetTextXPath      string = "div/div/div[2]/div[2]/div[2]/div"
+	replyTweetTextXPath string = "div/div/div[2]/div[2]/div[3]/div"
 )
 
 // GetText retrieves the tweet text
@@ -17,12 +17,12 @@ type GetText func(tweetArticleElement selenium.WebElement, isAReply bool) (strin
 // MakeGetText creates a new GetText
 func MakeGetText() GetText {
 	return func(tweetArticleElement selenium.WebElement, isAReply bool) (string, error) {
-		xpath := normalTweetTextXPath
+		xPath := tweetTextXPath
 		if isAReply {
-			xpath = replyTweetTextXPath
+			xPath = replyTweetTextXPath
 		}
 
-		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xpath))
+		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
 			slog.Error(err.Error())
 			return "", FailedToObtainTweetTextElement

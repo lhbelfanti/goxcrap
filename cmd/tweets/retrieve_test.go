@@ -29,7 +29,7 @@ func TestRetrieveAll_success(t *testing.T) {
 func TestRetrieveAll_successEvenWhenGatherTweetInformationThrowsError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockRetrieveAll := elements.MockWaitAndRetrieveAll([]selenium.WebElement{mockWebElement, mockWebElement}, nil)
-	mockGatherTweetInformation := tweets.MockGatherTweetInformation(tweets.MockTweet(), errors.New("error"))
+	mockGatherTweetInformation := tweets.MockGatherTweetInformation(tweets.MockTweet(), errors.New("error while executing GatherTweetInformation"))
 
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGatherTweetInformation)
 
@@ -42,7 +42,7 @@ func TestRetrieveAll_successEvenWhenGatherTweetInformationThrowsError(t *testing
 
 func TestRetrieveAll_failsWhenWaitAndRetrieveElementThrowsError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
-	mockRetrieveAll := elements.MockWaitAndRetrieveAll([]selenium.WebElement{mockWebElement, mockWebElement}, errors.New("error"))
+	mockRetrieveAll := elements.MockWaitAndRetrieveAll([]selenium.WebElement{mockWebElement, mockWebElement}, errors.New("error while executing WaitAndRetrieveElement"))
 	mockGatherTweetInformation := tweets.MockGatherTweetInformation(tweets.MockTweet(), nil)
 
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGatherTweetInformation)

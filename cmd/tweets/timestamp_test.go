@@ -13,7 +13,6 @@ import (
 )
 
 func TestGetTimestamp_success(t *testing.T) {
-	want := "test"
 	mockWebElement := new(elements.MockWebElement)
 	mockWantedWebElement := new(elements.MockWebElement)
 	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
@@ -21,6 +20,7 @@ func TestGetTimestamp_success(t *testing.T) {
 
 	getTimestamp := tweets.MakeGetTimestamp()
 
+	want := "test"
 	got, err := getTimestamp(mockWebElement)
 
 	assert.Equal(t, want, got)
@@ -28,9 +28,8 @@ func TestGetTimestamp_success(t *testing.T) {
 }
 
 func TestGetTimestamp_failsWhenFindElementThrowsError(t *testing.T) {
-	err := errors.New("error")
 	mockWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), err)
+	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
 
 	getTimestamp := tweets.MakeGetTimestamp()
 
@@ -41,11 +40,10 @@ func TestGetTimestamp_failsWhenFindElementThrowsError(t *testing.T) {
 }
 
 func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
-	err := errors.New("error")
 	mockWebElement := new(elements.MockWebElement)
 	mockWantedWebElement := new(elements.MockWebElement)
 	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
-	mockWantedWebElement.On("GetAttribute", mock.Anything).Return("", err)
+	mockWantedWebElement.On("GetAttribute", mock.Anything).Return("", errors.New("error while executing GetAttribute"))
 
 	getTimestamp := tweets.MakeGetTimestamp()
 

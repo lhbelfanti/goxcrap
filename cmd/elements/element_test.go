@@ -30,7 +30,7 @@ func TestWaitAndRetrieve_success(t *testing.T) {
 
 func TestWaitAndRetrieve_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
-	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(errors.New("error"))
+	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(errors.New("error while executing WaitWithTimeout"))
 	mockWaitAndRetrieveCondition := elements.MockWaitAndRetrieveCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
@@ -44,7 +44,7 @@ func TestWaitAndRetrieve_failsFindElementThrowsError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(nil)
-	mockWebDriver.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWebElement), errors.New("error"))
+	mockWebDriver.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWebElement), errors.New("error while executing FindElement"))
 	mockWaitAndRetrieveCondition := elements.MockWaitAndRetrieveCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
@@ -72,7 +72,7 @@ func TestWaitAndRetrieveCondition_successWithReturnValueTrue(t *testing.T) {
 func TestWaitAndRetrieveCondition_successWithReturnValueFalseWhenFindElementsThrowsAnError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockWebDriver := new(chromedriver.MockWebDriver)
-	mockWebDriver.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWebElement), errors.New("error"))
+	mockWebDriver.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWebElement), errors.New("error while executing FindElement"))
 
 	waitAndRetrieveCondition := elements.MakeWaitAndRetrieveCondition()
 	seleniumCondition := waitAndRetrieveCondition(selenium.ByName, "value")
@@ -101,7 +101,7 @@ func TestWaitAndRetrieveAll_success(t *testing.T) {
 
 func TestWaitAndRetrieveAll_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {
 	mockWebDriver := new(chromedriver.MockWebDriver)
-	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(errors.New("error"))
+	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(errors.New("error while executing WaitWithTimeout"))
 	mockWaitAndRetrieveAllCondition := elements.MockWaitAndRetrieveAllCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
@@ -115,7 +115,7 @@ func TestWaitAndRetrieveAll_failsFindElementThrowsError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockWebDriver := new(chromedriver.MockWebDriver)
 	mockWebDriver.On("WaitWithTimeout", mock.Anything, mock.Anything).Return(nil)
-	mockWebDriver.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockWebElement)}, errors.New("error"))
+	mockWebDriver.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockWebElement)}, errors.New("error while executing FindElements"))
 	mockWaitAndRetrieveAllCondition := elements.MockWaitAndRetrieveAllCondition(true)
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
@@ -143,7 +143,7 @@ func TestWaitAndRetrieveAllCondition_successWithReturnValueTrue(t *testing.T) {
 func TestWaitAndRetrieveAllCondition_successWithReturnValueFalseWhenFindElementsThrowsAnError(t *testing.T) {
 	mockWebElement := new(elements.MockWebElement)
 	mockWebDriver := new(chromedriver.MockWebDriver)
-	mockWebDriver.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockWebElement)}, errors.New("error"))
+	mockWebDriver.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockWebElement)}, errors.New("error while executing FindElements"))
 
 	waitAndRetrieveAllCondition := elements.MakeWaitAndRetrieveAllCondition()
 	seleniumCondition := waitAndRetrieveAllCondition(selenium.ByName, "value")

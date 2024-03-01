@@ -13,7 +13,6 @@ import (
 )
 
 func TestGetAuthor_success(t *testing.T) {
-	want := "test"
 	mockWebElement := new(elements.MockWebElement)
 	mockWantedWebElement := new(elements.MockWebElement)
 	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
@@ -21,6 +20,7 @@ func TestGetAuthor_success(t *testing.T) {
 
 	getAuthor := tweets.MakeGetAuthor()
 
+	want := "test"
 	got, err := getAuthor(mockWebElement)
 
 	assert.Equal(t, want, got)
@@ -28,9 +28,8 @@ func TestGetAuthor_success(t *testing.T) {
 }
 
 func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
-	err := errors.New("error")
 	mockWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), err)
+	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
 
 	getAuthor := tweets.MakeGetAuthor()
 
@@ -41,11 +40,10 @@ func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
 }
 
 func TestGetAuthor_failsWhenTextThrowsError(t *testing.T) {
-	err := errors.New("error")
 	mockWebElement := new(elements.MockWebElement)
 	mockWantedWebElement := new(elements.MockWebElement)
 	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
-	mockWantedWebElement.On("Text", mock.Anything).Return("", err)
+	mockWantedWebElement.On("Text", mock.Anything).Return("", errors.New("error while executing Text"))
 
 	getAuthor := tweets.MakeGetAuthor()
 
