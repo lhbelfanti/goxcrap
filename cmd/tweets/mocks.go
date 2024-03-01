@@ -26,7 +26,7 @@ func MockTweet() Tweet {
 		Data: Data{
 			HasText:   true,
 			HasImages: true,
-			Text:      "Tweet Description",
+			Text:      "Tweet Text",
 			Images:    []string{"Img 1", "Img 2"},
 		},
 		Quote: Quote{

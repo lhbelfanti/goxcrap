@@ -3,6 +3,7 @@ package tweets
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -32,11 +33,9 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 		_, err = tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
 		isAReply := err == nil
 
-		// TODO: validate error to know if the element exists or not
-		/*		tweetText, err := getText(tweetArticleElement, isAReply)
-				if err != nil {
-					return Tweet{}, err
-				}*/
+		var tweetText string
+		tweetText, err = getText(tweetArticleElement, isAReply)
+		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 
 		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
@@ -48,9 +47,9 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 			IsAReply:  isAReply,
 			HasQuote:  true,
 			Data: Data{
-				HasText:   true,
+				HasText:   hasText,
 				HasImages: true,
-				Text:      "Tweet Description",
+				Text:      tweetText,
 				Images:    []string{"Img 1", "Img 2"},
 			},
 			Quote: Quote{

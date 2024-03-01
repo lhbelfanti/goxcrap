@@ -12,45 +12,36 @@ import (
 	"goxcrap/cmd/tweets"
 )
 
-func TestGetTweetInformation_successWhenTweetIsAReply(t *testing.T) {
-	mockGetAuthor := tweets.MockGetAuthor("author", nil)
-	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
-	mockGetText := tweets.MockGetText("test", nil)
-	mockWebElement := new(elements.MockWebElement)
-	mockWantedWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
+func TestGetTweetInformation_success(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		findElementError error
+	}{
+		{isAReply: false, findElementError: errors.New("error")},
+		{isAReply: true, findElementError: nil},
+	} {
+		mockGetAuthor := tweets.MockGetAuthor("author", nil)
+		mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
+		mockGetText := tweets.MockGetText("Tweet Text", nil)
+		mockWebElement := new(elements.MockWebElement)
+		mockWantedWebElement := new(elements.MockWebElement)
+		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), test.findElementError)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockGetText)
+		getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockGetText)
 
-	want := tweets.MockTweet()
-	got, err := getTweetInformation(mockWebElement)
+		want := tweets.MockTweet()
+		want.IsAReply = test.isAReply
+		got, err := getTweetInformation(mockWebElement)
 
-	assert.Equal(t, want, got)
-	assert.Nil(t, err)
-}
-
-func TestGetTweetInformation_successWhenTweetIsNotAReply(t *testing.T) {
-	mockGetAuthor := tweets.MockGetAuthor("author", nil)
-	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
-	mockGetText := tweets.MockGetText("test", nil)
-	mockWebElement := new(elements.MockWebElement)
-	mockWantedWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), errors.New("error"))
-
-	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockGetText)
-
-	want := tweets.MockTweet()
-	want.IsAReply = false
-	got, err := getTweetInformation(mockWebElement)
-
-	assert.Equal(t, want, got)
-	assert.Nil(t, err)
+		assert.Equal(t, want, got)
+		assert.Nil(t, err)
+	}
 }
 
 func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
 	mockGetAuthor := tweets.MockGetAuthor("", errors.New("error"))
 	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
-	mockGetText := tweets.MockGetText("test", nil)
+	mockGetText := tweets.MockGetText("Tweet Text", nil)
 	mockWebElement := new(elements.MockWebElement)
 
 	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockGetText)
@@ -64,7 +55,7 @@ func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
 func TestGetTweetInformation_failsWhenGetTimestampThrowsError(t *testing.T) {
 	mockGetAuthor := tweets.MockGetAuthor("author", nil)
 	mockGetTimestamp := tweets.MockGetTimestamp("", errors.New("error"))
-	mockGetText := tweets.MockGetText("test", nil)
+	mockGetText := tweets.MockGetText("Tweet Text", nil)
 	mockWebElement := new(elements.MockWebElement)
 
 	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockGetText)
