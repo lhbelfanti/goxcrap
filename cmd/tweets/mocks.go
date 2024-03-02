@@ -27,7 +27,7 @@ func MockTweet() Tweet {
 			HasText:   true,
 			HasImages: true,
 			Text:      "Tweet Text",
-			Images:    []string{"Img 1", "Img 2"},
+			Images:    []string{"https://url1.com", "https://url2.com"},
 		},
 		Quote: Quote{
 			IsAReply: true,
@@ -35,7 +35,7 @@ func MockTweet() Tweet {
 				HasText:   true,
 				HasImages: true,
 				Text:      "Quote Description",
-				Images:    []string{"Img 3", "Img 4"},
+				Images:    []string{"https://url3.com", "https://url4.com"},
 			},
 		},
 	}
@@ -59,5 +59,12 @@ func MockGetTimestamp(timestamp string, err error) GetTimestamp {
 func MockGetText(text string, err error) GetText {
 	return func(element selenium.WebElement, isAReply bool) (string, error) {
 		return text, err
+	}
+}
+
+// MockGetImages mocks GetImages function
+func MockGetImages(urls []string, err error) GetImages {
+	return func(element selenium.WebElement, isAReply bool) ([]string, error) {
+		return urls, err
 	}
 }

@@ -15,7 +15,7 @@ const replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, getText GetText) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, getText GetText, getImages GetImages) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -32,9 +32,17 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 		_, err = tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
 		isAReply := err == nil
 
-		var tweetText string
-		tweetText, err = getText(tweetArticleElement, isAReply)
+		tweetText, err := getText(tweetArticleElement, isAReply)
+		if err != nil {
+			slog.Error(err.Error())
+		}
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
+
+		tweetImages, err := getImages(tweetArticleElement, isAReply)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+		hasImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 
 		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
@@ -47,9 +55,9 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 			HasQuote:  true,
 			Data: Data{
 				HasText:   hasText,
-				HasImages: true,
+				HasImages: hasImages,
 				Text:      tweetText,
-				Images:    []string{"Img 1", "Img 2"},
+				Images:    tweetImages,
 			},
 			Quote: Quote{
 				IsAReply: true,
@@ -57,7 +65,7 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 					HasText:   true,
 					HasImages: true,
 					Text:      "Quote Description",
-					Images:    []string{"Img 3", "Img 4"},
+					Images:    []string{"https://url3.com", "https://url4.com"},
 				},
 			},
 		}, nil

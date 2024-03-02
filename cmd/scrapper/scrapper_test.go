@@ -20,7 +20,9 @@ func TestExecute_success(t *testing.T) {
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
-	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+	executeScrapper := scrapper.MakeExecute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+
+	got := executeScrapper(0)
 
 	assert.Nil(t, got)
 }
@@ -34,7 +36,9 @@ func TestExecute_successSkippingCriteriaDueAnErrorInParseDates(t *testing.T) {
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
-	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+	executeScrapper := scrapper.MakeExecute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+
+	got := executeScrapper(0)
 
 	assert.Nil(t, got)
 }
@@ -48,7 +52,9 @@ func TestExecute_successSkippingCriteriaDueAnErrorInExecuteAdvanceSearch(t *test
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
-	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+	executeScrapper := scrapper.MakeExecute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+
+	got := executeScrapper(0)
 
 	assert.Nil(t, got)
 }
@@ -62,7 +68,9 @@ func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 
-	got := scrapper.Execute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+	executeScrapper := scrapper.MakeExecute(mockLogin, mockGetSearchCriteria, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+
+	got := executeScrapper(0)
 
 	assert.Equal(t, want, got)
 }

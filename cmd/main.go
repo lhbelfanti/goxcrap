@@ -44,11 +44,13 @@ func main() {
 	getTweetTimestamp := tweets.MakeGetTimestamp()
 	getTweetAuthor := tweets.MakeGetAuthor()
 	getTweetText := tweets.MakeGetText()
-	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, getTweetText)
+	getTweetImages := tweets.MakeGetImages()
+	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, getTweetText, getTweetImages)
 	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation)
 
 	/* --- Scrapper --- */
-	err := scrapper.Execute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)
+	executeScrapper := scrapper.MakeExecute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)
+	err := executeScrapper(10)
 	if err != nil {
 		log.Fatal(err)
 	}
