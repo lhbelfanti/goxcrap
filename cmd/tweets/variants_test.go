@@ -34,3 +34,25 @@ func TestIsAReply_success(t *testing.T) {
 		assert.Equal(t, test.want, got)
 	}
 }
+
+func TestHasQuote_success(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		findElementError error
+		want             bool
+	}{
+		{isAReply: false, findElementError: nil, want: true},
+		{isAReply: true, findElementError: nil, want: true},
+		{isAReply: false, findElementError: errors.New("error while executing FindElement"), want: false},
+		{isAReply: true, findElementError: errors.New("error while executing FindElement"), want: false},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(new(elements.MockWebElement), test.findElementError)
+
+		hasQuote := tweets.MakeHasQuote()
+
+		got := hasQuote(mockTweetArticleWebElement, test.isAReply)
+
+		assert.Equal(t, test.want, got)
+	}
+}

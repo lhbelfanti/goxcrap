@@ -6,10 +6,20 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-const replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
+const (
+	replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 
-// IsAReply returns a bool indicating if the base tweet is replying to another tweet
-type IsAReply func(tweetArticleElement selenium.WebElement) bool
+	quoteXPath           string = "div/div/div[2]/div[2]/div[3]/article/div/div/div/div/div/div/div/span"
+	replyTweetQuoteXPath string = "div/div/div[2]/div[2]/div[4]/article/div/div/div/div/div/div/div/span"
+)
+
+type (
+	// IsAReply returns a bool indicating if the base tweet is replying to another tweet
+	IsAReply func(tweetArticleElement selenium.WebElement) bool
+
+	// HasQuote returns a bool indicating if the base tweet is quoting another tweet
+	HasQuote func(tweetArticleElement selenium.WebElement, isAReply bool) bool
+)
 
 // MakeIsAReply creates a new GetIsAReply
 func MakeIsAReply() IsAReply {
@@ -23,5 +33,19 @@ func MakeIsAReply() IsAReply {
 		}
 
 		return false
+	}
+}
+
+// MakeHasQuote creates a new HasQuote
+func MakeHasQuote() HasQuote {
+	return func(tweetArticleElement selenium.WebElement, isAReply bool) bool {
+		xPath := quoteXPath
+		if isAReply {
+			xPath = replyTweetQuoteXPath
+		}
+
+		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
+
+		return err == nil
 	}
 }

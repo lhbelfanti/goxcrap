@@ -14,7 +14,7 @@ import (
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isTheTweetAReply IsAReply, getText GetText, getImages GetImages) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -32,15 +32,15 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
 		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
 
-		isTheTweetAReply := isAReply(tweetArticleElement)
+		isAReply := isTheTweetAReply(tweetArticleElement)
 
-		tweetText, err := getText(tweetArticleElement, isTheTweetAReply)
+		tweetText, err := getText(tweetArticleElement, isAReply)
 		if err != nil {
 			slog.Error(err.Error())
 		}
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 
-		tweetImages, err := getImages(tweetArticleElement, isTheTweetAReply)
+		tweetImages, err := getImages(tweetArticleElement, isAReply)
 		if err != nil {
 			slog.Error(err.Error())
 		}
@@ -51,7 +51,7 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 		return Tweet{
 			ID:        tweetID,
 			Timestamp: tweetTimestamp,
-			IsAReply:  isTheTweetAReply,
+			IsAReply:  isAReply,
 			HasQuote:  true,
 			Data: Data{
 				HasText:   hasText,
