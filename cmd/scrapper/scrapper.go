@@ -46,13 +46,13 @@ func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSea
 
 				// TODO: move this loop inside retrieveTweets
 				for {
-					obtainedTweets, err := retrieveTweets()
+					_, err := retrieveTweets()
 					if err != nil {
 						slog.Error(err.Error())
 						continue
 					}
 
-					fmt.Println(obtainedTweets)
+					//fmt.Println(obtainedTweets)
 
 					// TODO: save tweets
 					break

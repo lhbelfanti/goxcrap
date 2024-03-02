@@ -10,6 +10,7 @@ var (
 	FailedToObtainTweetAuthorInformation = errors.New("failed to obtain tweet author information")
 
 	FailedToObtainTweetTimestampElement     = errors.New("failed to obtain tweet timestamp element")
+	FailedToObtainTweetTimestampTimeTag     = errors.New("failed to obtain tweet timestamp time tag")
 	FailedToObtainTweetTimestamp            = errors.New("failed to obtain tweet timestamp")
 	FailedToObtainTweetTimestampInformation = errors.New("failed to obtain tweet timestamp information")
 

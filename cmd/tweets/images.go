@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	tweetImagesXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]/div/div/div/div"
+	tweetImagesXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]"
 	replyTweetImagesXPath string = "div/div/div[2]/div[2]/div[4]/div[1]"
 )
 

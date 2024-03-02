@@ -6,7 +6,10 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-const timestampXPath string = "div/div/div[2]/div[2]/div[1]/div/div[1]/div/div/div[2]/div/div[3]/a/time"
+const (
+	timestampXPath        string = "div/div/div[2]/div[2]/div[1]/div"
+	timestampTimeTagXPath string = "//a/time"
+)
 
 // GetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element.
 // It will only be used to create a unique ID for the tweet
@@ -21,7 +24,13 @@ func MakeGetTimestamp() GetTimestamp {
 			return "", FailedToObtainTweetTimestampElement
 		}
 
-		tweetTimestamp, err := tweetTimestampElement.GetAttribute("datetime")
+		tweetTimestampTimeTag, err := tweetTimestampElement.FindElement(selenium.ByXPATH, timestampTimeTagXPath)
+		if err != nil {
+			slog.Error(err.Error())
+			return "", FailedToObtainTweetTimestampTimeTag
+		}
+
+		tweetTimestamp, err := tweetTimestampTimeTag.GetAttribute("datetime")
 		if err != nil {
 			slog.Error(err.Error())
 			return "", FailedToObtainTweetTimestamp

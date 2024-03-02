@@ -4,7 +4,9 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/tebeka/selenium"
 )
@@ -29,8 +31,20 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 			return Tweet{}, FailedToObtainTweetTimestampInformation
 		}
 
-		_, err = tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
-		isAReply := err == nil
+		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
+		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
+		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
+
+		// TODO: Move to a maker, to easily mock it
+		var isAReply bool
+		replyingToElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
+		if err == nil {
+			replyingToText, err := replyingToElement.Text()
+			if err == nil && strings.Contains(replyingToText, "Replying to") {
+				fmt.Println(replyingToText)
+				isAReply = true
+			}
+		}
 
 		tweetText, err := getText(tweetArticleElement, isAReply)
 		if err != nil {
@@ -44,9 +58,7 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 		}
 		hasImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 
-		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
-		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
-		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
+		fmt.Printf("Author: %s \nTimestamp: %s \nText: %s \nImages: %v \n ------- \n", tweetAuthor, tweetTimestamp, tweetText, tweetImages)
 
 		return Tweet{
 			ID:        tweetID,
