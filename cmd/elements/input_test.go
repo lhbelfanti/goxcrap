@@ -12,10 +12,10 @@ import (
 )
 
 func TestRetrieveAndFillInput_success(t *testing.T) {
-	mockWebElement := new(elements.MockWebElement)
-	mockWebElement.On("Click").Return(nil)
-	mockWebElement.On("SendKeys", "input").Return(nil)
-	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
+	mockInputWebElement := new(elements.MockWebElement)
+	mockInputWebElement.On("Click").Return(nil)
+	mockInputWebElement.On("SendKeys", "input").Return(nil)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockInputWebElement, nil)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
@@ -38,9 +38,9 @@ func TestRetrieveAndFillInput_failsWhenWaitAndRetrieveElementThrowsError(t *test
 
 func TestRetrieveAndFillInput_failsWhenInputClickThrowsError(t *testing.T) {
 	err := errors.New("error while executing input.Click")
-	mockWebElement := new(elements.MockWebElement)
-	mockWebElement.On("Click").Return(err)
-	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
+	mockInputWebElement := new(elements.MockWebElement)
+	mockInputWebElement.On("Click").Return(err)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockInputWebElement, nil)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
@@ -52,10 +52,10 @@ func TestRetrieveAndFillInput_failsWhenInputClickThrowsError(t *testing.T) {
 
 func TestRetrieveAndFillInput_failsWhenInputSendKeysThrowsError(t *testing.T) {
 	err := errors.New("error while executing input.SendKeys")
-	mockWebElement := new(elements.MockWebElement)
-	mockWebElement.On("Click").Return(nil)
-	mockWebElement.On("SendKeys", "input").Return(err)
-	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockWebElement, nil)
+	mockInputWebElement := new(elements.MockWebElement)
+	mockInputWebElement.On("Click").Return(nil)
+	mockInputWebElement.On("SendKeys", "input").Return(err)
+	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockInputWebElement, nil)
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 

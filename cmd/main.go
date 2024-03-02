@@ -41,11 +41,12 @@ func main() {
 	login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
 	getSearchCriteria := search.MakeGetAdvanceSearchCriteria()
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
-	getTweetTimestamp := tweets.MakeGetTimestamp()
 	getTweetAuthor := tweets.MakeGetAuthor()
+	getTweetTimestamp := tweets.MakeGetTimestamp()
+	isAReply := tweets.MakeIsAReply()
 	getTweetText := tweets.MakeGetText()
 	getTweetImages := tweets.MakeGetImages()
-	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, getTweetText, getTweetImages)
+	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, isAReply, getTweetText, getTweetImages)
 	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation)
 
 	/* --- Scrapper --- */

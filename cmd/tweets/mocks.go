@@ -55,6 +55,13 @@ func MockGetTimestamp(timestamp string, err error) GetTimestamp {
 	}
 }
 
+// MockIsAReply mocks IsAReply function
+func MockIsAReply(isAReply bool) IsAReply {
+	return func(element selenium.WebElement) bool {
+		return isAReply
+	}
+}
+
 // MockGetText mocks GetText function
 func MockGetText(text string, err error) GetText {
 	return func(element selenium.WebElement, isAReply bool) (string, error) {

@@ -2,4 +2,5 @@ ignore:
   - "**/mocks.go"
   - "**/*_mock.go"
   - "cmd/main.go"
+  - "internal/debug/*"
   - "internal/chromedriver/driver.go"

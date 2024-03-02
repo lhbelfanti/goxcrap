@@ -13,42 +13,42 @@ import (
 )
 
 func TestGetAuthor_success(t *testing.T) {
-	mockWebElement := new(elements.MockWebElement)
-	mockWantedWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
-	mockWantedWebElement.On("Text", mock.Anything).Return("test", nil)
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetAuthorWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetAuthorWebElement), nil)
+	mockTweetAuthorWebElement.On("Text", mock.Anything).Return("test", nil)
 
 	getAuthor := tweets.MakeGetAuthor()
 
 	want := "test"
-	got, err := getAuthor(mockWebElement)
+	got, err := getAuthor(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
 }
 
 func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
-	mockWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
 
 	getAuthor := tweets.MakeGetAuthor()
 
 	want := tweets.FailedToObtainTweetAuthorElement
-	_, got := getAuthor(mockWebElement)
+	_, got := getAuthor(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }
 
 func TestGetAuthor_failsWhenTextThrowsError(t *testing.T) {
-	mockWebElement := new(elements.MockWebElement)
-	mockWantedWebElement := new(elements.MockWebElement)
-	mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockWantedWebElement), nil)
-	mockWantedWebElement.On("Text", mock.Anything).Return("", errors.New("error while executing Text"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetAuthorWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetAuthorWebElement), nil)
+	mockTweetAuthorWebElement.On("Text", mock.Anything).Return("", errors.New("error while executing Text"))
 
 	getAuthor := tweets.MakeGetAuthor()
 
 	want := tweets.FailedToObtainTweetAuthor
-	_, got := getAuthor(mockWebElement)
+	_, got := getAuthor(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }

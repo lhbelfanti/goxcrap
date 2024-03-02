@@ -19,17 +19,17 @@ func TestGetImages_success(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		mockWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetImagesElement := new(elements.MockWebElement)
 		mockImg := new(elements.MockWebElement)
-		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesElement), nil)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesElement), nil)
 		mockTweetImagesElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
 		mockImg.On("GetAttribute", "src").Return("test_url", nil)
 
 		getImages := tweets.MakeGetImages()
 
 		want := []string{"test_url", "test_url"}
-		got, err := getImages(mockWebElement, test.isAReply)
+		got, err := getImages(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -43,17 +43,17 @@ func TestGetImages_failsWhenFindElementThrowsError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		mockWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetImagesElement := new(elements.MockWebElement)
 		mockImg := new(elements.MockWebElement)
-		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesElement), errors.New("error while executing FindElement"))
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesElement), errors.New("error while executing FindElement"))
 		mockTweetImagesElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
 		mockImg.On("GetAttribute", "src").Return("test_url", nil)
 
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetImagesElement
-		_, got := getImages(mockWebElement, test.isAReply)
+		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 	}
@@ -66,17 +66,17 @@ func TestGetImages_failsWhenFindElementsThrowsError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		mockWebElement := new(elements.MockWebElement)
-		mockTweetImagesElement := new(elements.MockWebElement)
-		mockImg := new(elements.MockWebElement)
-		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesElement), nil)
-		mockTweetImagesElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, errors.New("error while executing FindElements"))
-		mockImg.On("GetAttribute", "src").Return("test_url", nil)
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetImagesWebElement := new(elements.MockWebElement)
+		mockTweetImageWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesWebElement), nil)
+		mockTweetImagesWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTweetImageWebElement), selenium.WebElement(mockTweetImageWebElement)}, errors.New("error while executing FindElements"))
+		mockTweetImageWebElement.On("GetAttribute", "src").Return("test_url", nil)
 
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetImages
-		_, got := getImages(mockWebElement, test.isAReply)
+		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 	}
@@ -89,17 +89,17 @@ func TestGetImages_failsWhenAllImgGetAttributeThrowError(t *testing.T) {
 		{isAReply: false},
 		{isAReply: true},
 	} {
-		mockWebElement := new(elements.MockWebElement)
-		mockTweetImagesElement := new(elements.MockWebElement)
-		mockImg := new(elements.MockWebElement)
-		mockWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesElement), nil)
-		mockTweetImagesElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
-		mockImg.On("GetAttribute", "src").Return("test_url", errors.New("error while executing GetAttribute"))
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetImagesWebElement := new(elements.MockWebElement)
+		mockTweetImageWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetImagesWebElement), nil)
+		mockTweetImagesWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTweetImageWebElement), selenium.WebElement(mockTweetImageWebElement)}, nil)
+		mockTweetImageWebElement.On("GetAttribute", "src").Return("test_url", errors.New("error while executing GetAttribute"))
 
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetSrcFromImage
-		_, got := getImages(mockWebElement, test.isAReply)
+		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 	}

@@ -6,18 +6,15 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"strings"
 
 	"github.com/tebeka/selenium"
 )
-
-const replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 
 // GatherTweetInformation retrieves the tweet information from the given tweet element
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, getText GetText, getImages GetImages) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -35,24 +32,15 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
 		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
 
-		// TODO: Move to a maker, to easily mock it
-		var isAReply bool
-		replyingToElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(replyXPath))
-		if err == nil {
-			replyingToText, err := replyingToElement.Text()
-			if err == nil && strings.Contains(replyingToText, "Replying to") {
-				fmt.Println(replyingToText)
-				isAReply = true
-			}
-		}
+		isTheTweetAReply := isAReply(tweetArticleElement)
 
-		tweetText, err := getText(tweetArticleElement, isAReply)
+		tweetText, err := getText(tweetArticleElement, isTheTweetAReply)
 		if err != nil {
 			slog.Error(err.Error())
 		}
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 
-		tweetImages, err := getImages(tweetArticleElement, isAReply)
+		tweetImages, err := getImages(tweetArticleElement, isTheTweetAReply)
 		if err != nil {
 			slog.Error(err.Error())
 		}
@@ -63,7 +51,7 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, get
 		return Tweet{
 			ID:        tweetID,
 			Timestamp: tweetTimestamp,
-			IsAReply:  isAReply,
+			IsAReply:  isTheTweetAReply,
 			HasQuote:  true,
 			Data: Data{
 				HasText:   hasText,
