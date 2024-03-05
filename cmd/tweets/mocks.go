@@ -29,15 +29,17 @@ func MockTweet() Tweet {
 			Text:      "Tweet Text",
 			Images:    []string{"https://url1.com", "https://url2.com"},
 		},
-		Quote: Quote{
-			IsAReply: true,
-			Data: Data{
-				HasText:   true,
-				HasImages: true,
-				Text:      "Quote Description",
-				Images:    []string{"https://url3.com", "https://url4.com"},
-			},
-		},
+		Quote: Quote{},
+		// TODO: create a real mock when the implementation is ready
+		/*		Quote: Quote{
+				IsAReply: true,
+				Data: Data{
+					HasText:   true,
+					HasImages: true,
+					Text:      "Quote Description",
+					Images:    []string{"https://url3.com", "https://url4.com"},
+				},
+			},*/
 	}
 }
 
@@ -73,5 +75,19 @@ func MockGetText(text string, err error) GetText {
 func MockGetImages(urls []string, err error) GetImages {
 	return func(element selenium.WebElement, isAReply bool) ([]string, error) {
 		return urls, err
+	}
+}
+
+// MockHasQuote mocks HasQuote function
+func MockHasQuote(hasQuote bool) HasQuote {
+	return func(tweetArticleElement selenium.WebElement, isAReply bool) bool {
+		return hasQuote
+	}
+}
+
+// MockIsQuoteAReply mocks IsQuoteAReply function
+func MockIsQuoteAReply(isQuoteAReply bool) IsQuoteAReply {
+	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
+		return isQuoteAReply
 	}
 }
