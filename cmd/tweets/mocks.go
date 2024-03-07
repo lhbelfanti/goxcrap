@@ -80,7 +80,7 @@ func MockGetImages(urls []string, err error) GetImages {
 
 // MockHasQuote mocks HasQuote function
 func MockHasQuote(hasQuote bool) HasQuote {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool) bool {
+	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
 		return hasQuote
 	}
 }

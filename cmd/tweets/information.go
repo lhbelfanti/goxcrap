@@ -46,17 +46,22 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 		}
 		hasTheTweetImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 
-		fmt.Printf("Author: %s \nTimestamp: %s \nText: %s \nImages: %v \n ------- \n", tweetAuthor, tweetTimestamp, tweetText, tweetImages)
+		fmt.Printf("\n |------- \nAuthor: %s \nTimestamp: %s \nText: %s \nImages: %v \nIsAReply: %t \n", tweetAuthor, tweetTimestamp, tweetText, tweetImages, isTheTweetAReply)
 
-		hasTheTweetAQuote := hasQuote(tweetArticleElement, isTheTweetAReply)
+		hasTheTweetOnlyText := hasTheTweetText && !hasTheTweetImages
+
+		hasTheTweetAQuote := hasQuote(tweetArticleElement, isTheTweetAReply, hasTheTweetOnlyText)
+
+		fmt.Printf("HasQuote: %t \n", hasTheTweetAQuote)
 
 		var quote Quote
 		if hasTheTweetAQuote {
-			hasTheTweetOnlyText := hasTheTweetText && !hasTheTweetImages
 			//hasTheTweetOnlyImages := !hasTheTweetText && hasTheTweetImages
 			//hasTheTweetTextAndImages := hasTheTweetText && hasTheTweetImages
 
 			isQuotedTweetAReply := isQuoteAReply(tweetArticleElement, isTheTweetAReply, hasTheTweetOnlyText)
+
+			fmt.Printf("IsQuoteAReply: %t -------|\n\n", isQuotedTweetAReply)
 
 			// Gather Text, images with
 
