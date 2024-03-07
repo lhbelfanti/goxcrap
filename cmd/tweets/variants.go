@@ -1,6 +1,7 @@
 package tweets
 
 import (
+	"log/slog"
 	"strings"
 
 	"github.com/tebeka/selenium"
@@ -9,8 +10,10 @@ import (
 const (
 	replyXPath string = "div/div/div[2]/div[2]/div[2]/div"
 
-	quoteXPath           string = "div/div/div[2]/div[2]/div[3]/article/div/div/div/div/div/div/div/span"
-	replyTweetQuoteXPath string = "div/div/div[2]/div[2]/div[4]/article/div/div/div/div/div/div/div/span"
+	quoteXPath                   string = "div/div/div[2]/div[2]/div[3]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]"
+	quoteOnlyTextXPath           string = "div/div/div[2]/div[2]/div[3]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]"
+	replyTweetQuoteXPath         string = "div/div/div[2]/div[2]/div[4]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
+	replyTweetQuoteOnlyTextXPath string = "div/div/div[2]/div[2]/div[4]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
 
 	replyTweetReplyQuoteXPath         string = "div/div/div[2]/div[2]/div[4]/div/div[2]/div/div[2]/div[1]"
 	replyTweetOnlyTextReplyQuoteXPath string = "div/div/div[2]/div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
@@ -23,10 +26,10 @@ type (
 	IsAReply func(tweetArticleElement selenium.WebElement) bool
 
 	// HasQuote returns a bool indicating if the base tweet is quoting another tweet
-	HasQuote func(tweetArticleElement selenium.WebElement, isAReply bool) bool
+	HasQuote func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool
 
 	// IsQuoteAReply returns a bool indicating if the quoted tweet is replying to another tweet
-	IsQuoteAReply func(tweetArticleElement selenium.WebElement, isAReply bool, baseTweeHasOnlyText bool) bool
+	IsQuoteAReply func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool
 )
 
 // MakeIsAReply creates a new GetIsAReply
@@ -46,13 +49,24 @@ func MakeIsAReply() IsAReply {
 
 // MakeHasQuote creates a new HasQuote
 func MakeHasQuote() HasQuote {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool) bool {
-		xPath := quoteXPath
+	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
+		var xPath string
 		if isAReply {
 			xPath = replyTweetQuoteXPath
+			if hasTweetOnlyText {
+				xPath = replyTweetQuoteOnlyTextXPath
+			}
+		} else {
+			xPath = quoteXPath
+			if hasTweetOnlyText {
+				xPath = quoteOnlyTextXPath
+			}
 		}
 
 		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
+		if err != nil {
+			slog.Error("HasQuote - Failed to find element:", slog.String("xPath", xPath))
+		}
 
 		return err == nil
 	}
@@ -75,6 +89,9 @@ func MakeIsQuoteAReply() IsQuoteAReply {
 		}
 
 		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
+		if err != nil {
+			slog.Error("IsQuoteAReply - Failed to find element:", slog.String("xPath: ", xPath))
+		}
 
 		return err == nil
 	}

@@ -38,20 +38,25 @@ func TestIsAReply_success(t *testing.T) {
 func TestHasQuote_success(t *testing.T) {
 	for _, test := range []struct {
 		isAReply         bool
+		hasTweetOnlyText bool
 		findElementError error
 		want             bool
 	}{
-		{isAReply: false, findElementError: nil, want: true},
-		{isAReply: true, findElementError: nil, want: true},
-		{isAReply: false, findElementError: errors.New("error while executing FindElement"), want: false},
-		{isAReply: true, findElementError: errors.New("error while executing FindElement"), want: false},
+		{isAReply: false, hasTweetOnlyText: false, findElementError: nil, want: true},
+		{isAReply: true, hasTweetOnlyText: false, findElementError: nil, want: true},
+		{isAReply: false, hasTweetOnlyText: false, findElementError: errors.New("error while executing FindElement"), want: false},
+		{isAReply: true, hasTweetOnlyText: false, findElementError: errors.New("error while executing FindElement"), want: false},
+		{isAReply: false, hasTweetOnlyText: true, findElementError: nil, want: true},
+		{isAReply: true, hasTweetOnlyText: true, findElementError: nil, want: true},
+		{isAReply: false, hasTweetOnlyText: true, findElementError: errors.New("error while executing FindElement"), want: false},
+		{isAReply: true, hasTweetOnlyText: true, findElementError: errors.New("error while executing FindElement"), want: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(new(elements.MockWebElement), test.findElementError)
 
 		hasQuote := tweets.MakeHasQuote()
 
-		got := hasQuote(mockTweetArticleWebElement, test.isAReply)
+		got := hasQuote(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, test.want, got)
 	}

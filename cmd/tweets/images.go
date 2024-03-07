@@ -7,8 +7,11 @@ import (
 )
 
 const (
-	tweetImagesXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]"
-	replyTweetImagesXPath string = "div/div/div[2]/div[2]/div[4]/div[1]"
+	tweetOnlyTextXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]/div[1]/span"
+	replyTweetOnlyTextXPath string = "div/div/div[2]/div[2]/div[4]/div[1]/div[1]/span"
+
+	tweetImagesXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]/div/div/div/div"
+	replyTweetImagesXPath string = "div/div/div[2]/div[2]/div[4]/div[1]/div/div/div/div"
 )
 
 // GetImages retrieves the tweet images
@@ -17,7 +20,19 @@ type GetImages func(tweetArticleElement selenium.WebElement, isAReply bool) ([]s
 // MakeGetImages creates a new GetImages
 func MakeGetImages() GetImages {
 	return func(tweetArticleElement selenium.WebElement, isAReply bool) ([]string, error) {
-		xPath := tweetImagesXPath
+		xPath := tweetOnlyTextXPath
+		if isAReply {
+			xPath = replyTweetOnlyTextXPath
+		}
+
+		// Pre-check, before accessing to the images
+		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
+		if err == nil {
+			// This tweet only has text
+			return nil, nil
+		}
+
+		xPath = tweetImagesXPath
 		if isAReply {
 			xPath = replyTweetImagesXPath
 		}
