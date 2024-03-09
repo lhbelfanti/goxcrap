@@ -29,7 +29,7 @@ func MakeGetImages() GetImages {
 		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err == nil {
 			// This tweet only has text
-			return nil, nil
+			return nil, FailedToObtainTweetImagesElement
 		}
 
 		xPath = tweetImagesXPath

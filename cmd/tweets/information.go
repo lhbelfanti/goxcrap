@@ -50,9 +50,11 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 
 		hasTheTweetOnlyText := hasTheTweetText && !hasTheTweetImages
 
+		fmt.Printf("HasTheTweetOnlyText: %t\n", hasTheTweetOnlyText)
+
 		hasTheTweetAQuote := hasQuote(tweetArticleElement, isTheTweetAReply, hasTheTweetOnlyText)
 
-		fmt.Printf("HasQuote: %t \n", hasTheTweetAQuote)
+		fmt.Printf("HasQuote: %t\n", hasTheTweetAQuote)
 
 		var quote Quote
 		if hasTheTweetAQuote {

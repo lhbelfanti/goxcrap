@@ -15,10 +15,10 @@ const (
 	replyTweetQuoteXPath         string = "div/div/div[2]/div[2]/div[4]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
 	replyTweetQuoteOnlyTextXPath string = "div/div/div[2]/div[2]/div[4]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
 
-	replyTweetReplyQuoteXPath         string = "div/div/div[2]/div[2]/div[4]/div/div[2]/div/div[2]/div[1]"
-	replyTweetOnlyTextReplyQuoteXPath string = "div/div/div[2]/div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
-	replyQuoteXPath                   string = "div/div/div[2]/div[2]/div[3]/div/div[2]/div/div[2]/div[1]"
-	tweetOnlyTextReplyQuoteXPath      string = "div/div/div[2]/div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
+	replyTweetReplyQuoteXPath         string = "div/div/div[2]/div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
+	replyTweetOnlyTextReplyQuoteXPath string = "div/div/div[2]/div[2]/div[4]/div/div[2]/div/div[2]/div[1]"
+	replyQuoteXPath                   string = "div/div/div[2]/div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
+	tweetOnlyTextReplyQuoteXPath      string = "div/div/div[2]/div[2]/div[3]/div/div[2]/div/div[2]/div[1]"
 )
 
 type (
