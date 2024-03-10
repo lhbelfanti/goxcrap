@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	tweetOnlyTextXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]/div[1]/span"
-	replyTweetOnlyTextXPath string = "div/div/div[2]/div[2]/div[4]/div[1]/div[1]/span"
+	tweetOnlyTextXPath      string = "div[3]/div[1]/div[1]/span"
+	replyTweetOnlyTextXPath string = "div[4]/div[1]/div[1]/span"
 
-	tweetImagesXPath      string = "div/div/div[2]/div[2]/div[3]/div[1]/div/div/div/div"
-	replyTweetImagesXPath string = "div/div/div[2]/div[2]/div[4]/div[1]/div/div/div/div"
+	tweetImagesXPath      string = "div[3]/div[1]/div/div/div/div"
+	replyTweetImagesXPath string = "div[4]/div[1]/div/div/div/div"
 )
 
 // GetImages retrieves the tweet images

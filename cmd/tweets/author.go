@@ -6,7 +6,7 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-const authorXPath string = "div/div/div[2]/div[2]/div[1]/div/div[1]/div/div/div[2]/div/div[1]/a/div/span"
+const authorXPath string = "div[1]/div/div[1]/div/div/div[2]/div/div[1]/a/div/span"
 
 // GetAuthor retrieves the tweet author
 // It will only be used to create a unique ID for the tweet

@@ -13,10 +13,10 @@ import (
 )
 
 const (
-	tweetOnlyTextXPath      string = "div/div/div[position()=2]/div[position()=2]/div[position()=3]/div[position()=1]/div[position()=1]/span"
-	replyTweetOnlyTextXPath string = "div/div/div[position()=2]/div[position()=2]/div[position()=4]/div[position()=1]/div[position()=1]/span"
-	tweetImagesXPath        string = "div/div/div[position()=2]/div[position()=2]/div[position()=3]/div[position()=1]/div/div/div/div"
-	replyTweetImagesXPath   string = "div/div/div[position()=2]/div[position()=2]/div[position()=4]/div[position()=1]/div/div/div/div"
+	tweetOnlyTextXPath      string = "div[position()=3]/div[position()=1]/div[position()=1]/span"
+	replyTweetOnlyTextXPath string = "div[position()=4]/div[position()=1]/div[position()=1]/span"
+	tweetImagesXPath        string = "div[position()=3]/div[position()=1]/div/div/div/div"
+	replyTweetImagesXPath   string = "div[position()=4]/div[position()=1]/div/div/div/div"
 )
 
 func TestGetImages_success(t *testing.T) {

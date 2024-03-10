@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	tweetTextXPath      string = "div/div/div[2]/div[2]/div[2]/div"
-	replyTweetTextXPath string = "div/div/div[2]/div[2]/div[3]/div"
+	tweetTextXPath      string = "div[2]/div"
+	replyTweetTextXPath string = "div[3]/div"
 )
 
 // GetText retrieves the tweet text

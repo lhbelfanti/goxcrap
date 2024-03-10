@@ -12,7 +12,7 @@ import (
 const (
 	articlesTimeout time.Duration = 10 * time.Second
 
-	articlesXPath string = "//article"
+	articlesXPath string = "//article/div/div/div[2]/div[2]"
 )
 
 // RetrieveAll retrieves all the tweets from the current page
