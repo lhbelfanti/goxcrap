@@ -46,7 +46,7 @@ func TestGetImages_success(t *testing.T) {
 	}
 }
 
-func TestGetImages_successWhenSpanElementIsFound(t *testing.T) {
+func TestGetImages_failsWhenSpanElementIsFound(t *testing.T) {
 	for _, test := range []struct {
 		isAReply             bool
 		spanXPath            string
@@ -66,10 +66,10 @@ func TestGetImages_successWhenSpanElementIsFound(t *testing.T) {
 
 		getImages := tweets.MakeGetImages()
 
-		got, err := getImages(mockTweetArticleWebElement, test.isAReply)
+		want := tweets.FailedToObtainTweetImagesElement
+		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
 
-		assert.Nil(t, got)
-		assert.Nil(t, err)
+		assert.Equal(t, want, got)
 	}
 }
 
