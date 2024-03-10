@@ -14,7 +14,7 @@ import (
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -46,30 +46,34 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 		}
 		hasTheTweetImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 
-		fmt.Printf("\n |------- \nAuthor: %s \nTimestamp: %s \nText: %s \nImages: %v \nIsAReply: %t \n", tweetAuthor, tweetTimestamp, tweetText, tweetImages, isTheTweetAReply)
-
 		hasTheTweetOnlyText := hasTheTweetText && !hasTheTweetImages
-
-		fmt.Printf("HasTheTweetOnlyText: %t\n", hasTheTweetOnlyText)
 
 		hasTheTweetAQuote := hasQuote(tweetArticleElement, isTheTweetAReply, hasTheTweetOnlyText)
 
-		fmt.Printf("HasQuote: %t\n", hasTheTweetAQuote)
+		fmt.Printf("\n|------- \nAuthor: %s \nTimestamp: %s \nText: %s \nImages: %v \nIsAReply: %t \nHasTheTweetOnlyText: %t \nHasQuote: %t \n", tweetAuthor, tweetTimestamp, tweetText, tweetImages, isTheTweetAReply, hasTheTweetOnlyText, hasTheTweetAQuote)
 
 		var quote Quote
 		if hasTheTweetAQuote {
-			//hasTheTweetOnlyImages := !hasTheTweetText && hasTheTweetImages
-			//hasTheTweetTextAndImages := hasTheTweetText && hasTheTweetImages
-
 			isQuotedTweetAReply := isQuoteAReply(tweetArticleElement, isTheTweetAReply, hasTheTweetOnlyText)
 
-			fmt.Printf("IsQuoteAReply: %t -------|\n\n", isQuotedTweetAReply)
+			quoteText, err := getQuoteText(tweetArticleElement, isTheTweetAReply, hasTheTweetOnlyText)
+			if err != nil {
+				slog.Error(err.Error())
+			}
+			hasTheQuotedTweetText := !errors.Is(err, FailedToObtainQuotedTweetTextElement)
 
-			// Gather Text, images with
+			fmt.Printf("IsQuoteAReply: %t \n quoteText: %s \n-------|\n\n", isQuotedTweetAReply, quoteText)
+
+			// Gather images
 
 			quote = Quote{
 				IsAReply: isQuotedTweetAReply,
-				Data:     Data{}, // TODO: complete this object
+				Data: Data{
+					HasText:   hasTheQuotedTweetText,
+					HasImages: false,
+					Text:      quoteText,
+					Images:    nil,
+				},
 			}
 		}
 

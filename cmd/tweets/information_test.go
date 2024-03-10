@@ -13,26 +13,28 @@ import (
 func TestGetTweetInformation_success(t *testing.T) {
 	getTextErr := errors.New("error while executing GetText")
 	getImagesErr := errors.New("error while executing GetImages")
+	getQuoteTextErr := errors.New("error while executing GetQuoteText")
 
 	for _, test := range []struct {
-		isAReply       bool
-		hasQuote       bool
-		isQuoteAReply  bool
-		getTextError   error
-		getImagesError error
+		isAReply          bool
+		hasQuote          bool
+		isQuoteAReply     bool
+		getTextError      error
+		getImagesError    error
+		getQuoteTextError error
 	}{
-		{isAReply: false},
-		{isAReply: false, getTextError: getTextErr, getImagesError: getImagesErr},
-		{isAReply: true},
-		{isAReply: true, getTextError: getTextErr, getImagesError: getImagesErr},
-		{isAReply: false, hasQuote: true},
-		{isAReply: false, hasQuote: true, getTextError: getTextErr, getImagesError: getImagesErr},
-		{isAReply: true, hasQuote: true},
-		{isAReply: true, hasQuote: true, getTextError: getTextErr, getImagesError: getImagesErr},
+		{isAReply: false, hasQuote: false, isQuoteAReply: false},
+		{isAReply: false, hasQuote: false, isQuoteAReply: false, getTextError: getTextErr, getImagesError: getImagesErr},
+		{isAReply: true, hasQuote: false, isQuoteAReply: false},
+		{isAReply: true, hasQuote: false, isQuoteAReply: false, getTextError: getTextErr, getImagesError: getImagesErr},
+		{isAReply: false, hasQuote: true, isQuoteAReply: false},
+		{isAReply: false, hasQuote: true, isQuoteAReply: false, getTextError: getTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr},
+		{isAReply: true, hasQuote: true, isQuoteAReply: false},
+		{isAReply: true, hasQuote: true, isQuoteAReply: false, getTextError: getTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr},
 		{isAReply: false, hasQuote: true, isQuoteAReply: true},
-		{isAReply: false, hasQuote: true, isQuoteAReply: true, getTextError: getTextErr, getImagesError: getImagesErr},
+		{isAReply: false, hasQuote: true, isQuoteAReply: true, getTextError: getTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr},
 		{isAReply: true, hasQuote: true, isQuoteAReply: true},
-		{isAReply: true, hasQuote: true, isQuoteAReply: true, getTextError: getTextErr, getImagesError: getImagesErr},
+		{isAReply: true, hasQuote: true, isQuoteAReply: true, getTextError: getTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr},
 	} {
 		mockGetAuthor := tweets.MockGetAuthor("author", nil)
 		mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
@@ -41,14 +43,18 @@ func TestGetTweetInformation_success(t *testing.T) {
 		mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, test.getImagesError)
 		mockHasQuote := tweets.MockHasQuote(test.hasQuote)
 		mockIsQuoteAReply := tweets.MockIsQuoteAReply(test.isQuoteAReply)
+		mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", test.getQuoteTextError)
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 
-		getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply)
+		getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText)
 
 		want := tweets.MockTweet()
 		want.IsAReply = test.isAReply
 		want.HasQuote = test.hasQuote
-		want.Quote = tweets.Quote{IsAReply: test.isQuoteAReply}
+		want.Quote = tweets.MockQuote(test.isQuoteAReply, test.hasQuote, false, "", nil)
+		if test.hasQuote {
+			want.Quote.Text = "Quote Text"
+		}
 
 		got, err := getTweetInformation(mockTweetArticleWebElement)
 
@@ -65,9 +71,10 @@ func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
 	mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
 	mockHasQuote := tweets.MockHasQuote(false)
 	mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
+	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply)
+	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText)
 
 	want := tweets.FailedToObtainTweetAuthorInformation
 	_, got := getTweetInformation(mockTweetArticleWebElement)
@@ -83,9 +90,10 @@ func TestGetTweetInformation_failsWhenGetTimestampThrowsError(t *testing.T) {
 	mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
 	mockHasQuote := tweets.MockHasQuote(false)
 	mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
+	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply)
+	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText)
 
 	want := tweets.FailedToObtainTweetTimestampInformation
 	_, got := getTweetInformation(mockTweetArticleWebElement)

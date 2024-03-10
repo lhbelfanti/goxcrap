@@ -156,3 +156,166 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 		assert.Equal(t, want, got)
 	}
 }
+
+func TestGetQuoteText_success(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		hasTweetOnlyText bool
+	}{
+		{isAReply: false, hasTweetOnlyText: false},
+		{isAReply: true, hasTweetOnlyText: false},
+		{isAReply: false, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTextPartImg := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement), selenium.WebElement(mockTextPartImg)}, nil)
+		mockTextPartSpanWebElement.On("TagName").Return("span", nil)
+		mockTextPartSpanWebElement.On("Text").Return("text", nil)
+		mockTextPartImg.On("TagName").Return("img", nil)
+		mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", nil)
+
+		getQuoteText := tweets.MakeGetQuoteText()
+
+		want := "text🙂"
+		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+		assert.Nil(t, err)
+	}
+}
+
+func TestGetQuoteText_successEvenIfEmojisCantBeObtained(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		hasTweetOnlyText bool
+	}{
+		{isAReply: false, hasTweetOnlyText: false},
+		{isAReply: true, hasTweetOnlyText: false},
+		{isAReply: false, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTextPartImg := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement), selenium.WebElement(mockTextPartImg)}, nil)
+		mockTextPartSpanWebElement.On("TagName").Return("span", nil)
+		mockTextPartSpanWebElement.On("Text").Return("text", nil)
+		mockTextPartImg.On("TagName").Return("img", nil)
+		mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", errors.New("error while executing GetAttribute"))
+
+		getQuoteText := tweets.MakeGetQuoteText()
+
+		want := "text"
+		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+		assert.Nil(t, err)
+	}
+}
+
+func TestGetQuoteText_failsWhenFindElementThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		hasTweetOnlyText bool
+	}{
+		{isAReply: false, hasTweetOnlyText: false},
+		{isAReply: true, hasTweetOnlyText: false},
+		{isAReply: false, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), errors.New("error while executing FindElement"))
+
+		getQuoteText := tweets.MakeGetQuoteText()
+
+		want := tweets.FailedToObtainQuotedTweetTextElement
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+	}
+}
+
+func TestGetQuoteText_failsWhenFindElementsThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		hasTweetOnlyText bool
+	}{
+		{isAReply: false, hasTweetOnlyText: false},
+		{isAReply: true, hasTweetOnlyText: false},
+		{isAReply: false, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, errors.New("error while executing FindElements"))
+
+		getQuoteText := tweets.MakeGetQuoteText()
+
+		want := tweets.FailedToObtainQuotedTweetTextParts
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+	}
+}
+
+func TestGetQuoteText_failsWhenTagNameThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		hasTweetOnlyText bool
+	}{
+		{isAReply: false, hasTweetOnlyText: false},
+		{isAReply: true, hasTweetOnlyText: false},
+		{isAReply: false, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, nil)
+		mockTextPartSpanWebElement.On("TagName").Return("span", errors.New("error while executing TagName"))
+
+		getQuoteText := tweets.MakeGetQuoteText()
+
+		want := tweets.FailedToObtainQuotedTweetTextPartTagName
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+	}
+}
+
+func TestGetQuoteText_failsWhenTextThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply         bool
+		hasTweetOnlyText bool
+	}{
+		{isAReply: false, hasTweetOnlyText: false},
+		{isAReply: true, hasTweetOnlyText: false},
+		{isAReply: false, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, nil)
+		mockTextPartSpanWebElement.On("TagName").Return("span", nil)
+		mockTextPartSpanWebElement.On("Text").Return("text", errors.New("error while executing Text"))
+
+		getQuoteText := tweets.MakeGetQuoteText()
+
+		want := tweets.FailedToObtainQuotedTweetTextFromSpan
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+	}
+}
