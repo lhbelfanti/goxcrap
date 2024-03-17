@@ -14,7 +14,7 @@ import (
 type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText) GatherTweetInformation {
+func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GatherTweetInformation {
 	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
@@ -79,17 +79,21 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 			}
 			hasQuotedTweetText := !errors.Is(err, FailedToObtainQuotedTweetTextElement)
 
-			fmt.Printf("IsQuoteAReply: %t \nQuoteText: %s \n-------|\n\n", isQuotedTweetAReply, quoteText)
+			quoteImages, err := getQuoteImages(tweetArticleElement, isTweetAReply, tweetOnlyHasText)
+			if err != nil {
+				slog.Error(err.Error())
+			}
+			hasQuotedTweetImages := !errors.Is(err, FailedToObtainQuotedTweetImagesElement)
 
-			// Gather images
+			fmt.Printf("IsQuoteAReply: %t \nQuoteText: %s \nQuoteText: %v \n-------|\n\n", isQuotedTweetAReply, quoteText, quoteImages)
 
 			quote = Quote{
 				IsAReply: isQuotedTweetAReply,
 				Data: Data{
 					HasText:   hasQuotedTweetText,
-					HasImages: false,
+					HasImages: hasQuotedTweetImages,
 					Text:      quoteText,
-					Images:    nil,
+					Images:    quoteImages,
 				},
 			}
 		}

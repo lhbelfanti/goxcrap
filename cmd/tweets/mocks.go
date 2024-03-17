@@ -100,3 +100,10 @@ func MockGetQuoteText(text string, err error) GetQuoteText {
 		return text, err
 	}
 }
+
+// MockGetQuoteImages mocks GetQuoteImages function
+func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
+	return func(element selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error) {
+		return urls, err
+	}
+}

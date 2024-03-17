@@ -23,7 +23,10 @@ var (
 	FailedToObtainQuotedTweetTextPartTagName = errors.New("failed to obtain quoted tweet text part tag name")
 	FailedToObtainQuotedTweetTextFromSpan    = errors.New("failed to obtain quoted tweet text from span")
 
-	FailedToObtainTweetImagesElement = errors.New("failed to obtain tweet images element")
-	FailedToObtainTweetImages        = errors.New("failed to obtain tweet images")
-	FailedToObtainTweetSrcFromImage  = errors.New("failed to obtain tweet src from image")
+	FailedToObtainTweetImagesElement       = errors.New("failed to obtain tweet images element")
+	FailedToObtainTweetImages              = errors.New("failed to obtain tweet images")
+	FailedToObtainTweetSrcFromImage        = errors.New("failed to obtain tweet src from image")
+	FailedToObtainQuotedTweetImagesElement = errors.New("failed to obtain quoted tweet images element")
+	FailedToObtainQuotedTweetImages        = errors.New("failed to obtain quoted tweet images")
+	FailedToObtainQuotedTweetSrcFromImage  = errors.New("failed to obtain quoted tweet src from image")
 )

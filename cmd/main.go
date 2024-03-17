@@ -49,7 +49,8 @@ func main() {
 	hasQuote := tweets.MakeHasQuote()
 	isQuoteAReply := tweets.MakeIsQuoteAReply()
 	getQuoteText := tweets.MakeGetQuoteText()
-	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText)
+	getQuoteImages := tweets.MakeGetQuoteImages()
+	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
 	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation)
 
 	/* --- Scrapper --- */

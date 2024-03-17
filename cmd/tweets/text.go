@@ -10,19 +10,19 @@ const (
 	tweetTextXPath      string = "div[2]/div"
 	replyTweetTextXPath string = "div[3]/div"
 
-	tweetIsReplyHasOnlyTextQuoteIsReplyXPath         string = "div[4]/div/div[2]/div/div[2]/div[2]"
-	tweetIsReplyHasOnlyImagesQuoteIsReplyXPath       string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsReplyHasTextAndImagesQuoteIsReplyXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsReplyHasOnlyTextQuoteIsNotReplyXPath      string = "div[4]/div/div[2]/div/div[2]/div"
-	tweetIsReplyHasOnlyImagesQuoteIsNotReplyXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
-	tweetIsReplyHasTextAndImagesQuoteIsNotReplyXPath string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[4]/div/div[2]/div/div[2]/div[2]"
+	tweetIsReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasTextAndImagesQuoteIsReplyTextXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasOnlyTextQuoteIsNotReplyTextXPath      string = "div[4]/div/div[2]/div/div[2]/div"
+	tweetIsReplyHasOnlyImagesQuoteIsNotReplyTextXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsReplyHasTextAndImagesQuoteIsNotReplyTextXPath string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
 
-	tweetIsNotReplyHasOnlyTextQuoteIsReplyXPath         string = "div[3]/div/div[2]/div/div[2]/div[2]"
-	tweetIsNotReplyHasOnlyImagesQuoteIsReplyXPath       string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsNotReplyHasTextAndImagesQuoteIsReplyXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsNotReplyHasOnlyTextQuoteIsNotReplyXPath      string = "div[3]/div/div[2]/div/div[2]/div"
-	tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
-	tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyXPath string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsNotReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[3]/div/div[2]/div/div[2]/div[2]"
+	tweetIsNotReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsNotReplyHasTextAndImagesQuoteIsReplyTextXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsNotReplyHasOnlyTextQuoteIsNotReplyTextXPath      string = "div[3]/div/div[2]/div/div[2]/div"
+	tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyTextXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyTextXPath string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
 )
 
 type (
@@ -43,7 +43,7 @@ func MakeGetText() GetText {
 
 		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
-			slog.Error(err.Error())
+			// This tweet does not contain text
 			return "", FailedToObtainTweetTextElement
 		}
 
@@ -58,44 +58,44 @@ func MakeGetQuoteText() GetQuoteText {
 		if isAReply {
 			if isQuoteAReply {
 				if hasTweetOnlyText {
-					xPath = tweetIsReplyHasOnlyTextQuoteIsReplyXPath
+					xPath = tweetIsReplyHasOnlyTextQuoteIsReplyTextXPath
 				} else if hasTweetOnlyImages {
-					xPath = tweetIsReplyHasOnlyImagesQuoteIsReplyXPath
+					xPath = tweetIsReplyHasOnlyImagesQuoteIsReplyTextXPath
 				} else {
-					xPath = tweetIsReplyHasTextAndImagesQuoteIsReplyXPath
+					xPath = tweetIsReplyHasTextAndImagesQuoteIsReplyTextXPath
 				}
 			} else {
 				if hasTweetOnlyText {
-					xPath = tweetIsReplyHasOnlyTextQuoteIsNotReplyXPath
+					xPath = tweetIsReplyHasOnlyTextQuoteIsNotReplyTextXPath
 				} else if hasTweetOnlyImages {
-					xPath = tweetIsReplyHasOnlyImagesQuoteIsNotReplyXPath
+					xPath = tweetIsReplyHasOnlyImagesQuoteIsNotReplyTextXPath
 				} else {
-					xPath = tweetIsReplyHasTextAndImagesQuoteIsNotReplyXPath
+					xPath = tweetIsReplyHasTextAndImagesQuoteIsNotReplyTextXPath
 				}
 			}
 		} else {
 			if isQuoteAReply {
 				if hasTweetOnlyText {
-					xPath = tweetIsNotReplyHasOnlyTextQuoteIsReplyXPath
+					xPath = tweetIsNotReplyHasOnlyTextQuoteIsReplyTextXPath
 				} else if hasTweetOnlyImages {
-					xPath = tweetIsNotReplyHasOnlyImagesQuoteIsReplyXPath
+					xPath = tweetIsNotReplyHasOnlyImagesQuoteIsReplyTextXPath
 				} else {
-					xPath = tweetIsNotReplyHasTextAndImagesQuoteIsReplyXPath
+					xPath = tweetIsNotReplyHasTextAndImagesQuoteIsReplyTextXPath
 				}
 			} else {
 				if hasTweetOnlyText {
-					xPath = tweetIsNotReplyHasOnlyTextQuoteIsNotReplyXPath
+					xPath = tweetIsNotReplyHasOnlyTextQuoteIsNotReplyTextXPath
 				} else if hasTweetOnlyImages {
-					xPath = tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyXPath
+					xPath = tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyTextXPath
 				} else {
-					xPath = tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyXPath
+					xPath = tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyTextXPath
 				}
 			}
 		}
 
 		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
-			slog.Error(err.Error())
+			// This quoted tweet does not contain text
 			return "", FailedToObtainQuotedTweetTextElement
 		}
 
