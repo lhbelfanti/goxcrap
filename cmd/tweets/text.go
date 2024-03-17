@@ -10,10 +10,19 @@ const (
 	tweetTextXPath      string = "div[2]/div"
 	replyTweetTextXPath string = "div[3]/div"
 
-	tweetOnlyTextQuotedTweetTextXPath      string = "div[3]/div/div[2]/div/div[2]"
-	tweetQuotedTweetTextXPath              string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
-	replyTweetOnlyTextQuotedTweetTextXPath string = "div[3]/div/div[2]/div/div[2]/div[2]"
-	replyTweetQuotedTweetTextXPath         string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasOnlyTextQuoteIsReplyXPath         string = "div[4]/div/div[2]/div/div[2]/div[2]"
+	tweetIsReplyHasOnlyImagesQuoteIsReplyXPath       string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasTextAndImagesQuoteIsReplyXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasOnlyTextQuoteIsNotReplyXPath      string = "div[4]/div/div[2]/div/div[2]/div"
+	tweetIsReplyHasOnlyImagesQuoteIsNotReplyXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsReplyHasTextAndImagesQuoteIsNotReplyXPath string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+
+	tweetIsNotReplyHasOnlyTextQuoteIsReplyXPath         string = "div[3]/div/div[2]/div/div[2]/div[2]"
+	tweetIsNotReplyHasOnlyImagesQuoteIsReplyXPath       string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsNotReplyHasTextAndImagesQuoteIsReplyXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsNotReplyHasOnlyTextQuoteIsNotReplyXPath      string = "div[3]/div/div[2]/div/div[2]/div"
+	tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyXPath string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
 )
 
 type (
@@ -21,7 +30,7 @@ type (
 	GetText func(tweetArticleElement selenium.WebElement, isAReply bool) (string, error)
 
 	// GetQuoteText retrieves the quoted tweet text
-	GetQuoteText func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) (string, error)
+	GetQuoteText func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error)
 )
 
 // MakeGetText creates a new GetText
@@ -44,17 +53,43 @@ func MakeGetText() GetText {
 
 // MakeGetQuoteText creates a new GetQuoteText
 func MakeGetQuoteText() GetQuoteText {
-	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) (string, error) {
+	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error) {
 		var xPath string
 		if isAReply {
-			xPath = replyTweetQuotedTweetTextXPath
-			if hasTweetOnlyText {
-				xPath = replyTweetOnlyTextQuotedTweetTextXPath
+			if isQuoteAReply {
+				if hasTweetOnlyText {
+					xPath = tweetIsReplyHasOnlyTextQuoteIsReplyXPath
+				} else if hasTweetOnlyImages {
+					xPath = tweetIsReplyHasOnlyImagesQuoteIsReplyXPath
+				} else {
+					xPath = tweetIsReplyHasTextAndImagesQuoteIsReplyXPath
+				}
+			} else {
+				if hasTweetOnlyText {
+					xPath = tweetIsReplyHasOnlyTextQuoteIsNotReplyXPath
+				} else if hasTweetOnlyImages {
+					xPath = tweetIsReplyHasOnlyImagesQuoteIsNotReplyXPath
+				} else {
+					xPath = tweetIsReplyHasTextAndImagesQuoteIsNotReplyXPath
+				}
 			}
 		} else {
-			xPath = tweetQuotedTweetTextXPath
-			if hasTweetOnlyText {
-				xPath = tweetOnlyTextQuotedTweetTextXPath
+			if isQuoteAReply {
+				if hasTweetOnlyText {
+					xPath = tweetIsNotReplyHasOnlyTextQuoteIsReplyXPath
+				} else if hasTweetOnlyImages {
+					xPath = tweetIsNotReplyHasOnlyImagesQuoteIsReplyXPath
+				} else {
+					xPath = tweetIsNotReplyHasTextAndImagesQuoteIsReplyXPath
+				}
+			} else {
+				if hasTweetOnlyText {
+					xPath = tweetIsNotReplyHasOnlyTextQuoteIsNotReplyXPath
+				} else if hasTweetOnlyImages {
+					xPath = tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyXPath
+				} else {
+					xPath = tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyXPath
+				}
 			}
 		}
 

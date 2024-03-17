@@ -159,13 +159,23 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 
 func TestGetQuoteText_success(t *testing.T) {
 	for _, test := range []struct {
-		isAReply         bool
-		hasTweetOnlyText bool
+		isAReply           bool
+		hasTweetOnlyText   bool
+		hasTweetOnlyImages bool
+		isQuoteAReply      bool
 	}{
-		{isAReply: false, hasTweetOnlyText: false},
-		{isAReply: true, hasTweetOnlyText: false},
-		{isAReply: false, hasTweetOnlyText: true},
-		{isAReply: true, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
@@ -181,7 +191,7 @@ func TestGetQuoteText_success(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := "text🙂"
-		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -190,13 +200,23 @@ func TestGetQuoteText_success(t *testing.T) {
 
 func TestGetQuoteText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 	for _, test := range []struct {
-		isAReply         bool
-		hasTweetOnlyText bool
+		isAReply           bool
+		hasTweetOnlyText   bool
+		hasTweetOnlyImages bool
+		isQuoteAReply      bool
 	}{
-		{isAReply: false, hasTweetOnlyText: false},
-		{isAReply: true, hasTweetOnlyText: false},
-		{isAReply: false, hasTweetOnlyText: true},
-		{isAReply: true, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
@@ -212,7 +232,7 @@ func TestGetQuoteText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := "text"
-		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -221,13 +241,23 @@ func TestGetQuoteText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 
 func TestGetQuoteText_failsWhenFindElementThrowsError(t *testing.T) {
 	for _, test := range []struct {
-		isAReply         bool
-		hasTweetOnlyText bool
+		isAReply           bool
+		hasTweetOnlyText   bool
+		hasTweetOnlyImages bool
+		isQuoteAReply      bool
 	}{
-		{isAReply: false, hasTweetOnlyText: false},
-		{isAReply: true, hasTweetOnlyText: false},
-		{isAReply: false, hasTweetOnlyText: true},
-		{isAReply: true, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
@@ -236,7 +266,7 @@ func TestGetQuoteText_failsWhenFindElementThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextElement
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 	}
@@ -244,13 +274,23 @@ func TestGetQuoteText_failsWhenFindElementThrowsError(t *testing.T) {
 
 func TestGetQuoteText_failsWhenFindElementsThrowsError(t *testing.T) {
 	for _, test := range []struct {
-		isAReply         bool
-		hasTweetOnlyText bool
+		isAReply           bool
+		hasTweetOnlyText   bool
+		hasTweetOnlyImages bool
+		isQuoteAReply      bool
 	}{
-		{isAReply: false, hasTweetOnlyText: false},
-		{isAReply: true, hasTweetOnlyText: false},
-		{isAReply: false, hasTweetOnlyText: true},
-		{isAReply: true, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
@@ -261,7 +301,7 @@ func TestGetQuoteText_failsWhenFindElementsThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextParts
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 	}
@@ -269,13 +309,23 @@ func TestGetQuoteText_failsWhenFindElementsThrowsError(t *testing.T) {
 
 func TestGetQuoteText_failsWhenTagNameThrowsError(t *testing.T) {
 	for _, test := range []struct {
-		isAReply         bool
-		hasTweetOnlyText bool
+		isAReply           bool
+		hasTweetOnlyText   bool
+		hasTweetOnlyImages bool
+		isQuoteAReply      bool
 	}{
-		{isAReply: false, hasTweetOnlyText: false},
-		{isAReply: true, hasTweetOnlyText: false},
-		{isAReply: false, hasTweetOnlyText: true},
-		{isAReply: true, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
@@ -287,7 +337,7 @@ func TestGetQuoteText_failsWhenTagNameThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextPartTagName
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 	}
@@ -295,13 +345,23 @@ func TestGetQuoteText_failsWhenTagNameThrowsError(t *testing.T) {
 
 func TestGetQuoteText_failsWhenTextThrowsError(t *testing.T) {
 	for _, test := range []struct {
-		isAReply         bool
-		hasTweetOnlyText bool
+		isAReply           bool
+		hasTweetOnlyText   bool
+		hasTweetOnlyImages bool
+		isQuoteAReply      bool
 	}{
-		{isAReply: false, hasTweetOnlyText: false},
-		{isAReply: true, hasTweetOnlyText: false},
-		{isAReply: false, hasTweetOnlyText: true},
-		{isAReply: true, hasTweetOnlyText: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: true, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: true, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: true},
+		{isAReply: false, hasTweetOnlyText: true, hasTweetOnlyImages: false, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: true, isQuoteAReply: false},
+		{isAReply: false, hasTweetOnlyText: false, hasTweetOnlyImages: false, isQuoteAReply: false},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
@@ -314,7 +374,7 @@ func TestGetQuoteText_failsWhenTextThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextFromSpan
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 	}

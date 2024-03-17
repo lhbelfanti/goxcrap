@@ -26,10 +26,10 @@ type (
 	IsAReply func(tweetArticleElement selenium.WebElement) bool
 
 	// HasQuote returns a bool indicating if the base tweet is quoting another tweet
-	HasQuote func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool
+	HasQuote func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool
 
 	// IsQuoteAReply returns a bool indicating if the quoted tweet is replying to another tweet
-	IsQuoteAReply func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool
+	IsQuoteAReply func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool
 )
 
 // MakeIsAReply creates a new GetIsAReply
@@ -49,7 +49,7 @@ func MakeIsAReply() IsAReply {
 
 // MakeHasQuote creates a new HasQuote
 func MakeHasQuote() HasQuote {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
+	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool {
 		var xPath string
 		if isAReply {
 			xPath = replyTweetQuoteXPath
@@ -74,7 +74,7 @@ func MakeHasQuote() HasQuote {
 
 // MakeIsQuoteAReply creates a new IsQuoteAReply
 func MakeIsQuoteAReply() IsQuoteAReply {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
+	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool {
 		var xPath string
 		if isAReply {
 			xPath = replyTweetReplyQuoteXPath
@@ -88,11 +88,14 @@ func MakeIsQuoteAReply() IsQuoteAReply {
 			}
 		}
 
-		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
-		if err != nil {
-			slog.Error("IsQuoteAReply - Failed to find element:", slog.String("xPath: ", xPath))
+		quoteReplyingToElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
+		if err == nil {
+			replyingToText, err := quoteReplyingToElement.Text()
+			if err == nil && strings.Contains(replyingToText, "Replying to") {
+				return true
+			}
 		}
 
-		return err == nil
+		return false
 	}
 }

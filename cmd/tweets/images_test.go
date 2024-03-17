@@ -29,11 +29,11 @@ func TestGetImages_success(t *testing.T) {
 		{isAReply: true, spanXPath: replyTweetOnlyTextXPath, imagesXPath: replyTweetImagesXPath},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
-		mockTweetImagesElement := new(elements.MockWebElement)
+		mockTweetImagesWebElement := new(elements.MockWebElement)
 		mockImg := new(elements.MockWebElement)
-		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.spanXPath).Return(selenium.WebElement(mockTweetImagesElement), errors.New("error while executing FindElement"))
-		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.imagesXPath).Return(selenium.WebElement(mockTweetImagesElement), nil)
-		mockTweetImagesElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
+		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.spanXPath).Return(selenium.WebElement(mockTweetImagesWebElement), errors.New("error while executing FindElement"))
+		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.imagesXPath).Return(selenium.WebElement(mockTweetImagesWebElement), nil)
+		mockTweetImagesWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
 		mockImg.On("GetAttribute", "src").Return("test_url", nil)
 
 		getImages := tweets.MakeGetImages()
@@ -57,11 +57,11 @@ func TestGetImages_failsWhenSpanElementIsFound(t *testing.T) {
 		{isAReply: true, spanXPath: replyTweetOnlyTextXPath, imagesXPath: replyTweetImagesXPath, findSpanElementError: nil},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
-		mockTweetImagesElement := new(elements.MockWebElement)
+		mockTweetImagesWebElement := new(elements.MockWebElement)
 		mockImg := new(elements.MockWebElement)
-		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.spanXPath).Return(selenium.WebElement(mockTweetImagesElement), nil)
-		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.imagesXPath).Return(selenium.WebElement(mockTweetImagesElement), nil)
-		mockTweetImagesElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
+		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.spanXPath).Return(selenium.WebElement(mockTweetImagesWebElement), nil)
+		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.imagesXPath).Return(selenium.WebElement(mockTweetImagesWebElement), nil)
+		mockTweetImagesWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockImg), selenium.WebElement(mockImg)}, nil)
 		mockImg.On("GetAttribute", "src").Return("test_url", nil)
 
 		getImages := tweets.MakeGetImages()

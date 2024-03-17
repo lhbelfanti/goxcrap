@@ -82,21 +82,21 @@ func MockGetImages(urls []string, err error) GetImages {
 
 // MockHasQuote mocks HasQuote function
 func MockHasQuote(hasQuote bool) HasQuote {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
+	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool {
 		return hasQuote
 	}
 }
 
 // MockIsQuoteAReply mocks IsQuoteAReply function
 func MockIsQuoteAReply(isQuoteAReply bool) IsQuoteAReply {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool, hasTweetOnlyText bool) bool {
+	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool {
 		return isQuoteAReply
 	}
 }
 
 // MockGetQuoteText mocks GetQuoteText function
 func MockGetQuoteText(text string, err error) GetQuoteText {
-	return func(element selenium.WebElement, isAReply, hasTweetOnlyText bool) (string, error) {
+	return func(element selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error) {
 		return text, err
 	}
 }
