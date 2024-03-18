@@ -85,7 +85,7 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 			}
 			hasQuotedTweetImages := !errors.Is(err, FailedToObtainQuotedTweetImagesElement)
 
-			fmt.Printf("IsQuoteAReply: %t \nQuoteText: %s \nQuoteText: %v \n-------|\n\n", isQuotedTweetAReply, quoteText, quoteImages)
+			fmt.Printf("IsQuoteAReply: %t \nQuoteText: %s \nQuoteImages: %v \n-------|\n\n", isQuotedTweetAReply, quoteText, quoteImages)
 
 			quote = Quote{
 				IsAReply: isQuotedTweetAReply,
