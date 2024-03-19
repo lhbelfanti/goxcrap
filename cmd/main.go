@@ -51,7 +51,8 @@ func main() {
 	getQuoteText := tweets.MakeGetQuoteText()
 	getQuoteImages := tweets.MakeGetQuoteImages()
 	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
-	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation)
+	scrollPage := page.MakeScroll(driver)
+	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation, scrollPage)
 
 	/* --- Scrapper --- */
 	executeScrapper := scrapper.MakeExecute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)

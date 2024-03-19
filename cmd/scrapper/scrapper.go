@@ -44,19 +44,14 @@ func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSea
 					continue
 				}
 
-				// TODO: move this loop inside retrieveTweets
-				for {
-					_, err := retrieveTweets()
-					if err != nil {
-						slog.Error(err.Error())
-						continue
-					}
-
-					//fmt.Println(obtainedTweets)
-
-					// TODO: save tweets
-					break
+				obtainedTweets, err := retrieveTweets()
+				if err != nil {
+					slog.Error(err.Error())
+					continue
 				}
+				// TODO: save tweets
+
+				slog.Info("Obtained tweets", obtainedTweets)
 			}
 
 			slog.Info(fmt.Sprintf("All the tweets of the criteria '%s' were retrieved", criteria.ID))
