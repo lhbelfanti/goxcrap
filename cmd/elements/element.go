@@ -21,7 +21,7 @@ type (
 	WaitAndRetrieveAllCondition func(by, value string) SeleniumCondition
 
 	// SeleniumCondition is the condition that WaitAndRetrieve uses to check if it has to wait for the element
-	SeleniumCondition func(drv selenium.WebDriver) (bool, error)
+	SeleniumCondition func(driver selenium.WebDriver) (bool, error)
 )
 
 // MakeWaitAndRetrieve creates a new WaitAndRetrieve
