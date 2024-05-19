@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	timestampXPath        string = "div[1]/div"
-	timestampTimeTagXPath string = "//a/time"
+	timestampXPath string = "div[1]/div"
 )
 
 // GetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element.
@@ -24,7 +23,7 @@ func MakeGetTimestamp() GetTimestamp {
 			return "", FailedToObtainTweetTimestampElement
 		}
 
-		tweetTimestampTimeTag, err := tweetTimestampElement.FindElement(selenium.ByXPATH, timestampTimeTagXPath)
+		tweetTimestampTimeTag, err := tweetTimestampElement.FindElement(selenium.ByTagName, "time")
 		if err != nil {
 			slog.Error(err.Error())
 			return "", FailedToObtainTweetTimestampTimeTag
