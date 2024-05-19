@@ -8,7 +8,7 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-const TwitterURL string = "https://twitter.com"
+const TwitterURL string = "https://x.com"
 
 type (
 	// Load waits until the page is fully loaded
