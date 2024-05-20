@@ -47,7 +47,8 @@ func MakeScroll(driver selenium.WebDriver) Scroll {
 			return FailedToGetInnerHeight
 		}
 
-		jsScroll := fmt.Sprintf("window.scrollBy(0, %v);", height)
+		// TODO: change  %v * 2 by the exact amount it should scroll
+		jsScroll := fmt.Sprintf("window.scrollBy(0, %v * 2);", height)
 		_, err = driver.ExecuteScript(jsScroll, nil)
 		if err != nil {
 			slog.Error(err.Error())

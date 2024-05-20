@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/tebeka/selenium"
@@ -35,39 +34,21 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 		isTweetAReply := isAReply(tweetArticleElement)
 
 		tweetText, err := getText(tweetArticleElement, isTweetAReply)
-		if err != nil {
+		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
+		if err != nil && hasText {
 			slog.Error(err.Error())
 		}
-		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 
 		tweetImages, err := getImages(tweetArticleElement, isTweetAReply)
-		if err != nil {
+		hasImages := !errors.Is(err, FailedToObtainTweetImagesElement)
+		if err != nil && hasImages {
 			slog.Error(err.Error())
 		}
-		hasImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 
 		tweetOnlyHasText := hasText && !hasImages
 		tweetOnlyHasImages := !hasText && hasImages
 
 		hasAQuote := hasQuote(tweetArticleElement, isTweetAReply, tweetOnlyHasText)
-
-		fmt.Printf("\n|------- \n"+
-			"Author: %s \n"+
-			"Timestamp: %s \n"+
-			"Text: %s \n"+
-			"Images: %v \n"+
-			"IsAReply: %t \n"+
-			"HasTheTweetOnlyText: %t \n"+
-			"HasTheTweetOnlyImages: %t \n"+
-			"HasQuote: %t \n",
-			tweetAuthor,
-			tweetTimestamp,
-			tweetText,
-			tweetImages,
-			isTweetAReply,
-			tweetOnlyHasText,
-			tweetOnlyHasImages,
-			hasAQuote)
 
 		var quote Quote
 		if hasAQuote {
@@ -84,8 +65,6 @@ func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isA
 				slog.Error(err.Error())
 			}
 			hasQuotedTweetImages := !errors.Is(err, FailedToObtainQuotedTweetImagesElement)
-
-			fmt.Printf("IsQuoteAReply: %t \nQuoteText: %s \nQuoteImages: %v \n-------|\n\n", isQuotedTweetAReply, quoteText, quoteImages)
 
 			quote = Quote{
 				IsAReply: isQuotedTweetAReply,

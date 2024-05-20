@@ -50,3 +50,39 @@ func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 
 	assert.Equal(t, want, got)
 }
+
+func TestScroll_success(t *testing.T) {
+	mockWebDriver := new(chromedriver.MockWebDriver)
+	mockWebDriver.On("ExecuteScript", mock.Anything, mock.Anything).Return(nil, nil)
+
+	scroll := page.MakeScroll(mockWebDriver)
+
+	got := scroll()
+
+	assert.Nil(t, got)
+}
+
+func TestScroll_failsWhenJSHeightCodeExecutionThrowsError(t *testing.T) {
+	mockWebDriver := new(chromedriver.MockWebDriver)
+	mockWebDriver.On("ExecuteScript", `return window.innerHeight;`, mock.Anything).Return(100, errors.New("error while executing first code"))
+
+	scroll := page.MakeScroll(mockWebDriver)
+
+	want := page.FailedToGetInnerHeight
+	got := scroll()
+
+	assert.Equal(t, want, got)
+}
+
+func TestScroll_failsWhenScrollByCodeExecutionThrowsError(t *testing.T) {
+	mockWebDriver := new(chromedriver.MockWebDriver)
+	mockWebDriver.On("ExecuteScript", `return window.innerHeight;`, mock.Anything).Return(100, nil)
+	mockWebDriver.On("ExecuteScript", `window.scrollBy(0, 100 * 2);`, mock.Anything).Return(nil, errors.New("error while executing second code"))
+
+	scroll := page.MakeScroll(mockWebDriver)
+
+	want := page.FailedToScroll
+	got := scroll()
+
+	assert.Equal(t, want, got)
+}

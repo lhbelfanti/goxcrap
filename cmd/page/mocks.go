@@ -10,3 +10,10 @@ func MockLoad(err error) Load {
 		return err
 	}
 }
+
+// MockScroll mocks Scroll function
+func MockScroll(err error) Scroll {
+	return func() error {
+		return err
+	}
+}

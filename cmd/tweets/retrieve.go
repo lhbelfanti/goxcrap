@@ -29,9 +29,8 @@ type (
 func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, gatherTweetInformation GatherTweetInformation, scrollPage page.Scroll) RetrieveAll {
 	return func() ([]Tweet, error) {
 		var tweets []Tweet
-
 		for {
-			tweetsIDsLenBefore := len(tweets)
+			previousTweetsQuantity := len(tweets)
 
 			articles, err := waitAndRetrieveElements(selenium.ByXPATH, globalToLocalXPath(articlesXPath), articlesTimeout)
 			if err != nil {
@@ -40,35 +39,37 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, gather
 			}
 
 			for _, article := range articles {
+				// TODO: improve this to avoid getting all the information to compare if the tweet was already added to the slice
 				tweet, err := gatherTweetInformation(article)
 				if err != nil {
 					slog.Error(err.Error())
 					continue
 				}
 
-				if !slices.ContainsFunc(tweets, tweetsComparator(tweet)) {
+				if !slices.ContainsFunc(tweets, compareTweetsByID(tweet.ID)) {
 					tweets = append(tweets, tweet)
 				}
 			}
 
-			tweetsIDsLenAfter := len(tweets)
-
-			if tweetsIDsLenAfter > tweetsIDsLenBefore {
+			if len(tweets) > previousTweetsQuantity {
 				err = scrollPage()
 				if err != nil {
 					slog.Error(err.Error())
 					break
 				}
+				continue
 			}
+
+			break
 		}
 
 		return tweets, nil
 	}
 }
 
-// tweetsComparator returns a function to compare two tweets by ID
-func tweetsComparator(oldTweet Tweet) compareTweets {
-	return func(newTweet Tweet) bool {
-		return oldTweet.ID == newTweet.ID
+// compareTweetsByID returns a function to compare two tweets by ID
+func compareTweetsByID(ID string) compareTweets {
+	return func(t Tweet) bool {
+		return t.ID == ID
 	}
 }

@@ -51,15 +51,16 @@ func TestGetTweetInformation_success(t *testing.T) {
 
 		getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText, mockGetQuoteImages)
 
-		want := tweets.MockTweet()
-		want.IsAReply = test.isAReply
-		want.HasQuote = test.hasQuote
-		want.Quote = tweets.MockQuote(test.isQuoteAReply, test.hasQuote, test.hasQuote, "", nil)
+		mockTweet := tweets.MockTweet()
+		mockTweet.IsAReply = test.isAReply
+		mockTweet.HasQuote = test.hasQuote
+		mockTweet.Quote = tweets.MockQuote(test.isQuoteAReply, test.hasQuote, test.hasQuote, "", nil)
 		if test.hasQuote {
-			want.Quote.Text = "Quote Text"
-			want.Quote.Images = []string{"https://url1.com", "https://url2.com"}
+			mockTweet.Quote.Text = "Quote Text"
+			mockTweet.Quote.Images = []string{"https://url1.com", "https://url2.com"}
 		}
 
+		want := mockTweet
 		got, err := getTweetInformation(mockTweetArticleWebElement)
 
 		assert.Equal(t, want, got)
