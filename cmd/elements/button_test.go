@@ -25,6 +25,7 @@ func TestRetrieveAndClickButton_success(t *testing.T) {
 
 func TestRetrieveAndClickButton_failsWhenWaitAndRetrieveElementThrowsError(t *testing.T) {
 	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(nil, errors.New("error while executing waitAndRetrieveElement"))
+
 	retrieveAndClickButton := elements.MakeRetrieveAndClickButton(mockWaitAndRetrieve)
 
 	want := elements.FailedToRetrieveButton
@@ -37,6 +38,7 @@ func TestRetrieveAndClickButton_failsWhenButtonClickThrowsError(t *testing.T) {
 	mockButtonWebElement := new(elements.MockWebElement)
 	mockButtonWebElement.On("Click").Return(errors.New("error while executing button.Click"))
 	mockWaitAndRetrieve := elements.MockWaitAndRetrieve(mockButtonWebElement, nil)
+
 	retrieveAndClickButton := elements.MakeRetrieveAndClickButton(mockWaitAndRetrieve)
 
 	want := elements.FailedToClickButton
