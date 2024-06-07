@@ -1,0 +1,72 @@
+package tweets_test
+
+import (
+	"errors"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/tebeka/selenium"
+
+	"goxcrap/cmd/api/elements"
+	"goxcrap/cmd/api/tweets"
+)
+
+func TestGetTimestamp_success(t *testing.T) {
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetTimestampWebElement := new(elements.MockWebElement)
+	mockTweetTimestampTimeTagWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTimestampWebElement), nil)
+	mockTweetTimestampWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTimestampTimeTagWebElement), nil)
+	mockTweetTimestampTimeTagWebElement.On("GetAttribute", mock.Anything).Return("test", nil)
+
+	getTimestamp := tweets.MakeGetTimestamp()
+
+	want := "test"
+	got, err := getTimestamp(mockTweetArticleWebElement)
+
+	assert.Equal(t, want, got)
+	assert.Nil(t, err)
+}
+
+func TestGetTimestamp_failsWhenFirstFindElementThrowsError(t *testing.T) {
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
+
+	getTimestamp := tweets.MakeGetTimestamp()
+
+	want := tweets.FailedToObtainTweetTimestampElement
+	_, got := getTimestamp(mockTweetArticleWebElement)
+
+	assert.Equal(t, want, got)
+}
+
+func TestGetTimestamp_failsWhenSecondFindElementThrowsError(t *testing.T) {
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetTimestampWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTimestampWebElement), nil)
+	mockTweetTimestampWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
+
+	getTimestamp := tweets.MakeGetTimestamp()
+
+	want := tweets.FailedToObtainTweetTimestampTimeTag
+	_, got := getTimestamp(mockTweetArticleWebElement)
+
+	assert.Equal(t, want, got)
+}
+
+func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+	mockTweetTimestampWebElement := new(elements.MockWebElement)
+	mockTweetTimestampTimeTagWebElement := new(elements.MockWebElement)
+	mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTimestampWebElement), nil)
+	mockTweetTimestampWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTimestampTimeTagWebElement), nil)
+	mockTweetTimestampTimeTagWebElement.On("GetAttribute", mock.Anything).Return("", errors.New("error while executing GetAttribute"))
+
+	getTimestamp := tweets.MakeGetTimestamp()
+
+	want := tweets.FailedToObtainTweetTimestamp
+	_, got := getTimestamp(mockTweetArticleWebElement)
+
+	assert.Equal(t, want, got)
+}
