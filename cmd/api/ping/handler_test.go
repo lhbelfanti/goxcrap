@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"ahbcc/cmd/api/ping"
+	"goxcrap/cmd/api/ping"
 )
 
 func TestRunHandlerV1_success(t *testing.T) {
