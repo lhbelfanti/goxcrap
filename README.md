@@ -12,27 +12,44 @@
 ---
 
 # GoXCrap
-
 This application collects tweets based on a defined search criteria, and save them in a database.
 
-## Setting up
+## Set up & run (locally)
 
+### Set up
 1. First of all you need to download the Chrome Web Driver that matches with the installed version of Google Chrome (the browser used for testing this project). </br>
-    You can download it from [here](https://googlechromelabs.github.io/chrome-for-testing/) or you can use `@puppeteer/browsers` with [this](https://pptr.dev/browsers-api) installation guide. </br>
-    After that rename the binary to `driver` and copy it inside the [internal/chromedriver](./internal/chromedriver) folder.
-2. Create a `.env` file at the root of the project, and add this three environment variables:
+    You can download it from [here](https://googlechromelabs.github.io/chrome-for-testing/), or you can use `@puppeteer/browsers` with [this](https://pptr.dev/browsers-api) installation guide. </br>
+    After that rename the binary to `chrome` and copy it inside the [internal/driver](./internal/driver) folder.
+2. Create a `.env` file at the root of the project, and add the following environment variables:
 ```
 EMAIL=<your-twitter-account-email>
 USERNAME=<your-twitter-username>
 PASSWORD=<your-twitter-password>
 ```
 
-## Running the project
-
+### Run
 In the root folder, run:
 ```
-go run cmd/main.go
+go run cmd/api/main.go --local
 ```
+
+## Setting up & run (into a Docker container)
+
+### Setup
+1. Create a `.env` file at the root of the project, and add the following environment variables:
+```
+EMAIL=<your-twitter-account-email>
+USERNAME=<your-twitter-username>
+PASSWORD=<your-twitter-password>
+DRIVER_PATH=/usr/bin/chromedriver
+BROWSER_PATH=/usr/bin/chromium
+```
+
+### Build & Run
+```
+docker-compose up --build
+```
+
 
 
 ---

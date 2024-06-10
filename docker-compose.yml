@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: goxcrap
+    environment:
+      EMAIL: ${EMAIL}
+      PASSWORD: ${PASSWORD}
+      USERNAME: ${USERNAME}
+      DRIVER_PATH: ${DRIVER_PATH}
+      BROWSER_PATH: ${BROWSER_PATH}
+    ports:
+      - 8080:8091
+    restart: on-failure
+    volumes:
+      - .:/app
+    networks:
+      - network
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'curl -sSf http://localhost:8091/ping/v1 || exit 1'"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+volumes:
+  database:
+
+networks:
+  network:
+    driver: bridge
