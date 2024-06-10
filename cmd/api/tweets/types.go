@@ -28,19 +28,19 @@ type (
 	}
 )
 
-// toString converts Tweet properties to a string
-func (tweet Tweet) toString() string {
+// String converts Tweet properties to a string
+func (tweet Tweet) String() string {
 	return fmt.Sprintf("\n------------------------\n--- Tweet ---\n ID: %s \n Timestamp: %s \n IsAReply: %t \n HasQuote: %t %s %s\n------------------------\n\n",
-		tweet.ID, tweet.Timestamp, tweet.IsAReply, tweet.HasQuote, tweet.Data.toString(), tweet.Quote.toString())
+		tweet.ID, tweet.Timestamp, tweet.IsAReply, tweet.HasQuote, tweet.Data.String(), tweet.Quote.String())
 }
 
-// toString converts Data properties to a string
-func (data Data) toString() string {
+// String converts Data properties to a string
+func (data Data) String() string {
 	return fmt.Sprintf("\n   --- Data ---\n   HasText: %t \n   HasImages: %t \n   Text: %s \n   Images: %v",
 		data.HasText, data.HasImages, data.Text, data.Images)
 }
 
-// toString converts Quote properties to a string
-func (quote Quote) toString() string {
-	return fmt.Sprintf("\n --- Quote ---\n IsAReply: %t %s", quote.IsAReply, quote.Data.toString())
+// String converts Quote properties to a string
+func (quote Quote) String() string {
+	return fmt.Sprintf("\n --- Quote ---\n IsAReply: %t %s", quote.IsAReply, quote.Data.String())
 }

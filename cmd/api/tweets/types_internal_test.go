@@ -29,7 +29,7 @@ func TestTweet_ToString_success(t *testing.T) {
 ------------------------
 
 `
-	got := MockTweet().toString()
+	got := MockTweet().String()
 
 	assert.Equal(t, want, got)
 }
