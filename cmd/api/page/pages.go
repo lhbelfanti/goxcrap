@@ -5,10 +5,11 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/tebeka/selenium"
 )
 
-const TwitterURL string = "https://x.com"
+const twitterURL string = "https://x.com"
 
 type (
 	// Load waits until the page is fully loaded
@@ -27,7 +28,9 @@ func MakeLoad(driver selenium.WebDriver) Load {
 			return FailedToSetPageLoadTimeout
 		}
 
-		err = driver.Get(TwitterURL + relativeURL)
+		pageURL := twitterURL + relativeURL
+		slog.Info(color.GreenString("Accessing page: %s", pageURL))
+		err = driver.Get(pageURL)
 		if err != nil {
 			slog.Error(err.Error())
 			return FailedToRetrievePage
