@@ -26,6 +26,12 @@ type (
 		IsAReply bool
 		Data
 	}
+
+	// TweetHash contains the ID (hash) calculated with the author and the Timestamp (which is also contained in this struct)
+	TweetHash struct {
+		ID        string
+		Timestamp string
+	}
 )
 
 // String converts Tweet properties to a string

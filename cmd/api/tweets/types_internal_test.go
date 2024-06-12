@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTweet_ToString_success(t *testing.T) {
+func TestTweet_String_success(t *testing.T) {
 	want := `
 ------------------------
 --- Tweet ---

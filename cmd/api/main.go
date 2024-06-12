@@ -50,6 +50,7 @@ func main() {
 	// Functions
 	slog.Info(color.BlueString("Initializing functions..."))
 	loadPage := page.MakeLoad(webDriver)
+	scrollPage := page.MakeScroll(webDriver)
 	waitAndRetrieveCondition := elements.MakeWaitAndRetrieveCondition()
 	waitAndRetrieveAllCondition := elements.MakeWaitAndRetrieveAllCondition()
 	waitAndRetrieveElement := elements.MakeWaitAndRetrieve(webDriver, waitAndRetrieveCondition)
@@ -59,7 +60,7 @@ func main() {
 	slog.Info(color.GreenString("Functions initialized!"))
 
 	// Services
-	slog.Info(color.BlueString("Initializing services..."))
+	slog.Info(color.BlueString("Initializing services dependencies..."))
 	login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
 	getSearchCriteria := search.MakeGetAdvanceSearchCriteria()
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
@@ -72,9 +73,12 @@ func main() {
 	isQuoteAReply := tweets.MakeIsQuoteAReply()
 	getQuoteText := tweets.MakeGetQuoteText()
 	getQuoteImages := tweets.MakeGetQuoteImages()
-	gatherTweetInformation := tweets.MakeGetTweetInformation(getTweetAuthor, getTweetTimestamp, isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
-	scrollPage := page.MakeScroll(webDriver)
-	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, gatherTweetInformation, scrollPage)
+	getTweetHash := tweets.MakeGetTweetHash(getTweetAuthor, getTweetTimestamp)
+	getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
+	retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
+	slog.Info(color.GreenString("Services dependencies initialized!"))
+
+	slog.Info(color.BlueString("Initializing services..."))
 	executeScrapper := scrapper.MakeExecute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)
 	slog.Info(color.GreenString("Services initialized!"))
 

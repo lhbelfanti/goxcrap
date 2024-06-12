@@ -10,7 +10,7 @@ import (
 	"goxcrap/cmd/api/tweets"
 )
 
-func TestGetTweetInformation_success(t *testing.T) {
+func TestGetTweetBodyInformation_success(t *testing.T) {
 	getTextErr := errors.New("error while executing GetText")
 	getImagesErr := errors.New("error while executing GetImages")
 	getQuoteTextErr := errors.New("error while executing GetQuoteText")
@@ -38,8 +38,7 @@ func TestGetTweetInformation_success(t *testing.T) {
 		{isAReply: true, hasQuote: true, isQuoteAReply: true},
 		{isAReply: true, hasQuote: true, isQuoteAReply: true, getTextError: getTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr, getQuoteImagesError: getQuoteImagesErr},
 	} {
-		mockGetAuthor := tweets.MockGetAuthor("author", nil)
-		mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
+		mockTweetHash := tweets.MockTweetHash()
 		mockIsAReply := tweets.MockIsAReply(test.isAReply)
 		mockGetText := tweets.MockGetText("Tweet Text", test.getTextError)
 		mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, test.getImagesError)
@@ -49,7 +48,7 @@ func TestGetTweetInformation_success(t *testing.T) {
 		mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, test.getQuoteImagesError)
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 
-		getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText, mockGetQuoteImages)
+		getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText, mockGetQuoteImages)
 
 		mockTweet := tweets.MockTweet()
 		mockTweet.IsAReply = test.isAReply
@@ -61,49 +60,48 @@ func TestGetTweetInformation_success(t *testing.T) {
 		}
 
 		want := mockTweet
-		got, err := getTweetInformation(mockTweetArticleWebElement)
+		got, err := getTweetInformation(mockTweetArticleWebElement, mockTweetHash.ID, mockTweetHash.Timestamp)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
 	}
 }
 
-func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
-	mockGetAuthor := tweets.MockGetAuthor("", errors.New("error while executing GetAuthor"))
+func TestMakeGetTweetHash_success(t *testing.T) {
+	mockGetAuthor := tweets.MockGetAuthor("author", nil)
 	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
-	mockIsAReply := tweets.MockIsAReply(false)
-	mockGetText := tweets.MockGetText("Tweet Text", nil)
-	mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
-	mockHasQuote := tweets.MockHasQuote(false)
-	mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
-	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
-	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText, mockGetQuoteImages)
+	getTweetHash := tweets.MakeGetTweetHash(mockGetAuthor, mockGetTimestamp)
 
-	want := tweets.FailedToObtainTweetAuthorInformation
-	_, got := getTweetInformation(mockTweetArticleWebElement)
+	want := tweets.MockTweetHash()
+	got, _ := getTweetHash(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }
 
-func TestGetTweetInformation_failsWhenGetTimestampThrowsError(t *testing.T) {
-	mockGetAuthor := tweets.MockGetAuthor("author", nil)
-	mockGetTimestamp := tweets.MockGetTimestamp("", errors.New("error while executing GetTimestamp"))
-	mockIsAReply := tweets.MockIsAReply(false)
-	mockGetText := tweets.MockGetText("Tweet Text", nil)
-	mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
-	mockHasQuote := tweets.MockHasQuote(false)
-	mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
-	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
-	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
+func TestMakeGetTweetHash_failsWhenGetAuthorThrowsError(t *testing.T) {
+	mockGetAuthor := tweets.MockGetAuthor("", errors.New("error while executing GetAuthor"))
+	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockGetAuthor, mockGetTimestamp, mockIsAReply, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteText, mockGetQuoteImages)
+	getTweetHash := tweets.MakeGetTweetHash(mockGetAuthor, mockGetTimestamp)
+
+	want := tweets.FailedToObtainTweetAuthorInformation
+	_, got := getTweetHash(mockTweetArticleWebElement)
+
+	assert.Equal(t, want, got)
+}
+
+func TestMakeGetTweetHash_failsWhenGetTimestampThrowsError(t *testing.T) {
+	mockGetAuthor := tweets.MockGetAuthor("author", nil)
+	mockGetTimestamp := tweets.MockGetTimestamp("", errors.New("error while executing GetTimestamp"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+
+	getTweetHash := tweets.MakeGetTweetHash(mockGetAuthor, mockGetTimestamp)
 
 	want := tweets.FailedToObtainTweetTimestampInformation
-	_, got := getTweetInformation(mockTweetArticleWebElement)
+	_, got := getTweetHash(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }

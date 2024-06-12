@@ -9,28 +9,43 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-// GatherTweetInformation retrieves the tweet information from the given tweet element
-type GatherTweetInformation func(tweetArticleElement selenium.WebElement) (Tweet, error)
+type (
+	// GetTweetHash retrieves the tweet timestamp and hash from the given tweet element
+	GetTweetHash func(tweetArticleElement selenium.WebElement) (TweetHash, error)
 
-// MakeGetTweetInformation creates a new GatherTweetInformation
-func MakeGetTweetInformation(getAuthor GetAuthor, getTimestamp GetTimestamp, isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GatherTweetInformation {
-	return func(tweetArticleElement selenium.WebElement) (Tweet, error) {
+	// GetTweetInformation retrieves the tweet information from the given tweet element
+	GetTweetInformation func(tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error)
+)
+
+// MakeGetTweetHash creates a new GetTweetHash
+func MakeGetTweetHash(getAuthor GetAuthor, getTimestamp GetTimestamp) GetTweetHash {
+	return func(tweetArticleElement selenium.WebElement) (TweetHash, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
 			slog.Error(err.Error())
-			return Tweet{}, FailedToObtainTweetAuthorInformation
+			return TweetHash{}, FailedToObtainTweetAuthorInformation
 		}
 
 		tweetTimestamp, err := getTimestamp(tweetArticleElement)
 		if err != nil {
 			slog.Error(err.Error())
-			return Tweet{}, FailedToObtainTweetTimestampInformation
+			return TweetHash{}, FailedToObtainTweetTimestampInformation
 		}
 
 		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
 		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
 		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
 
+		return TweetHash{
+			ID:        tweetID,
+			Timestamp: tweetTimestamp,
+		}, nil
+	}
+}
+
+// MakeGetTweetInformation creates a new GetTweetInformation
+func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
+	return func(tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error) {
 		isTweetAReply := isAReply(tweetArticleElement)
 
 		tweetText, err := getText(tweetArticleElement, isTweetAReply)

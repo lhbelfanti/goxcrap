@@ -26,7 +26,7 @@ type (
 )
 
 // MakeRetrieveAll creates a new RetrieveAll
-func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, gatherTweetInformation GatherTweetInformation, scrollPage page.Scroll) RetrieveAll {
+func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetHash GetTweetHash, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
 	return func() ([]Tweet, error) {
 		var tweets []Tweet
 		for {
@@ -39,14 +39,18 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, gather
 			}
 
 			for _, article := range articles {
-				// TODO: improve this to avoid getting all the information to compare if the tweet was already added to the slice
-				tweet, err := gatherTweetInformation(article)
+				tweetHash, err := getTweetHash(article)
 				if err != nil {
 					slog.Error(err.Error())
 					continue
 				}
 
-				if !slices.ContainsFunc(tweets, compareTweetsByID(tweet.ID)) {
+				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
+					tweet, err := getTweetInformation(article, tweetHash.ID, tweetHash.Timestamp)
+					if err != nil {
+						slog.Error(err.Error())
+						continue
+					}
 					tweets = append(tweets, tweet)
 				}
 			}
