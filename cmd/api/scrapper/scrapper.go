@@ -22,7 +22,7 @@ func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSea
 		}
 		slog.Info("Log In completed")
 
-		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin/time.Second))
+		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
 		time.Sleep(waitTimeAfterLogin * time.Second)
 
 		searchCriteria := getAdvanceSearchCriteria()
@@ -44,7 +44,6 @@ func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSea
 					continue
 				}
 
-				//obtainedTweets, err := retrieveTweets()
 				obtainedTweets, err := retrieveTweets()
 				if err != nil {
 					slog.Error(err.Error())
