@@ -21,19 +21,19 @@ type (
 	WaitAndRetrieveAllCondition func(by, value string) SeleniumCondition
 
 	// SeleniumCondition is the condition that WaitAndRetrieve uses to check if it has to wait for the element
-	SeleniumCondition func(driver selenium.WebDriver) (bool, error)
+	SeleniumCondition func(wd selenium.WebDriver) (bool, error)
 )
 
 // MakeWaitAndRetrieve creates a new WaitAndRetrieve
-func MakeWaitAndRetrieve(driver selenium.WebDriver, condition WaitAndRetrieveCondition) WaitAndRetrieve {
+func MakeWaitAndRetrieve(wd selenium.WebDriver, condition WaitAndRetrieveCondition) WaitAndRetrieve {
 	return func(by, value string, timeout time.Duration) (selenium.WebElement, error) {
-		err := driver.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
+		err := wd.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
 			slog.Error(err.Error())
 			return nil, FailedToExecuteWaitWithTimeout
 		}
 
-		element, err := driver.FindElement(by, value)
+		element, err := wd.FindElement(by, value)
 		if err != nil {
 			slog.Error(err.Error())
 			return nil, FailedToRetrieveElement
@@ -46,8 +46,8 @@ func MakeWaitAndRetrieve(driver selenium.WebDriver, condition WaitAndRetrieveCon
 // MakeWaitAndRetrieveCondition create a new WaitAndRetrieveCondition that returns SeleniumCondition
 func MakeWaitAndRetrieveCondition() WaitAndRetrieveCondition {
 	return func(by, value string) SeleniumCondition {
-		return func(driver selenium.WebDriver) (bool, error) {
-			element, err := driver.FindElement(by, value)
+		return func(wd selenium.WebDriver) (bool, error) {
+			element, err := wd.FindElement(by, value)
 			if err == nil {
 				return element.IsDisplayed()
 			}
@@ -58,15 +58,15 @@ func MakeWaitAndRetrieveCondition() WaitAndRetrieveCondition {
 }
 
 // MakeWaitAndRetrieveAll creates a new WaitAndRetrieveAll
-func MakeWaitAndRetrieveAll(driver selenium.WebDriver, condition WaitAndRetrieveAllCondition) WaitAndRetrieveAll {
+func MakeWaitAndRetrieveAll(wd selenium.WebDriver, condition WaitAndRetrieveAllCondition) WaitAndRetrieveAll {
 	return func(by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
-		err := driver.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
+		err := wd.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
 			slog.Error(err.Error())
 			return nil, FailedToExecuteWaitWithTimeout
 		}
 
-		elements, err := driver.FindElements(by, value)
+		elements, err := wd.FindElements(by, value)
 		if err != nil {
 			slog.Error(err.Error())
 			return nil, FailedToRetrieveElements
@@ -79,8 +79,8 @@ func MakeWaitAndRetrieveAll(driver selenium.WebDriver, condition WaitAndRetrieve
 // MakeWaitAndRetrieveAllCondition create a new WaitAndRetrieveAllCondition that returns SeleniumCondition
 func MakeWaitAndRetrieveAllCondition() WaitAndRetrieveAllCondition {
 	return func(by, value string) SeleniumCondition {
-		return func(driver selenium.WebDriver) (bool, error) {
-			elements, err := driver.FindElements(by, value)
+		return func(wd selenium.WebDriver) (bool, error) {
+			elements, err := wd.FindElements(by, value)
 			if err == nil {
 				if len(elements) > 0 {
 					return elements[0].IsDisplayed()

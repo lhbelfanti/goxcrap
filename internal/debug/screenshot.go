@@ -16,9 +16,9 @@ import (
 type TakeScreenshot func() error
 
 // MakeTakeScreenshot creates a new TakeScreenshot
-func MakeTakeScreenshot(driver selenium.WebDriver) TakeScreenshot {
+func MakeTakeScreenshot(wd selenium.WebDriver) TakeScreenshot {
 	return func() error {
-		screenshotBytes, err := driver.Screenshot()
+		screenshotBytes, err := wd.Screenshot()
 		if err != nil {
 			slog.Error(err.Error())
 			return FailedToTakeScreenshot

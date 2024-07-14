@@ -19,7 +19,7 @@ This application collects tweets based on a defined search criteria, and save th
 ### Set up
 1. First of all you need to download the Chrome Web Driver that matches with the installed version of Google Chrome (the browser used for testing this project). </br>
     You can download it from [here](https://googlechromelabs.github.io/chrome-for-testing/), or you can use `@puppeteer/browsers` with [this](https://pptr.dev/browsers-api) installation guide. </br>
-    After that rename the binary to `chrome` and copy it inside the [internal/driver](./internal/driver) folder.
+    After that, copy it inside the [internal/driver](./internal/driver) folder.
 2. Create a `.env` file at the root of the project, and add the following environment variables:
 ```
 EMAIL=<your-twitter-account-email>

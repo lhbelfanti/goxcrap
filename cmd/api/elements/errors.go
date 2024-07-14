@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	FailedToExecuteWaitWithTimeout = errors.New("failed to execute driver.WaitWithTimeout")
+	FailedToExecuteWaitWithTimeout = errors.New("failed to execute wd.WaitWithTimeout")
 	FailedToRetrieveElement        = errors.New("failed to retrieve element")
 	FailedToRetrieveElements       = errors.New("failed to retrieve elements")
 

@@ -34,10 +34,16 @@ func main() {
 
 	/* --- Dependencies --- */
 	slog.Info(color.BlueString("Initializing WebDriver..."))
-	service := setup.Init(driver.InitWebDriverService(localMode))
-	defer driver.StopWebDriverService(service)
-	webDriver := setup.Init(driver.InitWebDriver(localMode))
-	defer driver.QuitWebDriver(webDriver)
+	var goXCrapWebDriver driver.GoXCrapWebDriver
+	if localMode {
+		goXCrapWebDriver = driver.NewLocalWebDriver()
+	} else {
+		goXCrapWebDriver = driver.NewDockerizedWebDriver()
+	}
+	service := setup.Init(goXCrapWebDriver.InitWebDriverService())
+	defer goXCrapWebDriver.StopWebDriverService(service)
+	webDriver := setup.Init(goXCrapWebDriver.InitWebDriver())
+	defer goXCrapWebDriver.QuitWebDriver(webDriver)
 	slog.Info(color.GreenString("WebDriver initialized!"))
 
 	slog.Info(color.BlueString("Loading env variables..."))
@@ -82,6 +88,7 @@ func main() {
 	executeScrapper := scrapper.MakeExecute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)
 	slog.Info(color.GreenString("Services initialized!"))
 
+	/* --- Program run --- */
 	if localMode {
 		slog.Info(color.BlueString("Executing scrapper..."))
 		err := executeScrapper(10)

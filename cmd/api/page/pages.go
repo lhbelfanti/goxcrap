@@ -20,9 +20,9 @@ type (
 )
 
 // MakeLoad creates a new Load
-func MakeLoad(driver selenium.WebDriver) Load {
+func MakeLoad(wd selenium.WebDriver) Load {
 	return func(relativeURL string, timeout time.Duration) error {
-		err := driver.SetPageLoadTimeout(timeout)
+		err := wd.SetPageLoadTimeout(timeout)
 		if err != nil {
 			slog.Error(err.Error())
 			return FailedToSetPageLoadTimeout
@@ -30,7 +30,7 @@ func MakeLoad(driver selenium.WebDriver) Load {
 
 		pageURL := twitterURL + relativeURL
 		slog.Info(color.GreenString("Accessing page: %s", pageURL))
-		err = driver.Get(pageURL)
+		err = wd.Get(pageURL)
 		if err != nil {
 			slog.Error(err.Error())
 			return FailedToRetrievePage
@@ -41,10 +41,10 @@ func MakeLoad(driver selenium.WebDriver) Load {
 }
 
 // MakeScroll creates a new Scroll
-func MakeScroll(driver selenium.WebDriver) Scroll {
+func MakeScroll(wd selenium.WebDriver) Scroll {
 	return func() error {
 		jsHeight := `return window.innerHeight;`
-		height, err := driver.ExecuteScript(jsHeight, nil)
+		height, err := wd.ExecuteScript(jsHeight, nil)
 		if err != nil {
 			slog.Error(err.Error())
 			return FailedToGetInnerHeight
@@ -52,7 +52,7 @@ func MakeScroll(driver selenium.WebDriver) Scroll {
 
 		// TODO: change  %v * 2 by the exact amount it should scroll
 		jsScroll := fmt.Sprintf("window.scrollBy(0, %v * 2);", height)
-		_, err = driver.ExecuteScript(jsScroll, nil)
+		_, err = wd.ExecuteScript(jsScroll, nil)
 		if err != nil {
 			slog.Error(err.Error())
 			return FailedToScroll
