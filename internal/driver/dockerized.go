@@ -14,11 +14,6 @@ import (
 // DockerizedWebDriver represents a Web Driver for the dockerized version of this application
 type DockerizedWebDriver struct{}
 
-// NewDockerizedWebDriver creates a new DockerizedWebDriver
-func NewDockerizedWebDriver() DockerizedWebDriver {
-	return DockerizedWebDriver{}
-}
-
 // InitWebDriverService creates a new Chrome Driver Service
 func (dwd DockerizedWebDriver) InitWebDriverService() (*selenium.Service, error) {
 	driverPath := os.Getenv("DRIVER_PATH")

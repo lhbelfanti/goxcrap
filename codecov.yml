@@ -1,6 +1,7 @@
 ignore:
   - "**/mocks.go"
   - "**/*_mock.go"
+  - "**/new.go"
   - "cmd/api/main.go"
   - "internal/debug/*"
   - "internal/driver/*"

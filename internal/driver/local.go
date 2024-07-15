@@ -13,11 +13,6 @@ import (
 // LocalWebDriver represents a Web Driver for the local version of this application
 type LocalWebDriver struct{}
 
-// NewLocalWebDriver creates a new LocalWebDriver
-func NewLocalWebDriver() LocalWebDriver {
-	return LocalWebDriver{}
-}
-
 // InitWebDriverService creates a new Chrome Driver Service
 func (lwd LocalWebDriver) InitWebDriverService() (*selenium.Service, error) {
 	slog.Info(fmt.Sprintf(color.BlueString("Initializing Chrome Driver Service using driver from:\n%s"), color.GreenString(chromeDriverPath)))

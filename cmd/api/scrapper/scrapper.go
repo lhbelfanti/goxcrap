@@ -10,7 +10,7 @@ import (
 	"goxcrap/cmd/api/tweets"
 )
 
-// Execute starts the twitter scrapper
+// Execute starts the X (formerly Twitter) scrapper
 type Execute func(waitTimeAfterLogin time.Duration) error
 
 // MakeExecute creates a new Execute

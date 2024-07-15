@@ -287,3 +287,26 @@ func (m *MockWebDriver) Wait(condition selenium.Condition) error {
 	args := m.Called(condition)
 	return args.Error(0)
 }
+
+// MockGoXCrapWebDriver is a mock implementation of GoXCrapWebDriver.
+type MockGoXCrapWebDriver struct {
+	mock.Mock
+}
+
+func (m *MockGoXCrapWebDriver) InitWebDriverService() (*selenium.Service, error) {
+	args := m.Called()
+	return args.Get(0).(*selenium.Service), args.Error(1)
+}
+
+func (m *MockGoXCrapWebDriver) StopWebDriverService(*selenium.Service) {
+	return
+}
+
+func (m *MockGoXCrapWebDriver) QuitWebDriver(selenium.WebDriver) {
+	return
+}
+
+func (m *MockGoXCrapWebDriver) InitWebDriver() (selenium.WebDriver, error) {
+	args := m.Called()
+	return args.Get(0).(selenium.WebDriver), args.Error(1)
+}

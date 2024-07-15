@@ -9,16 +9,22 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/scrapper"
+	"goxcrap/internal/driver"
 )
 
 func TestExecuteHandlerV1_success(t *testing.T) {
-	mockExecute := scrapper.MockExecute(nil)
+	mockGoXCrapWebDriver := new(driver.MockGoXCrapWebDriver)
+	mockSeleniumService := &selenium.Service{}
+	mockWebDriver := new(driver.MockWebDriver)
+	mockNewWebDriver := driver.MockNew(mockGoXCrapWebDriver, mockSeleniumService, mockWebDriver)
+	mockNewScrapper := scrapper.MockNew(nil)
 	mockResponseWriter := httptest.NewRecorder()
 	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/execute-scrapper/v1", strings.NewReader(""))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockExecute)
+	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriver, mockNewScrapper)
 
 	handlerV1(mockResponseWriter, mockRequest)
 
@@ -29,11 +35,15 @@ func TestExecuteHandlerV1_success(t *testing.T) {
 }
 
 func TestExecuteHandlerV1_failsWhenExecuteThrowsError(t *testing.T) {
-	mockExecute := scrapper.MockExecute(errors.New("execute scrapper failed"))
+	mockGoXCrapWebDriver := new(driver.MockGoXCrapWebDriver)
+	mockSeleniumService := &selenium.Service{}
+	mockWebDriver := new(driver.MockWebDriver)
+	mockNewWebDriver := driver.MockNew(mockGoXCrapWebDriver, mockSeleniumService, mockWebDriver)
+	mockNewScrapper := scrapper.MockNew(errors.New("execute scrapper failed"))
 	mockResponseWriter := httptest.NewRecorder()
 	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "/execute-scrapper/v1", strings.NewReader(""))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockExecute)
+	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriver, mockNewScrapper)
 
 	handlerV1(mockResponseWriter, mockRequest)
 
