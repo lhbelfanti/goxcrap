@@ -45,6 +45,11 @@ func (dwd DockerizedWebDriver) QuitWebDriver(webDriver selenium.WebDriver) {
 func (dwd DockerizedWebDriver) InitWebDriver() (selenium.WebDriver, error) {
 	browserPath := os.Getenv("BROWSER_PATH")
 
+	prefs := map[string]interface{}{
+		"profile.default_content_setting_values.media_stream": 2, // Disable media stream
+		"profile.managed_default_content_settings.images":     2, // Disable images
+	}
+
 	args := []string{
 		"--no-sandbox",
 		"--disable-dev-shm-usage",
@@ -77,12 +82,14 @@ func (dwd DockerizedWebDriver) InitWebDriver() (selenium.WebDriver, error) {
 		"--headless",
 	}
 
-	chromeCaps := chrome.Capabilities{}
+	chromeCaps := chrome.Capabilities{
+		Prefs: prefs,
+		Args:  args,
+	}
+
 	if browserPath != "" {
 		chromeCaps.Path = browserPath
 	}
-
-	chromeCaps.Args = args
 
 	slog.Info(fmt.Sprintf(color.BlueString("Setting up Chrome Capacities using the following Args:\n%s\n"), color.GreenString(strings.Join(chromeCaps.Args, "\n"))))
 	if chromeCaps.Path != "" {

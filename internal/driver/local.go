@@ -37,6 +37,11 @@ func (lwd LocalWebDriver) QuitWebDriver(webDriver selenium.WebDriver) {
 
 // InitWebDriver creates a new Chrome WebDriver
 func (lwd LocalWebDriver) InitWebDriver() (selenium.WebDriver, error) {
+	prefs := map[string]interface{}{
+		"profile.default_content_setting_values.media_stream": 2, // Disable media stream
+		"profile.managed_default_content_settings.images":     2, // Disable images
+	}
+
 	args := []string{
 		"--no-sandbox",
 		"--disable-dev-shm-usage",
@@ -68,7 +73,10 @@ func (lwd LocalWebDriver) InitWebDriver() (selenium.WebDriver, error) {
 		"--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
 	}
 
-	chromeCaps := chrome.Capabilities{Args: args}
+	chromeCaps := chrome.Capabilities{
+		Prefs: prefs,
+		Args:  args,
+	}
 
 	slog.Info(fmt.Sprintf(color.BlueString("Setting up Chrome Capacities using the following Args:\n%s\n"), color.GreenString(strings.Join(chromeCaps.Args, "\n"))))
 	if chromeCaps.Path != "" {
