@@ -9,8 +9,11 @@ import (
 )
 
 type (
-	// Criteria represents all the criteria that need to be taken in consideration for the tweets search
-	Criteria struct {
+	// Criteria represents a slice of Criterion
+	Criteria []Criterion
+
+	// Criterion represents all the criterion that need to be taken in consideration for the tweets search
+	Criterion struct {
 		ID               string
 		AllOfTheseWords  []string
 		ThisExactPhrase  string
@@ -80,24 +83,24 @@ func (d Date) After(other Date) bool {
 }
 
 // ParseDates parses both Since and Until strings in RFC3339 full-date format and returns the date value it represents
-func (c Criteria) ParseDates() (Date, Date, error) {
+func (c Criterion) ParseDates() (Date, Date, error) {
 	since, err := ParseDate(c.Since)
 	if err != nil {
 		slog.Error(err.Error())
-		return Date{}, Date{}, FailedToParseCriteriaSinceDate
+		return Date{}, Date{}, FailedToParseCriterionSinceDate
 	}
 
 	until, err := ParseDate(c.Until)
 	if err != nil {
 		slog.Error(err.Error())
-		return Date{}, Date{}, FailedToParseCriteriaUntilDate
+		return Date{}, Date{}, FailedToParseCriterionUntilDate
 	}
 
 	return since, until, nil
 }
 
-// ConvertIntoQueryString uses the Criteria properties to transform them into a query string for a Twitter search
-func (c Criteria) ConvertIntoQueryString() string {
+// ConvertIntoQueryString uses the Criterion properties to transform them into a query string for a Twitter search
+func (c Criterion) ConvertIntoQueryString() string {
 	queryString := "q="
 
 	queryString += strings.Join(c.AllOfTheseWords, " ")

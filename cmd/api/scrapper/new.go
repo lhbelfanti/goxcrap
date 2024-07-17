@@ -45,7 +45,6 @@ func MakeNew(localMode bool) New {
 		// Services
 		slog.Info(color.BlueString("Initializing services dependencies..."))
 		login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
-		getSearchCriteria := search.MakeGetAdvanceSearchCriteria()
 		executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
 		getTweetAuthor := tweets.MakeGetAuthor()
 		getTweetTimestamp := tweets.MakeGetTimestamp()
@@ -62,7 +61,7 @@ func MakeNew(localMode bool) New {
 		slog.Info(color.GreenString("Services dependencies initialized!"))
 
 		slog.Info(color.BlueString("Initializing services..."))
-		executeScrapper := MakeExecute(login, getSearchCriteria, executeAdvanceSearch, retrieveAllTweets)
+		executeScrapper := MakeExecute(login, executeAdvanceSearch, retrieveAllTweets)
 		slog.Info(color.GreenString("Services initialized!"))
 
 		return executeScrapper

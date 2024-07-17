@@ -5,7 +5,7 @@ import "errors"
 var (
 	FailedToLoadAdvanceSearchPage = errors.New("failed to load advance search page")
 
-	FailedToParseDate              = errors.New("failed to parse date")
-	FailedToParseCriteriaSinceDate = errors.New("failed to parse criteria.Since date")
-	FailedToParseCriteriaUntilDate = errors.New("failed to parse criteria.until date")
+	FailedToParseDate               = errors.New("failed to parse date")
+	FailedToParseCriterionSinceDate = errors.New("failed to parse criterion.Since date")
+	FailedToParseCriterionUntilDate = errors.New("failed to parse criterion.until date")
 )

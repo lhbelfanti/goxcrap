@@ -12,6 +12,7 @@ import (
 
 	"goxcrap/cmd/api/ping"
 	"goxcrap/cmd/api/scrapper"
+	"goxcrap/cmd/api/search"
 	"goxcrap/internal/driver"
 )
 
@@ -37,7 +38,7 @@ func main() {
 		executeScrapper := newScrapper(webDriver)
 
 		slog.Info(color.BlueString("Executing scrapper..."))
-		err := executeScrapper(10)
+		err := executeScrapper(search.MockExampleCriteria(), 10)
 		if err != nil {
 			log.Fatal(color.RedString(err.Error()))
 		}

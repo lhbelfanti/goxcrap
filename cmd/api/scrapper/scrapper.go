@@ -11,11 +11,11 @@ import (
 )
 
 // Execute starts the X (formerly Twitter) scrapper
-type Execute func(waitTimeAfterLogin time.Duration) error
+type Execute func(criteria search.Criteria, waitTimeAfterLogin time.Duration) error
 
 // MakeExecute creates a new Execute
-func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSearchCriteria, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll) Execute {
-	return func(waitTimeAfterLogin time.Duration) error {
+func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll) Execute {
+	return func(criteria search.Criteria, waitTimeAfterLogin time.Duration) error {
 		err := login()
 		if err != nil {
 			return err
@@ -25,20 +25,19 @@ func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSea
 		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
 		time.Sleep(waitTimeAfterLogin * time.Second)
 
-		searchCriteria := getAdvanceSearchCriteria()
-		for _, criteria := range searchCriteria {
-			slog.Info(fmt.Sprintf("Criteria: %s", criteria.ID))
-			since, until, err := criteria.ParseDates()
+		for _, criterion := range criteria {
+			slog.Info(fmt.Sprintf("Criterion: %s", criterion.ID))
+			since, until, err := criterion.ParseDates()
 			if err != nil {
 				slog.Error(err.Error())
 				continue
 			}
 
-			currentCriteria := criteria
+			currentCriterion := criterion
 			for current := since; !current.After(until); current = current.AddDays(1) {
-				currentCriteria.Since = current.String()
-				currentCriteria.Until = current.AddDays(1).String()
-				err := executeAdvanceSearch(currentCriteria)
+				currentCriterion.Since = current.String()
+				currentCriterion.Until = current.AddDays(1).String()
+				err := executeAdvanceSearch(currentCriterion)
 				if err != nil {
 					slog.Error(err.Error())
 					continue
@@ -53,7 +52,7 @@ func MakeExecute(login auth.Login, getAdvanceSearchCriteria search.GetAdvanceSea
 				slog.Info(fmt.Sprintf("%v", obtainedTweets))
 			}
 
-			slog.Info(fmt.Sprintf("All the tweets of the criteria '%s' were retrieved", criteria.ID))
+			slog.Info(fmt.Sprintf("All the tweets of the criterion '%s' were retrieved", criterion.ID))
 		}
 
 		return nil

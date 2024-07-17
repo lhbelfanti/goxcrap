@@ -121,33 +121,33 @@ func TestDate_After(t *testing.T) {
 
 func TestCriteria_ParseDates(t *testing.T) {
 	for _, test := range []struct {
-		criteria search.Criteria
-		want1    search.Date // if empty, expect an error
-		want2    search.Date // if empty, expect an error
+		criterion search.Criterion
+		want1     search.Date // if empty, expect an error
+		want2     search.Date // if empty, expect an error
 	}{
 		{
-			search.Criteria{Since: "2023-01-02", Until: "2023-01-03"},
+			search.Criterion{Since: "2023-01-02", Until: "2023-01-03"},
 			search.Date{Year: 2023, Month: 1, Day: 2},
 			search.Date{Year: 2023, Month: 1, Day: 3},
 		},
 		{
-			search.Criteria{Since: "2023-12-31", Until: "2024-01-31"},
+			search.Criterion{Since: "2023-12-31", Until: "2024-01-31"},
 			search.Date{Year: 2023, Month: 12, Day: 31},
 			search.Date{Year: 2024, Month: 1, Day: 31},
 		},
 		{
-			search.Criteria{Since: "0003-12-31", Until: "0004-01-31"},
+			search.Criterion{Since: "0003-12-31", Until: "0004-01-31"},
 			search.Date{Year: 3, Month: 12, Day: 31},
 			search.Date{Year: 4, Month: 1, Day: 31},
 		},
-		{search.Criteria{Since: "999-01-26", Until: "999-01-28"}, search.Date{}, search.Date{}},
-		{search.Criteria{Since: "2024-01-26", Until: "999-01-28"}, search.Date{}, search.Date{}},
-		{search.Criteria{Since: "", Until: "2024-01-28"}, search.Date{}, search.Date{}},
-		{search.Criteria{Since: "2024-01-26", Until: ""}, search.Date{}, search.Date{}},
-		{search.Criteria{Since: "2024-01-26e", Until: "2024-01-28"}, search.Date{}, search.Date{}},
-		{search.Criteria{Since: "2024-01-26", Until: "2024-01-28e"}, search.Date{}, search.Date{}},
+		{search.Criterion{Since: "999-01-26", Until: "999-01-28"}, search.Date{}, search.Date{}},
+		{search.Criterion{Since: "2024-01-26", Until: "999-01-28"}, search.Date{}, search.Date{}},
+		{search.Criterion{Since: "", Until: "2024-01-28"}, search.Date{}, search.Date{}},
+		{search.Criterion{Since: "2024-01-26", Until: ""}, search.Date{}, search.Date{}},
+		{search.Criterion{Since: "2024-01-26e", Until: "2024-01-28"}, search.Date{}, search.Date{}},
+		{search.Criterion{Since: "2024-01-26", Until: "2024-01-28e"}, search.Date{}, search.Date{}},
 	} {
-		got1, got2, err := test.criteria.ParseDates()
+		got1, got2, err := test.criterion.ParseDates()
 		if err != nil {
 			assert.Equal(t, search.Date{}, got1)
 			assert.Equal(t, search.Date{}, got2)
@@ -160,11 +160,11 @@ func TestCriteria_ParseDates(t *testing.T) {
 
 func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 	for _, test := range []struct {
-		criteria search.Criteria
-		want     string
+		criterion search.Criterion
+		want      string
 	}{
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				AllOfTheseWords:  []string{"all1", "all2"},
 				ThisExactPhrase:  "exact phrase",
 				AnyOfTheseWords:  []string{"any1", "any2"},
@@ -177,7 +177,7 @@ func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 			want: "q=all1%20all2%20%22exact%20phrase%22%20(any1%20OR%20any2)%20-none1%20-none2%20(%23hashtag1%20OR%20%23hashtag2)%20lang:es%20until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				ThisExactPhrase:  "exact phrase",
 				AnyOfTheseWords:  []string{"any1", "any2"},
 				NoneOfTheseWords: []string{"none1", "none2"},
@@ -189,7 +189,7 @@ func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 			want: "q=%22exact%20phrase%22%20(any1%20OR%20any2)%20-none1%20-none2%20(%23hashtag1%20OR%20%23hashtag2)%20lang:es%20until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				AnyOfTheseWords:  []string{"any1", "any2"},
 				NoneOfTheseWords: []string{"none1", "none2"},
 				TheseHashtags:    []string{"#hashtag1", "#hashtag2"},
@@ -200,7 +200,7 @@ func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 			want: "q=(any1%20OR%20any2)%20-none1%20-none2%20(%23hashtag1%20OR%20%23hashtag2)%20lang:es%20until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				NoneOfTheseWords: []string{"none1", "none2"},
 				TheseHashtags:    []string{"#hashtag1", "#hashtag2"},
 				Language:         "es",
@@ -210,7 +210,7 @@ func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 			want: "q=-none1%20-none2%20(%23hashtag1%20OR%20%23hashtag2)%20lang:es%20until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				TheseHashtags: []string{"#hashtag1", "#hashtag2"},
 				Language:      "es",
 				Since:         "2006-01-01",
@@ -219,7 +219,7 @@ func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 			want: "q=(%23hashtag1%20OR%20%23hashtag2)%20lang:es%20until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				Language: "es",
 				Since:    "2006-01-01",
 				Until:    "2024-01-01",
@@ -227,24 +227,24 @@ func TestCriteria_ConvertIntoQueryString(t *testing.T) {
 			want: "q=lang:es%20until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				Since: "2006-01-01",
 				Until: "2024-01-01",
 			},
 			want: "q=until:2024-01-01%20since:2006-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{
+			criterion: search.Criterion{
 				Until: "2024-01-01",
 			},
 			want: "q=until:2024-01-01&src=typed_query",
 		},
 		{
-			criteria: search.Criteria{},
-			want:     "q=&src=typed_query",
+			criterion: search.Criterion{},
+			want:      "q=&src=typed_query",
 		},
 	} {
-		got := test.criteria.ConvertIntoQueryString()
+		got := test.criterion.ConvertIntoQueryString()
 		assert.Equal(t, test.want, got)
 	}
 }
