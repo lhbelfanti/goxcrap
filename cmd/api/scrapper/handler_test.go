@@ -13,7 +13,7 @@ import (
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/scrapper"
-	"goxcrap/cmd/api/search"
+	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/internal/driver"
 )
 
@@ -23,7 +23,7 @@ func TestExecuteHandlerV1_success(t *testing.T) {
 	mockWebDriver := new(driver.MockWebDriver)
 	mockNewWebDriver := driver.MockNew(mockGoXCrapWebDriver, mockSeleniumService, mockWebDriver)
 	mockNewScrapper := scrapper.MockNew(nil)
-	mockCriteria := search.MockCriteria()
+	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
 	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
@@ -64,7 +64,7 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsError(t *testing.T) {
 	mockWebDriver := new(driver.MockWebDriver)
 	mockNewWebDriver := driver.MockNew(mockGoXCrapWebDriver, mockSeleniumService, mockWebDriver)
 	mockNewScrapper := scrapper.MockNew(errors.New("execute scrapper failed"))
-	mockCriteria := search.MockCriteria()
+	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
 	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))

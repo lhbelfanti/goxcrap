@@ -1,11 +1,8 @@
-package search
+package criteria
 
 type (
-	// CriteriaDTO represents a slice of CriterionDTO
-	CriteriaDTO []CriterionDTO
-
-	// CriterionDTO is a Data Transfer Object used to represent a Criterion type
-	CriterionDTO struct {
+	// DTO is a Data Transfer Object used to represent a Type
+	DTO struct {
 		ID               string   `json:"id,omitempty"`
 		AllOfTheseWords  []string `json:"all_of_these_words,omitempty"`
 		ThisExactPhrase  string   `json:"this_exact_phrase,omitempty"`
@@ -18,19 +15,9 @@ type (
 	}
 )
 
-// ToType converts a CriteriaDTO into a Criteria
-func (c CriteriaDTO) ToType() Criteria {
-	criteria := make(Criteria, 0, len(c))
-	for _, criterion := range c {
-		criteria = append(criteria, criterion.ToType())
-	}
-
-	return criteria
-}
-
-// ToType converts a CriterionDTO into a Criterion
-func (c CriterionDTO) ToType() Criterion {
-	return Criterion{
+// ToType converts a DTO into a Type
+func (c DTO) ToType() Type {
+	return Type{
 		ID:               c.ID,
 		AllOfTheseWords:  c.AllOfTheseWords,
 		ThisExactPhrase:  c.ThisExactPhrase,

@@ -1,16 +1,16 @@
-package search_test
+package criteria_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/cmd/api/search"
+	"goxcrap/cmd/api/search/criteria"
 )
 
 func TestCriteriaDTO_ToType_success(t *testing.T) {
-	want := search.MockCriteria()
-	got := search.MockCriteriaDTO().ToType()
+	want := criteria.MockCriteria()
+	got := criteria.MockCriteriaDTO().ToType()
 
 	assert.Equal(t, want, got)
 }

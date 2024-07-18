@@ -80,6 +80,7 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			return err
 		}
 
+		slog.Info("Log In completed")
 		return nil
 	}
 }

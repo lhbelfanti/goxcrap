@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"goxcrap/cmd/api/page"
+	"goxcrap/cmd/api/search/criteria"
 )
 
 const (
@@ -12,12 +13,12 @@ const (
 )
 
 // ExecuteAdvanceSearch is the first implementation of a search to retrieve tweets then
-type ExecuteAdvanceSearch func(criterion Criterion) error
+type ExecuteAdvanceSearch func(searchCriteria criteria.Type) error
 
 // MakeExecuteAdvanceSearch creates a new ExecuteAdvanceSearch
 func MakeExecuteAdvanceSearch(loadPage page.Load) ExecuteAdvanceSearch {
-	return func(criterion Criterion) error {
-		queryString := criterion.ConvertIntoQueryString()
+	return func(searchCriteria criteria.Type) error {
+		queryString := searchCriteria.ConvertIntoQueryString()
 		err := loadPage("/search?"+queryString, pageLoaderTimeout)
 		if err != nil {
 			slog.Error(err.Error())

@@ -5,7 +5,7 @@ import (
 
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/search"
+	"goxcrap/cmd/api/search/criteria"
 )
 
 // MockNew mocks New function
@@ -17,7 +17,7 @@ func MockNew(err error) New {
 
 // MockExecute mocks Execute function
 func MockExecute(err error) Execute {
-	return func(criteria search.Criteria, waitTimeAfterLogin time.Duration) error {
+	return func(searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
 		return err
 	}
 }

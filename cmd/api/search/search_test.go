@@ -8,11 +8,12 @@ import (
 
 	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search"
+	"goxcrap/cmd/api/search/criteria"
 )
 
 func TestExecuteAdvanceSearch_success(t *testing.T) {
 	mockLoadPage := page.MockLoad(nil)
-	mockCriteria := search.MockCriteria()[0]
+	mockCriteria := criteria.MockCriteria()
 
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
@@ -24,7 +25,7 @@ func TestExecuteAdvanceSearch_success(t *testing.T) {
 func TestExecuteAdvanceSearch_failsWhenLoadPageThrowsError(t *testing.T) {
 	err := errors.New("error while executing loadPage")
 	mockLoadPage := page.MockLoad(err)
-	mockCriteria := search.MockCriteria()[0]
+	mockCriteria := criteria.MockCriteria()
 
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
