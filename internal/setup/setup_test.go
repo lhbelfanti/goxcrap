@@ -21,3 +21,15 @@ func TestInit_fails(t *testing.T) {
 		_ = setup.Init("test", errors.New("initialization failed"))
 	})
 }
+
+func TestMust_success(t *testing.T) {
+	assert.NotPanics(t, func() {
+		setup.Must(nil)
+	})
+}
+
+func TestMust_fails(t *testing.T) {
+	assert.Panics(t, func() {
+		setup.Must(errors.New("initialization failed"))
+	})
+}

@@ -8,7 +8,7 @@ import (
 	"github.com/tebeka/selenium/log"
 )
 
-// MockWebDriver is a mock implementation of WebDriver.
+// MockWebDriver is a mock implementation of selenium.WebDriver.
 type MockWebDriver struct {
 	mock.Mock
 }

@@ -25,7 +25,7 @@ func MakeNew(localMode bool) New {
 	return func(webDriver selenium.WebDriver) Execute {
 		slog.Info(color.BlueString("Loading env variables..."))
 		if localMode {
-			setup.Init(0, godotenv.Load())
+			setup.Must(godotenv.Load())
 		}
 		variables := env.LoadVariables()
 		slog.Info(color.GreenString("Env variables initialized!"))

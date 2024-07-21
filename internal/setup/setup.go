@@ -8,3 +8,10 @@ func Init[T any](val T, err error) T {
 
 	return val
 }
+
+// Must function throws a panic if the initialization of a dependency fails
+func Must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

@@ -1,5 +1,7 @@
 package criteria
 
+import "encoding/json"
+
 type (
 	// DTO is a Data Transfer Object used to represent a Type
 	DTO struct {
@@ -12,6 +14,11 @@ type (
 		Language         string   `json:"language,omitempty"`
 		Since            string   `json:"since,omitempty"`
 		Until            string   `json:"until,omitempty"`
+	}
+
+	// IncomingBrokerMessageDTO is the message to enqueue in the message broker
+	IncomingBrokerMessageDTO struct {
+		Message json.RawMessage `json:"message"`
 	}
 )
 
