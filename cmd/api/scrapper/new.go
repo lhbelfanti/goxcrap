@@ -4,7 +4,6 @@ import (
 	"log/slog"
 
 	"github.com/fatih/color"
-	"github.com/joho/godotenv"
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/auth"
@@ -13,7 +12,6 @@ import (
 	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/setup"
 )
 
 // New initializes all the functions of a scrapper (only Execute for now)
@@ -21,12 +19,9 @@ import (
 type New func(webDriver selenium.WebDriver) Execute
 
 // MakeNew creates a new New
-func MakeNew(localMode bool) New {
+func MakeNew() New {
 	return func(webDriver selenium.WebDriver) Execute {
 		slog.Info(color.BlueString("Loading env variables..."))
-		if localMode {
-			setup.Must(godotenv.Load())
-		}
 		variables := env.LoadVariables()
 		slog.Info(color.GreenString("Env variables initialized!"))
 

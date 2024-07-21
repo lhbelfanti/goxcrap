@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"goxcrap/cmd/api/page"
-	"goxcrap/internal/driver"
+	"goxcrap/internal/webdriver"
 )
 
 func TestLoad_success(t *testing.T) {
-	mockWebDriver := new(driver.MockWebDriver)
+	mockWebDriver := new(webdriver.Mock)
 	mockWebDriver.On("SetPageLoadTimeout", mock.Anything).Return(nil)
 	mockWebDriver.On("Get", mock.Anything).Return(nil)
 
@@ -26,7 +26,7 @@ func TestLoad_success(t *testing.T) {
 
 func TestLoad_failsWhenSetPageLoadTimeoutThrowsError(t *testing.T) {
 	err := errors.New("error while executing driver.SetPageLoadTimeout")
-	mockWebDriver := new(driver.MockWebDriver)
+	mockWebDriver := new(webdriver.Mock)
 	mockWebDriver.On("SetPageLoadTimeout", mock.Anything).Return(err)
 
 	load := page.MakeLoad(mockWebDriver)
@@ -39,7 +39,7 @@ func TestLoad_failsWhenSetPageLoadTimeoutThrowsError(t *testing.T) {
 
 func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 	err := errors.New("error while executing driver.Get")
-	mockWebDriver := new(driver.MockWebDriver)
+	mockWebDriver := new(webdriver.Mock)
 	mockWebDriver.On("SetPageLoadTimeout", mock.Anything).Return(nil)
 	mockWebDriver.On("Get", mock.Anything).Return(err)
 
@@ -52,7 +52,7 @@ func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 }
 
 func TestScroll_success(t *testing.T) {
-	mockWebDriver := new(driver.MockWebDriver)
+	mockWebDriver := new(webdriver.Mock)
 	mockWebDriver.On("ExecuteScript", mock.Anything, mock.Anything).Return(nil, nil)
 
 	scroll := page.MakeScroll(mockWebDriver)
@@ -63,7 +63,7 @@ func TestScroll_success(t *testing.T) {
 }
 
 func TestScroll_failsWhenJSHeightCodeExecutionThrowsError(t *testing.T) {
-	mockWebDriver := new(driver.MockWebDriver)
+	mockWebDriver := new(webdriver.Mock)
 	mockWebDriver.On("ExecuteScript", `return window.innerHeight;`, mock.Anything).Return(100, errors.New("error while executing first code"))
 
 	scroll := page.MakeScroll(mockWebDriver)
@@ -75,7 +75,7 @@ func TestScroll_failsWhenJSHeightCodeExecutionThrowsError(t *testing.T) {
 }
 
 func TestScroll_failsWhenScrollByCodeExecutionThrowsError(t *testing.T) {
-	mockWebDriver := new(driver.MockWebDriver)
+	mockWebDriver := new(webdriver.Mock)
 	mockWebDriver.On("ExecuteScript", `return window.innerHeight;`, mock.Anything).Return(100, nil)
 	mockWebDriver.On("ExecuteScript", `window.scrollBy(0, 100 * 2);`, mock.Anything).Return(nil, errors.New("error while executing second code"))
 

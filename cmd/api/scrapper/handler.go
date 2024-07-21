@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/internal/driver"
+	"goxcrap/internal/webdriver"
 )
 
 const waitTimeAfterLogin time.Duration = 10
 
 // ExecuteHandlerV1 HTTP Handler of the endpoint /execute-scrapper/v1
-func ExecuteHandlerV1(newWebDriver driver.New, newScrapper New) http.HandlerFunc {
+func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var dto criteria.DTO
 		err := json.NewDecoder(r.Body).Decode(&dto)
@@ -23,11 +23,10 @@ func ExecuteHandlerV1(newWebDriver driver.New, newScrapper New) http.HandlerFunc
 			return
 		}
 
-		goXCrapWebDriver, service, webDriver := newWebDriver()
-		defer goXCrapWebDriver.StopWebDriverService(service)
-		defer goXCrapWebDriver.QuitWebDriver(webDriver)
+		webDriverManager := newWebDriverManager()
+		defer stop(webDriverManager)
 
-		execute := newScrapper(webDriver)
+		execute := newScrapper(webDriverManager.WebDriver())
 		err = execute(dto.ToType(), waitTimeAfterLogin)
 		if err != nil {
 			slog.Error(err.Error())
@@ -37,5 +36,13 @@ func ExecuteHandlerV1(newWebDriver driver.New, newScrapper New) http.HandlerFunc
 
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("Scrapper successfully executed"))
+	}
+}
+
+// stop deferred function that handles the webDriver.Quit method
+func stop(webDriverManager webdriver.Manager) {
+	err := webDriverManager.Quit()
+	if err != nil {
+		slog.Error(err.Error())
 	}
 }

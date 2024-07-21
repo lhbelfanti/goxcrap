@@ -21,7 +21,7 @@ services:
     networks:
       - network
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'curl -sSf http://localhost:8091/ping/v1 || exit 1'"]
+      test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:8091/ping/v1 || exit 1'" ]
       interval: 5s
       timeout: 10s
       retries: 5

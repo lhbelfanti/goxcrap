@@ -9,13 +9,14 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 
 	"goxcrap/cmd/api/ping"
 	"goxcrap/cmd/api/scrapper"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/internal/broker"
-	"goxcrap/internal/driver"
 	"goxcrap/internal/setup"
+	"goxcrap/internal/webdriver"
 )
 
 var localMode bool
@@ -37,13 +38,18 @@ func main() {
 
 func runLocal() {
 	/* --- Dependencies --- */
-	newWebDriver := driver.MakeNew(localMode)
-	goXCrapWebDriver, service, webDriver := newWebDriver()
-	defer goXCrapWebDriver.StopWebDriverService(service)
-	defer goXCrapWebDriver.QuitWebDriver(webDriver)
+	setup.Must(godotenv.Load())
+	newScrapper := scrapper.MakeNew()
+	newWebDriverManager := webdriver.MakeNewManager(localMode)
+	webDriverManager := newWebDriverManager()
+	defer func(webDriverManager webdriver.Manager) {
+		err := webDriverManager.Quit()
+		if err != nil {
+			slog.Error(err.Error())
+		}
+	}(webDriverManager)
 
-	newScrapper := scrapper.MakeNew(localMode)
-	executeScrapper := newScrapper(webDriver)
+	executeScrapper := newScrapper(webDriverManager.WebDriver())
 
 	/* --- Run --- */
 	slog.Info(color.BlueString("Executing scrapper..."))
@@ -60,15 +66,15 @@ func runDockerized() {
 	messageBroker := setup.Init(broker.NewMessageBroker())
 	go messageBroker.InitMessageConsumer(2, "/execute-scrapper/v1")
 
-	newWebDriver := driver.MakeNew(localMode)
-	newScrapper := scrapper.MakeNew(localMode)
+	newWebDriverManager := webdriver.MakeNewManager(localMode)
+	newScrapper := scrapper.MakeNew()
 
 	/* --- Router --- */
 	slog.Info(color.BlueString("Initializing router..."))
 	router := http.NewServeMux()
 	router.HandleFunc("GET /ping/v1", ping.HandlerV1())
 	router.HandleFunc("POST /enqueue-criteria/v1", criteria.EnqueueHandlerV1(messageBroker))
-	router.HandleFunc("POST /execute-scrapper/v1", scrapper.ExecuteHandlerV1(newWebDriver, newScrapper))
+	router.HandleFunc("POST /execute-scrapper/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper))
 	slog.Info(color.GreenString("Router initialized!"))
 
 	/* --- Server --- */
