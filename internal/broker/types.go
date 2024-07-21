@@ -2,7 +2,6 @@ package broker
 
 import (
 	"fmt"
-	"log/slog"
 	"os"
 
 	"github.com/rabbitmq/amqp091-go"
@@ -33,8 +32,5 @@ func resolveRabbitmqURL() string {
 	user := os.Getenv("RABBITMQ_USER")
 	pass := os.Getenv("RABBITMQ_PASS")
 
-	url := fmt.Sprintf(rabbitmqURL, user, pass)
-
-	slog.Info(url)
-	return url
+	return fmt.Sprintf(rabbitmqURL, user, pass)
 }

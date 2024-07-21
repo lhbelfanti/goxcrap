@@ -3,12 +3,10 @@ package broker
 import (
 	"bytes"
 	"fmt"
+	"github.com/rabbitmq/amqp091-go"
 	"io"
 	"log/slog"
 	"net/http"
-	"time"
-
-	"github.com/rabbitmq/amqp091-go"
 )
 
 // NewMessageBroker creates a new pointer of RabbitMQMessageBroker
@@ -17,7 +15,7 @@ func NewMessageBroker() (*RabbitMQMessageBroker, error) {
 	var err error
 
 	// Connect to RabbitMQ
-	messageBroker.conn, err = connectRabbitMQ(resolveRabbitmqURL())
+	messageBroker.conn, err = amqp091.Dial(resolveRabbitmqURL())
 	if err != nil {
 		slog.Error(err.Error())
 		return nil, FailedToInitializeRabbitMQ
@@ -60,22 +58,6 @@ func NewMessageBroker() (*RabbitMQMessageBroker, error) {
 	}
 
 	return messageBroker, nil
-}
-
-// connectRabbitMQ creates a new connection to RabbitMQ. It retries up to 5 times in case of error
-func connectRabbitMQ(url string) (*amqp091.Connection, error) {
-	var conn *amqp091.Connection
-	var err error
-	const retryIn time.Duration = 20
-	for i := 0; i < 5; i++ {
-		conn, err = amqp091.Dial(url)
-		if err == nil {
-			return conn, nil
-		}
-		slog.Error(fmt.Sprintf("RabbitMQ connection failed: %v. Retrying in %d seconds...", err, retryIn))
-		time.Sleep(retryIn * time.Second)
-	}
-	return nil, err
 }
 
 // EnqueueMessage enqueues a new message in the RabbitMQMessageBroker.queue
