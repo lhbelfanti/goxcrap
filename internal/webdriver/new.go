@@ -17,9 +17,9 @@ func MakeNewManager(localMode bool) NewManager {
 		slog.Info(color.BlueString("Initializing WebDriver..."))
 		var manager Manager
 		if localMode {
-			manager = LocalManager{}
+			manager = &LocalManager{}
 		} else {
-			manager = DockerizedManager{}
+			manager = &DockerizedManager{}
 		}
 		setup.Must(manager.InitWebDriverService())
 		setup.Must(manager.InitWebDriver())

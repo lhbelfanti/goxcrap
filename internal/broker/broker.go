@@ -66,7 +66,7 @@ func NewMessageBroker() (*RabbitMQMessageBroker, error) {
 func connectRabbitMQ(url string) (*amqp091.Connection, error) {
 	var conn *amqp091.Connection
 	var err error
-	const retryIn time.Duration = 10
+	const retryIn time.Duration = 20
 	for i := 0; i < 5; i++ {
 		conn, err = amqp091.Dial(url)
 		if err == nil {

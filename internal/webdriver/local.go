@@ -17,7 +17,7 @@ type LocalManager struct {
 }
 
 // InitWebDriverService initializes a new Chrome *selenium.Service
-func (lwd LocalManager) InitWebDriverService() error {
+func (lwd *LocalManager) InitWebDriverService() error {
 	slog.Info(fmt.Sprintf(color.BlueString("Initializing Chrome Driver Service using driver from:\n%s"), color.GreenString(chromeDriverPath)))
 	service, err := selenium.NewChromeDriverService(chromeDriverPath, chromeDriverServicePort)
 	if err != nil {
@@ -31,7 +31,7 @@ func (lwd LocalManager) InitWebDriverService() error {
 }
 
 // InitWebDriver initializes a new Chrome selenium.WebDriver
-func (lwd LocalManager) InitWebDriver() error {
+func (lwd *LocalManager) InitWebDriver() error {
 	chromeCaps := chrome.Capabilities{
 		Prefs: capabilitiesPreferences,
 		Args:  capabilitiesArgs,
@@ -66,7 +66,7 @@ func (lwd LocalManager) InitWebDriver() error {
 }
 
 // Quit stops the selenium.WebDriver and its *selenium.Service to avoid leaks if the app is terminated
-func (lwd LocalManager) Quit() error {
+func (lwd *LocalManager) Quit() error {
 	err := lwd.service.Stop()
 	if err != nil {
 		slog.Error(err.Error())
@@ -83,6 +83,6 @@ func (lwd LocalManager) Quit() error {
 }
 
 // WebDriver returns the initialized selenium.WebDriver
-func (lwd LocalManager) WebDriver() selenium.WebDriver {
+func (lwd *LocalManager) WebDriver() selenium.WebDriver {
 	return lwd.webDriver
 }

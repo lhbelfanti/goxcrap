@@ -18,7 +18,7 @@ type DockerizedManager struct {
 }
 
 // InitWebDriverService initializes a new Chrome *selenium.Service
-func (dwd DockerizedManager) InitWebDriverService() error {
+func (dwd *DockerizedManager) InitWebDriverService() error {
 	driverPath := os.Getenv("DRIVER_PATH")
 	if driverPath == "" {
 		driverPath = chromeDriverPath
@@ -38,7 +38,7 @@ func (dwd DockerizedManager) InitWebDriverService() error {
 }
 
 // InitWebDriver initializes a new Chrome selenium.WebDriver
-func (dwd DockerizedManager) InitWebDriver() error {
+func (dwd *DockerizedManager) InitWebDriver() error {
 	browserPath := os.Getenv("BROWSER_PATH")
 
 	capabilitiesArgs = append(capabilitiesArgs, "--headless")
@@ -74,7 +74,7 @@ func (dwd DockerizedManager) InitWebDriver() error {
 }
 
 // Quit stops the selenium.WebDriver and its *selenium.Service to avoid leaks if the app is terminated
-func (dwd DockerizedManager) Quit() error {
+func (dwd *DockerizedManager) Quit() error {
 	err := dwd.service.Stop()
 	if err != nil {
 		slog.Error(err.Error())
@@ -91,6 +91,6 @@ func (dwd DockerizedManager) Quit() error {
 }
 
 // WebDriver returns the initialized selenium.WebDriver
-func (dwd DockerizedManager) WebDriver() selenium.WebDriver {
+func (dwd *DockerizedManager) WebDriver() selenium.WebDriver {
 	return dwd.webDriver
 }
