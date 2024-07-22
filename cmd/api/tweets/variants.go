@@ -63,10 +63,6 @@ func MakeHasQuote() HasQuote {
 		}
 
 		_, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
-		/*if err != nil {
-			slog.Error("HasQuote - Failed to find element:", slog.String("xPath", xPath))
-		}*/
-
 		return err == nil
 	}
 }

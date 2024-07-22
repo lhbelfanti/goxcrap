@@ -55,6 +55,21 @@ func TestExecute_successWhenRetrieveAllThrowsError(t *testing.T) {
 	assert.Nil(t, got)
 }
 
+func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
+	mockLogin := auth.MockLogin(errors.New("error while executing login"))
+	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
+	mockTweet := tweets.MockTweet()
+	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
+	mockCriteria := criteria.MockCriteria()
+
+	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
+
+	want := scrapper.FailedToLogin
+	got := executeScrapper(mockCriteria, 0)
+
+	assert.Equal(t, want, got)
+}
+
 func TestExecute_failsWhileTryingToParseDatesFromTheGivenCriteriaThrowsError(t *testing.T) {
 	mockLogin := auth.MockLogin(nil)
 	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
@@ -66,21 +81,6 @@ func TestExecute_failsWhileTryingToParseDatesFromTheGivenCriteriaThrowsError(t *
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
 
 	want := scrapper.FailedToParseDatesFromTheGivenCriteria
-	got := executeScrapper(mockCriteria, 0)
-
-	assert.Equal(t, want, got)
-}
-
-func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
-	want := errors.New("error while executing login")
-	mockLogin := auth.MockLogin(want)
-	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
-	mockTweet := tweets.MockTweet()
-	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
-	mockCriteria := criteria.MockCriteria()
-
-	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets)
-
 	got := executeScrapper(mockCriteria, 0)
 
 	assert.Equal(t, want, got)

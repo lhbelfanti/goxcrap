@@ -19,7 +19,7 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 	return func(searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
 		err := login()
 		if err != nil {
-			return err
+			return FailedToLogin
 		}
 
 		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))

@@ -74,7 +74,7 @@ func runDockerized() {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /ping/v1", ping.HandlerV1())
 	router.HandleFunc("POST /enqueue-criteria/v1", criteria.EnqueueHandlerV1(messageBroker))
-	router.HandleFunc("POST /execute-scrapper/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper))
+	router.HandleFunc("POST /execute-scrapper/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper, messageBroker))
 	slog.Info(color.GreenString("Router initialized!"))
 
 	/* --- Server --- */
