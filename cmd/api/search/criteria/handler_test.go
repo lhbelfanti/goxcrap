@@ -22,7 +22,7 @@ func TestEnqueueHandlerV1_success(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/enqueue-criteria/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/criteria/enqueue/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := criteria.EnqueueHandlerV1(mockMessageBroker)
 
@@ -39,7 +39,7 @@ func TestEnqueueHandlerV1_failsWhenTheBodyIsInvalid(t *testing.T) {
 	mockMessageBroker.On("EnqueueMessage", mock.Anything).Return(nil)
 	mockBody, _ := json.Marshal(`{"wrong": "body"}`)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/enqueue-criteria/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/criteria/enqueue/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := criteria.EnqueueHandlerV1(mockMessageBroker)
 
@@ -57,7 +57,7 @@ func TestEnqueueHandlerV1_failsWhenEnqueueMessageThrowsError(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/enqueue-criteria/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/criteria/enqueue/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := criteria.EnqueueHandlerV1(mockMessageBroker)
 

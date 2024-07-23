@@ -17,7 +17,7 @@ import (
 
 const waitTimeAfterLogin time.Duration = 10
 
-// ExecuteHandlerV1 HTTP Handler of the endpoint /execute-scrapper/v1
+// ExecuteHandlerV1 HTTP Handler of the endpoint /scrapper/execute/v1
 func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New, messageBroker broker.MessageBroker) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var dto criteria.DTO

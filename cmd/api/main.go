@@ -64,7 +64,7 @@ func runLocal() {
 func runDockerized() {
 	/* --- Dependencies --- */
 	messageBroker := setup.Init(broker.NewMessageBroker())
-	go messageBroker.InitMessageConsumer(2, "/execute-scrapper/v1")
+	go messageBroker.InitMessageConsumer(2, "/scrapper/execute/v1")
 
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	newScrapper := scrapper.MakeNew()
@@ -73,8 +73,8 @@ func runDockerized() {
 	slog.Info(color.BlueString("Initializing router..."))
 	router := http.NewServeMux()
 	router.HandleFunc("GET /ping/v1", ping.HandlerV1())
-	router.HandleFunc("POST /enqueue-criteria/v1", criteria.EnqueueHandlerV1(messageBroker))
-	router.HandleFunc("POST /execute-scrapper/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper, messageBroker))
+	router.HandleFunc("POST /criteria/enqueue/v1", criteria.EnqueueHandlerV1(messageBroker))
+	router.HandleFunc("POST /scrapper/execute/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper, messageBroker))
 	slog.Info(color.GreenString("Router initialized!"))
 
 	/* --- Server --- */

@@ -30,7 +30,7 @@ func TestExecuteHandlerV1_success(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -54,7 +54,7 @@ func TestExecuteHandlerV1_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseI
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -77,7 +77,7 @@ func TestExecuteHandlerV1_failsWhenHandlerThrowsInvalidBody(t *testing.T) {
 	mockMessageBroker.On("EnqueueMessage", mock.Anything).Return(nil)
 	mockBody, _ := json.Marshal(`{"wrong": "body"}`)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -101,7 +101,7 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsError(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -125,7 +125,7 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -149,7 +149,7 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/execute-scrapper/v1", bytes.NewReader(mockBody))
+	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
 	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 

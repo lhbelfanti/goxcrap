@@ -8,7 +8,7 @@ import (
 	"goxcrap/internal/broker"
 )
 
-// EnqueueHandlerV1 HTTP Handler of the endpoint /enqueue-criteria/v1
+// EnqueueHandlerV1 HTTP Handler of the endpoint /criteria/enqueue/v1
 func EnqueueHandlerV1(messageBroker broker.MessageBroker) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var message IncomingBrokerMessageDTO
