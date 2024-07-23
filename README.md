@@ -27,9 +27,9 @@ This application collects tweets based on a defined search criteria, and save th
 2. Create a `.env` file at the root of the project, and add the following environment variables:
 
 ```
-EMAIL=<your-twitter-account-email>
-USERNAME=<your-twitter-username>
-PASSWORD=<your-twitter-password>
+EMAIL=<Twitter account email>
+USERNAME=<Twitter username>
+PASSWORD=<Twitter password>
 ```
 
 ### Run
@@ -47,17 +47,19 @@ go run cmd/api/main.go --local
 1. Create a `.env` file at the root of the project, and add the following environment variables:
 
 ```
-EMAIL=<your-twitter-account-email>
-USERNAME=<your-twitter-username>
-PASSWORD=<your-twitter-password>
-DRIVER_PATH=/usr/bin/chromedriver
-BROWSER_PATH=/usr/bin/chromium
+EMAIL=<Twitter account email>
+USERNAME=<Twitter username>
+PASSWORD=<Twitter password>
+DRIVER_PATH=<The path to the Chrome driver> --> Example: /usr/bin/chromedriver
+BROWSER_PATH=<The path to the Chrome browser> --> Example: /usr/bin/chromium
+RABBITMQ_USER=<The RabbitMQ user>
+RABBITMQ_PASS=<The RabbitMQ password>
 ```
 
 ### Build & Run
 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 ---
@@ -65,3 +67,10 @@ docker-compose up --build
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Logo License
+
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+The logo was obtained from https://github.com/ashleymcnamara/gophers, but it was slightly modified to be representative for this repository.
+
