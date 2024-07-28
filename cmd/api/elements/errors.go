@@ -1,8 +1,6 @@
 package elements
 
-import (
-	"errors"
-)
+import "errors"
 
 var (
 	FailedToExecuteWaitWithTimeout = errors.New("failed to execute wd.WaitWithTimeout")

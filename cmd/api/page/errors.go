@@ -1,8 +1,6 @@
 package page
 
-import (
-	"errors"
-)
+import "errors"
 
 var (
 	FailedToSetPageLoadTimeout = errors.New("failed to driver.SetPageLoadTimeout")

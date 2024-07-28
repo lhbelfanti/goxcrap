@@ -1,8 +1,6 @@
 package page
 
-import (
-	"time"
-)
+import "time"
 
 // MockLoad mocks Load function
 func MockLoad(err error) Load {

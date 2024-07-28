@@ -1,8 +1,6 @@
 package env
 
-import (
-	"os"
-)
+import "os"
 
 // LoadVariables loads environment variables
 func LoadVariables() Variables {

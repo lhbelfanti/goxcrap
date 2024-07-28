@@ -3,10 +3,11 @@ package broker
 import (
 	"bytes"
 	"fmt"
-	"github.com/rabbitmq/amqp091-go"
 	"io"
 	"log/slog"
 	"net/http"
+
+	"github.com/rabbitmq/amqp091-go"
 )
 
 // NewMessageBroker creates a new pointer of RabbitMQMessageBroker

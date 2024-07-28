@@ -1,8 +1,6 @@
 package debug
 
-import (
-	"errors"
-)
+import "errors"
 
 var (
 	FailedToTakeScreenshot       = errors.New("failed to take screenshot")

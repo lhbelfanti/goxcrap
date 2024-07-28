@@ -1,8 +1,6 @@
 package ping
 
-import (
-	"net/http"
-)
+import "net/http"
 
 // HandlerV1 HTTP Handler of the endpoint /ping/v1
 func HandlerV1() http.HandlerFunc {

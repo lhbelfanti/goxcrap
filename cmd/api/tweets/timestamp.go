@@ -6,9 +6,7 @@ import (
 	"github.com/tebeka/selenium"
 )
 
-const (
-	timestampXPath string = "div[1]/div"
-)
+const timestampXPath string = "div[1]/div"
 
 // GetTimestamp retrieves the tweet timestamp from the datetime attribute of the time element.
 // It will only be used to create a unique ID for the tweet
