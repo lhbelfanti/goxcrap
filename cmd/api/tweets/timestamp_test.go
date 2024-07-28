@@ -27,6 +27,9 @@ func TestGetTimestamp_success(t *testing.T) {
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
+	mockTweetArticleWebElement.AssertExpectations(t)
+	mockTweetTimestampWebElement.AssertExpectations(t)
+	mockTweetTimestampTimeTagWebElement.AssertExpectations(t)
 }
 
 func TestGetTimestamp_failsWhenFirstFindElementThrowsError(t *testing.T) {
@@ -39,6 +42,7 @@ func TestGetTimestamp_failsWhenFirstFindElementThrowsError(t *testing.T) {
 	_, got := getTimestamp(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
+	mockTweetArticleWebElement.AssertExpectations(t)
 }
 
 func TestGetTimestamp_failsWhenSecondFindElementThrowsError(t *testing.T) {
@@ -53,6 +57,8 @@ func TestGetTimestamp_failsWhenSecondFindElementThrowsError(t *testing.T) {
 	_, got := getTimestamp(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
+	mockTweetArticleWebElement.AssertExpectations(t)
+	mockTweetTimestampWebElement.AssertExpectations(t)
 }
 
 func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
@@ -69,4 +75,7 @@ func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
 	_, got := getTimestamp(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
+	mockTweetArticleWebElement.AssertExpectations(t)
+	mockTweetTimestampWebElement.AssertExpectations(t)
+	mockTweetTimestampTimeTagWebElement.AssertExpectations(t)
 }

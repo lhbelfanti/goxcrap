@@ -37,6 +37,10 @@ func TestGetText_success(t *testing.T) {
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+		mockTextPartImg.AssertExpectations(t)
 	}
 }
 
@@ -65,6 +69,10 @@ func TestGetText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+		mockTextPartImg.AssertExpectations(t)
 	}
 }
 
@@ -85,6 +93,8 @@ func TestGetText_failsWhenFindElementThrowsError(t *testing.T) {
 		_, got := getText(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
 	}
 }
 
@@ -107,6 +117,9 @@ func TestGetText_failsWhenFindElementsThrowsError(t *testing.T) {
 		_, got := getText(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }
 
@@ -130,6 +143,9 @@ func TestGetText_failsWhenTagNameThrowsError(t *testing.T) {
 		_, got := getText(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }
 
@@ -154,6 +170,9 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 		_, got := getText(mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }
 
@@ -195,6 +214,10 @@ func TestGetQuoteText_success(t *testing.T) {
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+		mockTextPartImg.AssertExpectations(t)
 	}
 }
 
@@ -236,6 +259,10 @@ func TestGetQuoteText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+		mockTextPartImg.AssertExpectations(t)
 	}
 }
 
@@ -269,6 +296,8 @@ func TestGetQuoteText_failsWhenFindElementThrowsError(t *testing.T) {
 		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
 	}
 }
 
@@ -304,6 +333,9 @@ func TestGetQuoteText_failsWhenFindElementsThrowsError(t *testing.T) {
 		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }
 
@@ -340,6 +372,9 @@ func TestGetQuoteText_failsWhenTagNameThrowsError(t *testing.T) {
 		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }
 
@@ -377,5 +412,8 @@ func TestGetQuoteText_failsWhenTextThrowsError(t *testing.T) {
 		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }

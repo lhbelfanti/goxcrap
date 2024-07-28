@@ -25,13 +25,17 @@ func TestIsAReply_success(t *testing.T) {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetReplyTextWebElement := new(elements.MockWebElement)
 		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetReplyTextWebElement), test.findElementError)
-		mockTweetReplyTextWebElement.On("Text").Return(test.text, nil)
+		if test.findElementError == nil {
+			mockTweetReplyTextWebElement.On("Text").Return(test.text, nil)
+		}
 
 		isAReply := tweets.MakeIsAReply()
 
 		got := isAReply(mockTweetArticleWebElement)
 
 		assert.Equal(t, test.want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetReplyTextWebElement.AssertExpectations(t)
 	}
 }
 
@@ -59,6 +63,7 @@ func TestHasQuote_success(t *testing.T) {
 		got := hasQuote(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, test.want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
 	}
 }
 
@@ -82,12 +87,16 @@ func TestIsQuoteAReply_success(t *testing.T) {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetReplyTextWebElement := new(elements.MockWebElement)
 		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(mockTweetReplyTextWebElement, test.findElementError)
-		mockTweetReplyTextWebElement.On("Text").Return(test.text, nil)
+		if test.findElementError == nil {
+			mockTweetReplyTextWebElement.On("Text").Return(test.text, nil)
+		}
 
 		isQuoteAReply := tweets.MakeIsQuoteAReply()
 
 		got := isQuoteAReply(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, test.want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockTweetReplyTextWebElement.AssertExpectations(t)
 	}
 }

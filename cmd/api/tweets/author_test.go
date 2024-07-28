@@ -25,6 +25,8 @@ func TestGetAuthor_success(t *testing.T) {
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
+	mockTweetArticleWebElement.AssertExpectations(t)
+	mockTweetAuthorWebElement.AssertExpectations(t)
 }
 
 func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
@@ -37,6 +39,7 @@ func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
 	_, got := getAuthor(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
+	mockTweetArticleWebElement.AssertExpectations(t)
 }
 
 func TestGetAuthor_failsWhenTextThrowsError(t *testing.T) {
@@ -51,4 +54,6 @@ func TestGetAuthor_failsWhenTextThrowsError(t *testing.T) {
 	_, got := getAuthor(mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
+	mockTweetArticleWebElement.AssertExpectations(t)
+	mockTweetAuthorWebElement.AssertExpectations(t)
 }
