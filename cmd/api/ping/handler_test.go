@@ -21,7 +21,7 @@ func TestRunHandlerV1_success(t *testing.T) {
 	handlerV1(mockResponseWriter, mockRequest)
 
 	want := http.StatusOK
-	got := mockResponseWriter.Code
+	got := mockResponseWriter.Result().StatusCode
 
 	assert.Equal(t, want, got)
 }

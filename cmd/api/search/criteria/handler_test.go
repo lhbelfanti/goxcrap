@@ -29,7 +29,7 @@ func TestEnqueueHandlerV1_success(t *testing.T) {
 	handlerV1(mockResponseWriter, mockRequest)
 
 	want := http.StatusOK
-	got := mockResponseWriter.Code
+	got := mockResponseWriter.Result().StatusCode
 
 	assert.Equal(t, want, got)
 }
@@ -46,7 +46,7 @@ func TestEnqueueHandlerV1_failsWhenTheBodyIsInvalid(t *testing.T) {
 	handlerV1(mockResponseWriter, mockRequest)
 
 	want := http.StatusBadRequest
-	got := mockResponseWriter.Code
+	got := mockResponseWriter.Result().StatusCode
 
 	assert.Equal(t, want, got)
 }
@@ -64,7 +64,7 @@ func TestEnqueueHandlerV1_failsWhenEnqueueMessageThrowsError(t *testing.T) {
 	handlerV1(mockResponseWriter, mockRequest)
 
 	want := http.StatusInternalServerError
-	got := mockResponseWriter.Code
+	got := mockResponseWriter.Result().StatusCode
 
 	assert.Equal(t, want, got)
 }
