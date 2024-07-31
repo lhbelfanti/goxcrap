@@ -11,7 +11,8 @@ import (
 type (
 	// Type represents all the criteria that need to be taken in consideration for the tweets search
 	Type struct {
-		ID               string
+		ID               int
+		Name             string
 		AllOfTheseWords  []string
 		ThisExactPhrase  string
 		AnyOfTheseWords  []string

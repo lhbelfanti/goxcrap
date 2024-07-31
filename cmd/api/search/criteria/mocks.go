@@ -3,7 +3,8 @@ package criteria
 // MockCriteria mocks a criteria.Type
 func MockCriteria() Type {
 	return Type{
-		ID:               "Example",
+		ID:               1,
+		Name:             "Example",
 		AllOfTheseWords:  []string{"word1", "word2"},
 		ThisExactPhrase:  "exact phrase",
 		AnyOfTheseWords:  []string{"any1", "any2"},
@@ -18,7 +19,8 @@ func MockCriteria() Type {
 // MockCriteriaDTO mocks a criteria.DTO
 func MockCriteriaDTO() DTO {
 	return DTO{
-		ID:               "Example",
+		ID:               1,
+		Name:             "Example",
 		AllOfTheseWords:  []string{"word1", "word2"},
 		ThisExactPhrase:  "exact phrase",
 		AnyOfTheseWords:  []string{"any1", "any2"},
@@ -33,7 +35,8 @@ func MockCriteriaDTO() DTO {
 // MockExampleCriteria mocks a real example of a criteria.Type. Only for local and test purposes
 func MockExampleCriteria() Type {
 	return Type{
-		ID:               "Example",
+		ID:               1,
+		Name:             "Example",
 		AllOfTheseWords:  []string{"casa"},
 		ThisExactPhrase:  "",
 		AnyOfTheseWords:  []string{"perro"},

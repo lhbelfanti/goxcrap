@@ -25,7 +25,7 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
 		time.Sleep(waitTimeAfterLogin * time.Second)
 
-		slog.Info(fmt.Sprintf("Criteria ID: %s", searchCriteria.ID))
+		slog.Info(fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
 		since, until, err := searchCriteria.ParseDates()
 		if err != nil {
 			slog.Error(err.Error())
@@ -52,7 +52,7 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 			slog.Info(fmt.Sprintf("%v", obtainedTweets))
 		}
 
-		slog.Info(fmt.Sprintf("All the tweets of the criteria '%s' were retrieved", searchCriteria.ID))
+		slog.Info(fmt.Sprintf("All the tweets of the criteria '%d' were retrieved", searchCriteria.ID))
 
 		return nil
 	}

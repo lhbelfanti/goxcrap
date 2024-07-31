@@ -5,7 +5,8 @@ import "encoding/json"
 type (
 	// DTO is a Data Transfer Object used to represent a Type
 	DTO struct {
-		ID               string   `json:"id,omitempty"`
+		ID               int      `json:"id"`
+		Name             string   `json:"name,omitempty"`
 		AllOfTheseWords  []string `json:"all_of_these_words,omitempty"`
 		ThisExactPhrase  string   `json:"this_exact_phrase,omitempty"`
 		AnyOfTheseWords  []string `json:"any_of_these_words,omitempty"`
@@ -26,6 +27,7 @@ type (
 func (c DTO) ToType() Type {
 	return Type{
 		ID:               c.ID,
+		Name:             c.Name,
 		AllOfTheseWords:  c.AllOfTheseWords,
 		ThisExactPhrase:  c.ThisExactPhrase,
 		AnyOfTheseWords:  c.AnyOfTheseWords,
