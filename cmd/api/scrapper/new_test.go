@@ -6,12 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"goxcrap/cmd/api/scrapper"
+	"goxcrap/internal/http"
 	"goxcrap/internal/webdriver"
 )
 
 func TestNew_success(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
-	makeNew := scrapper.MakeNew()
+	mockHTTPClient := new(http.MockHTTPClient)
+	makeNew := scrapper.MakeNew(mockHTTPClient)
 
 	got := makeNew(mockWebDriver)
 

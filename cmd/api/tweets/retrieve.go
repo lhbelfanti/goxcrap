@@ -41,14 +41,14 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 			for _, article := range articles {
 				tweetHash, err := getTweetHash(article)
 				if err != nil {
-					slog.Error(err.Error())
+					slog.Info(err.Error())
 					continue
 				}
 
 				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
 					tweet, err := getTweetInformation(article, tweetHash.ID, tweetHash.Timestamp)
 					if err != nil {
-						slog.Error(err.Error())
+						slog.Info(err.Error())
 						continue
 					}
 					tweets = append(tweets, tweet)
@@ -61,9 +61,12 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 					slog.Error(err.Error())
 					break
 				}
+
+				// As the scrollPage function was called there could be more tweets to obtain
 				continue
 			}
 
+			// All the tweets of the current page were obtained
 			break
 		}
 

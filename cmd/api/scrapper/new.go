@@ -12,6 +12,8 @@ import (
 	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/tweets"
+	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/http"
 )
 
 // New initializes all the functions of a scrapper (only Execute for now)
@@ -19,7 +21,7 @@ import (
 type New func(webDriver selenium.WebDriver) Execute
 
 // MakeNew creates a new New
-func MakeNew() New {
+func MakeNew(httpClient http.Client) New {
 	return func(webDriver selenium.WebDriver) Execute {
 		slog.Info(color.BlueString("Loading env variables..."))
 		variables := env.LoadVariables()
@@ -53,10 +55,13 @@ func MakeNew() New {
 		getTweetHash := tweets.MakeGetTweetHash(getTweetAuthor, getTweetTimestamp)
 		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
 		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
+
+		// Calls to external services
+		saveTweets := ahbcc.MakeSaveTweets(httpClient, variables.AHBCCDomain)
 		slog.Info(color.GreenString("Services dependencies initialized!"))
 
 		slog.Info(color.BlueString("Initializing services..."))
-		executeScrapper := MakeExecute(login, executeAdvanceSearch, retrieveAllTweets)
+		executeScrapper := MakeExecute(login, executeAdvanceSearch, retrieveAllTweets, saveTweets)
 		slog.Info(color.GreenString("Services initialized!"))
 
 		return executeScrapper

@@ -95,7 +95,10 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumer(concurrentMessages int, pro
 		for msg := range mb.messages {
 			workerChan <- struct{}{}
 			go func(msg amqp091.Delivery) {
-				defer func() { <-workerChan }()
+				defer func() {
+					<-workerChan
+				}()
+				// TODO replace callEndpoint by the http client of the internal/http
 				callEndpoint(processorEndpoint, string(msg.Body))
 				err := msg.Ack(false)
 				if err != nil {

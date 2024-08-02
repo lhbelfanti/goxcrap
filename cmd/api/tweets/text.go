@@ -130,7 +130,7 @@ func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTex
 		case "img":
 			alt, err := textPart.GetAttribute("alt")
 			if err != nil {
-				slog.Error("Ignoring emoji: " + err.Error())
+				slog.Info("Ignoring emoji: " + err.Error())
 				continue
 			}
 

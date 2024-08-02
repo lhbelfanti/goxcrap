@@ -4,3 +4,4 @@ ignore:
   - "internal/broker/*"
   - "internal/debug/*"
   - "internal/webdriver/*"
+  - "internal/http/*"

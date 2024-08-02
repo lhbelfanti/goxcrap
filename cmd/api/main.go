@@ -15,6 +15,7 @@ import (
 	"goxcrap/cmd/api/scrapper"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/internal/broker"
+	ghttp "goxcrap/internal/http"
 	"goxcrap/internal/setup"
 	"goxcrap/internal/webdriver"
 )
@@ -38,8 +39,9 @@ func main() {
 
 func runLocal() {
 	/* --- Dependencies --- */
+	httpClient := ghttp.NewClient()
 	setup.Must(godotenv.Load())
-	newScrapper := scrapper.MakeNew()
+	newScrapper := scrapper.MakeNew(httpClient)
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	webDriverManager := newWebDriverManager()
 	defer func(webDriverManager webdriver.Manager) {
@@ -63,11 +65,13 @@ func runLocal() {
 
 func runDockerized() {
 	/* --- Dependencies --- */
+	httpClient := ghttp.NewClient()
+
 	messageBroker := setup.Init(broker.NewMessageBroker())
 	go messageBroker.InitMessageConsumer(2, "/scrapper/execute/v1")
 
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
-	newScrapper := scrapper.MakeNew()
+	newScrapper := scrapper.MakeNew(httpClient)
 
 	/* --- Router --- */
 	slog.Info(color.BlueString("Initializing router..."))
