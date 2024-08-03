@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -35,6 +36,8 @@ func NewClient() *CustomClient {
 }
 
 func (c *CustomClient) NewRequest(method, url string, body interface{}) (Response, error) {
+	slog.Info(fmt.Sprintf("body: %#v, url: %s", body, url))
+
 	jsonData, err := json.Marshal(body)
 	if err != nil {
 		slog.Error(err.Error())
