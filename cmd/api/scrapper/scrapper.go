@@ -97,7 +97,7 @@ func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) ahb
 			}
 		}
 
-		saveTweetsBody = append(saveTweetsBody)
+		saveTweetsBody = append(saveTweetsBody, requestTweet)
 	}
 
 	return saveTweetsBody
