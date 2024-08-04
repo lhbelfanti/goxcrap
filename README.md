@@ -34,7 +34,7 @@ AHBCC_DOMAIN=<Domain of the application with the endpoint /tweets/v1> --> In thi
 ```
 [^1]
 
-[^1]: AHBCC: Adverse Behaviour Corpus Creator. More information [here](https://github.com/lhbelfanti/ahbcc)
+[^1]: AHBCC: Adverse Human Behaviour Corpus Creator. More information [here](https://github.com/lhbelfanti/ahbcc)
 
 ### Run
 
