@@ -3,8 +3,6 @@ package webdriver
 import (
 	"log/slog"
 
-	"github.com/fatih/color"
-
 	"goxcrap/internal/setup"
 )
 
@@ -14,7 +12,7 @@ type NewManager func() Manager
 // MakeNewManager creates a new NewManager
 func MakeNewManager(localMode bool) NewManager {
 	return func() Manager {
-		slog.Info(color.BlueString("Initializing WebDriver..."))
+		slog.Info("Initializing WebDriver...")
 		var manager Manager
 		if localMode {
 			manager = &LocalManager{}
@@ -23,7 +21,7 @@ func MakeNewManager(localMode bool) NewManager {
 		}
 		setup.Must(manager.InitWebDriverService())
 		setup.Must(manager.InitWebDriver())
-		slog.Info(color.GreenString("WebDriver initialized!"))
+		slog.Info("WebDriver initialized!")
 
 		return manager
 	}

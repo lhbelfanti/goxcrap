@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 )
@@ -18,7 +17,7 @@ type LocalManager struct {
 
 // InitWebDriverService initializes a new Chrome *selenium.Service
 func (lwd *LocalManager) InitWebDriverService() error {
-	slog.Info(fmt.Sprintf(color.BlueString("Initializing Chrome Driver Service using driver from:\n%s"), color.GreenString(chromeDriverPath)))
+	slog.Info(fmt.Sprintf("Initializing Chrome Driver Service using driver from:\n%s", chromeDriverPath))
 	service, err := selenium.NewChromeDriverService(chromeDriverPath, chromeDriverServicePort)
 	if err != nil {
 		slog.Error(err.Error())
@@ -37,16 +36,16 @@ func (lwd *LocalManager) InitWebDriver() error {
 		Args:  capabilitiesArgs,
 	}
 
-	slog.Info(fmt.Sprintf(color.BlueString("Setting up Chrome Capacities using the following Args:\n%s\n"), color.GreenString(strings.Join(chromeCaps.Args, "\n"))))
+	slog.Info(fmt.Sprintf("Setting up Chrome Capacities using the following Args:\n%s\n", strings.Join(chromeCaps.Args, "\n")))
 	if chromeCaps.Path != "" {
-		slog.Info(fmt.Sprintf("and the following Path:\n%s", color.GreenString(chromeCaps.Path)))
+		slog.Info(fmt.Sprintf("and the following Path:\n%s", chromeCaps.Path))
 	}
 
 	caps := selenium.Capabilities{"browserName": "chrome"}
 	caps.AddChrome(chromeCaps)
 
 	remotePath := fmt.Sprintf("http://localhost:%d/wd/hub", chromeDriverServicePort)
-	slog.Info(color.BlueString(fmt.Sprintf("Creating Remote Client at: \n%s", color.GreenString(remotePath))))
+	slog.Info(fmt.Sprintf("Creating Remote Client at: \n%s", remotePath))
 	wd, err := selenium.NewRemote(caps, remotePath)
 	if err != nil {
 		slog.Error(err.Error())
