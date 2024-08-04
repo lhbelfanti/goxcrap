@@ -11,6 +11,7 @@ services:
       BROWSER_PATH: ${BROWSER_PATH}
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
+    command: ["/goxcrap", "--prod"]
     ports:
       - 8080:8091
     restart: on-failure

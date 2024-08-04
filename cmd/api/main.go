@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/fatih/color"
@@ -20,15 +21,27 @@ import (
 	"goxcrap/internal/webdriver"
 )
 
-var localMode bool
+// Program arguments
+var (
+	localMode bool
+	prodEnv   bool
+)
 
 func init() {
 	flag.BoolVar(&localMode, "local", false, "Run locally instead of in a container")
+	flag.BoolVar(&prodEnv, "prod", false, "Run in production environment")
+	flag.Parse()
 }
 
 func main() {
-	flag.Parse()
-	slog.Info(fmt.Sprintf(color.BlueString("Starting GoXCrap with args:\n%s"), color.GreenString("local=%t", localMode)))
+	slog.Info(fmt.Sprintf(color.BlueString("Starting GoXCrap with args:\n%s"),
+		color.GreenString("local=%t - prod=%t", localMode, prodEnv)))
+
+	if prodEnv {
+		opts := &slog.HandlerOptions{Level: slog.LevelError}
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, opts))
+		slog.SetDefault(logger)
+	}
 
 	if localMode {
 		runLocal()
