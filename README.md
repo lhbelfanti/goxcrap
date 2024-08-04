@@ -30,7 +30,11 @@ This application collects tweets based on a defined search criteria, and save th
 EMAIL=<Twitter account email>
 USERNAME=<Twitter username>
 PASSWORD=<Twitter password>
+AHBCC_DOMAIN=<Domain of the application with the endpoint /tweets/v1> --> In this case the app AHBCC
 ```
+[^1]
+
+[^1]: AHBCC: Adverse Behaviour Corpus Creator. More information [here](https://github.com/lhbelfanti/ahbcc)
 
 ### Run
 
@@ -54,7 +58,9 @@ DRIVER_PATH=<The path to the Chrome driver> --> Example: /usr/bin/chromedriver
 BROWSER_PATH=<The path to the Chrome browser> --> Example: /usr/bin/chromium
 RABBITMQ_USER=<The RabbitMQ user>
 RABBITMQ_PASS=<The RabbitMQ password>
+AHBCC_DOMAIN=<Domain of the application with the endpoint /tweets/v1> --> In this case the app AHBCC
 ```
+[^1]
 
 ### Build & Run
 
