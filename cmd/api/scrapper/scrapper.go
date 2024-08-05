@@ -1,104 +1,59 @@
 package scrapper
 
 import (
-	"fmt"
-	"log/slog"
-	"time"
+	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/auth"
+	"goxcrap/cmd/api/elements"
+	"goxcrap/cmd/api/env"
+	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/cmd/api/tweets"
 	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/http"
 )
 
-// Execute starts the X (formerly Twitter) scrapper
-type Execute func(searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error
+// New initializes all the functions of a scrapper (only Execute for now)
+// It also initializes all the dependencies for its functions
+type New func(webDriver selenium.WebDriver) Execute
 
-// MakeExecute creates a new Execute
-func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets ahbcc.SaveTweets) Execute {
-	return func(searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
-		err := login()
-		if err != nil {
-			return FailedToLogin
-		}
+// MakeNew creates a new New
+func MakeNew(httpClient http.Client) New {
+	return func(webDriver selenium.WebDriver) Execute {
+		// Env variables
+		variables := env.LoadVariables()
 
-		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
-		time.Sleep(waitTimeAfterLogin * time.Second)
+		// Functions
+		loadPage := page.MakeLoad(webDriver)
+		scrollPage := page.MakeScroll(webDriver)
+		waitAndRetrieveCondition := elements.MakeWaitAndRetrieveCondition()
+		waitAndRetrieveAllCondition := elements.MakeWaitAndRetrieveAllCondition()
+		waitAndRetrieveElement := elements.MakeWaitAndRetrieve(webDriver, waitAndRetrieveCondition)
+		waitAndRetrieveElements := elements.MakeWaitAndRetrieveAll(webDriver, waitAndRetrieveAllCondition)
+		retrieveAndFillInput := elements.MakeRetrieveAndFillInput(waitAndRetrieveElement)
+		retrieveAndClickButton := elements.MakeRetrieveAndClickButton(waitAndRetrieveElement)
 
-		slog.Info(fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
-		since, until, err := searchCriteria.ParseDates()
-		if err != nil {
-			slog.Error(err.Error())
-			return FailedToParseDatesFromTheGivenCriteria
-		}
+		// Calls to external services
+		saveTweets := ahbcc.MakeSaveTweets(httpClient, variables.AHBCCDomain)
 
-		currentCriteria := searchCriteria
-		for current := since; !current.After(until); current = current.AddDays(1) {
-			currentCriteria.Since = current.String()
-			currentCriteria.Until = current.AddDays(1).String()
-			err := executeAdvanceSearch(currentCriteria)
-			if err != nil {
-				slog.Info(err.Error())
-				continue
-			}
+		// Services
+		login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
+		executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
+		getTweetAuthor := tweets.MakeGetAuthor()
+		getTweetTimestamp := tweets.MakeGetTimestamp()
+		isAReply := tweets.MakeIsAReply()
+		getTweetText := tweets.MakeGetText()
+		getTweetImages := tweets.MakeGetImages()
+		hasQuote := tweets.MakeHasQuote()
+		isQuoteAReply := tweets.MakeIsQuoteAReply()
+		getQuoteText := tweets.MakeGetQuoteText()
+		getQuoteImages := tweets.MakeGetQuoteImages()
+		getTweetHash := tweets.MakeGetTweetHash(getTweetAuthor, getTweetTimestamp)
+		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
+		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
 
-			obtainedTweets, err := retrieveTweets()
-			if err != nil {
-				slog.Info(err.Error())
-				continue
-			}
+		executeScrapper := MakeExecute(login, executeAdvanceSearch, retrieveAllTweets, saveTweets)
 
-			if len(obtainedTweets) > 0 {
-				requestBody := createSaveTweetsBody(obtainedTweets, currentCriteria.ID)
-				err = saveTweets(requestBody)
-				if err != nil {
-					slog.Info(err.Error())
-					continue
-				}
-			}
-
-			slog.Info(fmt.Sprintf("%v", obtainedTweets))
-		}
-
-		slog.Info(fmt.Sprintf("All the tweets of the criteria '%d' were retrieved", searchCriteria.ID))
-
-		return nil
+		return executeScrapper
 	}
-}
-
-// createSaveTweetsBody creates the SaveTweets Body with the obtained []tweets.Tweet
-func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) ahbcc.SaveTweetsBody {
-	saveTweetsBody := make(ahbcc.SaveTweetsBody, 0, len(obtainedTweets))
-	for _, tweet := range obtainedTweets {
-		requestTweet := ahbcc.TweetDTO{
-			Hash:             &tweet.ID,
-			IsAReply:         tweet.IsAReply,
-			SearchCriteriaID: &searchCriteria,
-		}
-
-		if tweet.HasText {
-			requestTweet.TextContent = &tweet.Text
-		}
-
-		if tweet.HasImages {
-			requestTweet.Images = tweet.Images
-		}
-
-		if tweet.HasQuote {
-			requestTweet.Quote = &ahbcc.QuoteDTO{IsAReply: tweet.Quote.IsAReply}
-
-			if tweet.Quote.HasText {
-				requestTweet.Quote.TextContent = &tweet.Quote.Text
-			}
-
-			if tweet.Quote.HasImages {
-				requestTweet.Quote.Images = tweet.Quote.Images
-			}
-		}
-
-		saveTweetsBody = append(saveTweetsBody, requestTweet)
-	}
-
-	return saveTweetsBody
 }

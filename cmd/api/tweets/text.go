@@ -1,8 +1,7 @@
 package tweets
 
 import (
-	"log/slog"
-
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 )
 
@@ -107,7 +106,7 @@ func MakeGetQuoteText() GetQuoteText {
 func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTextParts, failedToObtainTextPartTagName, failedToObtainTextFromSpan error) (string, error) {
 	textParts, err := tweetTextElement.FindElements(selenium.ByCSSSelector, "span, img")
 	if err != nil {
-		slog.Error(err.Error())
+		log.Info().Msg(err.Error())
 		return "", failedToObtainTextParts
 	}
 
@@ -115,7 +114,7 @@ func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTex
 	for _, textPart := range textParts {
 		tagName, err := textPart.TagName()
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return "", failedToObtainTextPartTagName
 		}
 
@@ -123,14 +122,14 @@ func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTex
 		case "span":
 			spanText, err := textPart.Text()
 			if err != nil {
-				slog.Error(err.Error())
+				log.Info().Msg(err.Error())
 				return "", failedToObtainTextFromSpan
 			}
 			tweetText += spanText
 		case "img":
 			alt, err := textPart.GetAttribute("alt")
 			if err != nil {
-				slog.Info("Ignoring emoji: " + err.Error())
+				log.Info().Msg("Ignoring emoji: " + err.Error())
 				continue
 			}
 

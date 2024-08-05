@@ -7,6 +7,8 @@ import (
 	"github.com/rabbitmq/amqp091-go"
 )
 
+const rabbitmqURL = "amqp://%s:%s@rabbitmq:5672/"
+
 type (
 	// MessageBroker defines the necessary methods for a message broker implementation
 	MessageBroker interface {
@@ -25,8 +27,6 @@ type (
 		messages <-chan amqp091.Delivery
 	}
 )
-
-const rabbitmqURL = "amqp://%s:%s@rabbitmq:5672/"
 
 func resolveRabbitmqURL() string {
 	user := os.Getenv("RABBITMQ_USER")

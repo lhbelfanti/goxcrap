@@ -1,9 +1,9 @@
 package elements
 
 import (
-	"log/slog"
 	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 )
 
@@ -29,13 +29,13 @@ func MakeWaitAndRetrieve(wd selenium.WebDriver, condition WaitAndRetrieveConditi
 	return func(by, value string, timeout time.Duration) (selenium.WebElement, error) {
 		err := wd.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return nil, FailedToExecuteWaitWithTimeout
 		}
 
 		element, err := wd.FindElement(by, value)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return nil, FailedToRetrieveElement
 		}
 
@@ -62,13 +62,13 @@ func MakeWaitAndRetrieveAll(wd selenium.WebDriver, condition WaitAndRetrieveAllC
 	return func(by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
 		err := wd.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return nil, FailedToExecuteWaitWithTimeout
 		}
 
 		elements, err := wd.FindElements(by, value)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return nil, FailedToRetrieveElements
 		}
 

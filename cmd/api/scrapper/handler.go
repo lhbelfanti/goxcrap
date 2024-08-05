@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log/slog"
 	"net/http"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/search/criteria"
@@ -27,7 +28,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 
 		err := json.NewDecoder(teeReader).Decode(&dto)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			http.Error(w, CantDecodeBodyIntoCriteria, http.StatusBadRequest)
 			return
 		}
@@ -59,6 +60,6 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 func stop(webDriverManager webdriver.Manager) {
 	err := webDriverManager.Quit()
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 	}
 }

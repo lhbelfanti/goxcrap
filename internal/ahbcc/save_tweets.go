@@ -1,8 +1,7 @@
 package ahbcc
 
 import (
-	"fmt"
-	"log/slog"
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/internal/http"
 )
@@ -21,7 +20,7 @@ func MakeSaveTweets(httpClient http.Client, domain string) SaveTweets {
 			return FailedToExecuteRequest
 		}
 
-		slog.Info(fmt.Sprintf("Save tweets endpoint called -> Status: %s | Response: %s", resp.Status, resp.Body))
+		log.Info().Msgf("Save tweets endpoint called -> Status: %s | Response: %s", resp.Status, resp.Body)
 
 		return nil
 	}

@@ -1,8 +1,9 @@
 package search
 
 import (
-	"log/slog"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search/criteria"
@@ -21,7 +22,7 @@ func MakeExecuteAdvanceSearch(loadPage page.Load) ExecuteAdvanceSearch {
 		queryString := searchCriteria.ConvertIntoQueryString()
 		err := loadPage("/search?"+queryString, pageLoaderTimeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return FailedToLoadAdvanceSearchPage
 		}
 

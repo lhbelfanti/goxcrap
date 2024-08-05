@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 
 	"github.com/rabbitmq/amqp091-go"
+	"github.com/rs/zerolog/log"
 )
 
 // NewMessageBroker creates a new pointer of RabbitMQMessageBroker
@@ -18,14 +18,14 @@ func NewMessageBroker() (*RabbitMQMessageBroker, error) {
 	// Connect to RabbitMQ
 	messageBroker.conn, err = amqp091.Dial(resolveRabbitmqURL())
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return nil, FailedToInitializeRabbitMQ
 	}
 
 	// Create a channel
 	messageBroker.channel, err = messageBroker.conn.Channel()
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return nil, FailedToOpenAChannel
 	}
 
@@ -39,7 +39,7 @@ func NewMessageBroker() (*RabbitMQMessageBroker, error) {
 		nil,          // arguments
 	)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return nil, FailedToDeclareAQueue
 	}
 
@@ -54,7 +54,7 @@ func NewMessageBroker() (*RabbitMQMessageBroker, error) {
 		nil,                      // args
 	)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return nil, FailedToRegisterAConsumer
 	}
 
@@ -77,7 +77,7 @@ func (mb *RabbitMQMessageBroker) EnqueueMessage(body string) error {
 		publishing,
 	)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return FailedToPublishAPublishing
 	}
 
@@ -102,7 +102,7 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumer(concurrentMessages int, pro
 				callEndpoint(processorEndpoint, string(msg.Body))
 				err := msg.Ack(false)
 				if err != nil {
-					slog.Error(err.Error())
+					log.Error().Msg(err.Error())
 				}
 			}(msg)
 		}
@@ -114,22 +114,22 @@ func callEndpoint(endpoint, body string) {
 	url := fmt.Sprintf("http://localhost:8091%s", endpoint)
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer([]byte(body)))
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return
 	}
 
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 		}
 	}(resp.Body)
 
 	response, err := io.ReadAll(resp.Body)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return
 	}
 
-	slog.Info(string(response))
+	log.Info().Msg(string(response))
 }

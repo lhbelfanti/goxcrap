@@ -1,8 +1,9 @@
 package elements
 
 import (
-	"log/slog"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 // RetrieveAndClickButton retrieves a button element and clicks on it
@@ -13,13 +14,13 @@ func MakeRetrieveAndClickButton(waitAndRetrieveElement WaitAndRetrieve) Retrieve
 	return func(by, value, element string, timeout time.Duration) error {
 		button, err := waitAndRetrieveElement(by, value, timeout)
 		if err != nil {
-			slog.Error(err.Error(), slog.String("element", element))
+			log.Error().Msgf("%s\nelement: %s", err.Error(), element)
 			return FailedToRetrieveButton
 		}
 
 		err = button.Click()
 		if err != nil {
-			slog.Error(err.Error(), slog.String("element", element))
+			log.Error().Msgf("%s\nelement: %s", err.Error(), element)
 			return FailedToClickButton
 		}
 

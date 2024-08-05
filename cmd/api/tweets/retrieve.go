@@ -1,10 +1,10 @@
 package tweets
 
 import (
-	"log/slog"
 	"slices"
 	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/elements"
@@ -34,21 +34,21 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 
 			articles, err := waitAndRetrieveElements(selenium.ByXPATH, globalToLocalXPath(articlesXPath), articlesTimeout)
 			if err != nil {
-				slog.Error(err.Error())
+				log.Info().Msg(err.Error())
 				return nil, FailedToRetrieveArticles
 			}
 
 			for _, article := range articles {
 				tweetHash, err := getTweetHash(article)
 				if err != nil {
-					slog.Info(err.Error())
+					log.Info().Msg(err.Error())
 					continue
 				}
 
 				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
 					tweet, err := getTweetInformation(article, tweetHash.ID, tweetHash.Timestamp)
 					if err != nil {
-						slog.Info(err.Error())
+						log.Info().Msg(err.Error())
 						continue
 					}
 					tweets = append(tweets, tweet)
@@ -58,7 +58,7 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 			if len(tweets) > previousTweetsQuantity {
 				err = scrollPage()
 				if err != nil {
-					slog.Error(err.Error())
+					log.Error().Msg(err.Error())
 					break
 				}
 

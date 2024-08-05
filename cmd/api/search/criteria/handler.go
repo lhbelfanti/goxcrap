@@ -2,8 +2,9 @@ package criteria
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/internal/broker"
 )
@@ -14,14 +15,14 @@ func EnqueueHandlerV1(messageBroker broker.MessageBroker) http.HandlerFunc {
 		var message IncomingBrokerMessageDTO
 		err := json.NewDecoder(r.Body).Decode(&message)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			http.Error(w, InvalidRequestBody, http.StatusBadRequest)
 			return
 		}
 
 		err = messageBroker.EnqueueMessage(string(message.Message))
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			http.Error(w, FailedToEnqueueTask, http.StatusInternalServerError)
 			return
 		}

@@ -2,15 +2,13 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"log"
-	"log/slog"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/joho/godotenv"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/cmd/api/ping"
 	"goxcrap/cmd/api/scrapper"
@@ -34,14 +32,7 @@ func init() {
 }
 
 func main() {
-	slog.Info(fmt.Sprintf(color.BlueString("Starting GoXCrap with args:\n%s"),
-		color.GreenString("local=%t - prod=%t", localMode, prodEnv)))
-
-	if prodEnv {
-		opts := &slog.HandlerOptions{Level: slog.LevelError}
-		logger := slog.New(slog.NewJSONHandler(os.Stdout, opts))
-		slog.SetDefault(logger)
-	}
+	log.Info().Msgf("Starting GoXCrap with args:\nlocal=%t\nprod=%t", localMode, prodEnv)
 
 	if localMode {
 		runLocal()
@@ -52,32 +43,44 @@ func main() {
 
 func runLocal() {
 	/* --- Dependencies --- */
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	log.Logger = logger
+
 	httpClient := ghttp.NewClient()
+
 	setup.Must(godotenv.Load())
-	newScrapper := scrapper.MakeNew(httpClient)
+
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	webDriverManager := newWebDriverManager()
 	defer func(webDriverManager webdriver.Manager) {
 		err := webDriverManager.Quit()
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 		}
 	}(webDriverManager)
 
+	newScrapper := scrapper.MakeNew(httpClient)
 	executeScrapper := newScrapper(webDriverManager.WebDriver())
 
 	/* --- Run --- */
-	slog.Info(color.BlueString("Executing scrapper..."))
-	err := executeScrapper(criteria.MockExampleCriteria(), 10)
-	if err != nil {
-		log.Fatal(color.RedString(err.Error()))
-	}
-	slog.Info(color.GreenString("Scrapper executed!"))
-	time.Sleep(10 * time.Minute)
+	log.Info().Msg("Executing scrapper...")
+	setup.Must(executeScrapper(criteria.MockExampleCriteria(), 10))
+	log.Info().Msg("Scrapper executed!")
+	time.Sleep(10 * time.Minute) // Wait time to visually understand what happened
 }
 
 func runDockerized() {
 	/* --- Dependencies --- */
+	// TODO: connect to ELK to save logs
+	//conn := setup.Init(net.Dial("tcp", "logstash:5000"))
+	//logger := zerolog.New(conn).With().Timestamp().Logger()
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	log.Logger = logger
+
+	if prodEnv {
+		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	}
+
 	httpClient := ghttp.NewClient()
 
 	messageBroker := setup.Init(broker.NewMessageBroker())
@@ -87,17 +90,14 @@ func runDockerized() {
 	newScrapper := scrapper.MakeNew(httpClient)
 
 	/* --- Router --- */
-	slog.Info(color.BlueString("Initializing router..."))
+	log.Info().Msg("Initializing router...")
 	router := http.NewServeMux()
 	router.HandleFunc("GET /ping/v1", ping.HandlerV1())
 	router.HandleFunc("POST /criteria/enqueue/v1", criteria.EnqueueHandlerV1(messageBroker))
 	router.HandleFunc("POST /scrapper/execute/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper, messageBroker))
-	slog.Info(color.GreenString("Router initialized!"))
+	log.Info().Msg("Router initialized!")
 
 	/* --- Server --- */
-	slog.Info(color.GreenString("GoXCrap server is ready to receive request on port :8091"))
-	err := http.ListenAndServe(":8091", router)
-	if err != nil {
-		log.Fatalf(color.RedString("Could not start server: %s\n", err.Error()))
-	}
+	log.Info().Msg("GoXCrap server is ready to receive request on port :8091")
+	setup.Must(http.ListenAndServe(":8091", router))
 }

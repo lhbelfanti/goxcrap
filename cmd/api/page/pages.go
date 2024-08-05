@@ -2,10 +2,10 @@ package page
 
 import (
 	"fmt"
-	"log/slog"
 	"time"
 
-	"github.com/fatih/color"
+	"github.com/rs/zerolog/log"
+
 	"github.com/tebeka/selenium"
 )
 
@@ -24,15 +24,15 @@ func MakeLoad(wd selenium.WebDriver) Load {
 	return func(relativeURL string, timeout time.Duration) error {
 		err := wd.SetPageLoadTimeout(timeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return FailedToSetPageLoadTimeout
 		}
 
 		pageURL := twitterURL + relativeURL
-		slog.Info(color.GreenString("Accessing page: %s", pageURL))
+		log.Info().Msgf("Accessing page: %s", pageURL)
 		err = wd.Get(pageURL)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return FailedToRetrievePage
 		}
 
@@ -46,7 +46,7 @@ func MakeScroll(wd selenium.WebDriver) Scroll {
 		jsHeight := `return window.innerHeight;`
 		height, err := wd.ExecuteScript(jsHeight, nil)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return FailedToGetInnerHeight
 		}
 
@@ -54,7 +54,7 @@ func MakeScroll(wd selenium.WebDriver) Scroll {
 		jsScroll := fmt.Sprintf("window.scrollBy(0, %v * 2);", height)
 		_, err = wd.ExecuteScript(jsScroll, nil)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return FailedToScroll
 		}
 

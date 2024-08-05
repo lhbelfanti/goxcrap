@@ -1,8 +1,9 @@
 package elements
 
 import (
-	"log/slog"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 type (
@@ -15,19 +16,19 @@ func MakeRetrieveAndFillInput(waitAndRetrieveElement WaitAndRetrieve) RetrieveAn
 	return func(by, value, element, inputText string, timeout time.Duration) error {
 		input, err := waitAndRetrieveElement(by, value, timeout)
 		if err != nil {
-			slog.Error(err.Error(), slog.String("element", element))
+			log.Error().Msgf("%s\nelement: %s", err.Error(), element)
 			return FailedToRetrieveInput
 		}
 
 		err = input.Click()
 		if err != nil {
-			slog.Error(err.Error(), slog.String("element", element))
+			log.Error().Msgf("%s\nelement: %s", err.Error(), element)
 			return FailedToClickInput
 		}
 
 		err = input.SendKeys(inputText)
 		if err != nil {
-			slog.Error(err.Error(), slog.String("element", element))
+			log.Error().Msgf("%s\nelement: %s", err.Error(), element)
 			return FailedToFillInput
 		}
 

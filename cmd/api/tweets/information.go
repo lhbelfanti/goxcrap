@@ -4,8 +4,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"log/slog"
 
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 )
 
@@ -22,13 +22,13 @@ func MakeGetTweetHash(getAuthor GetAuthor, getTimestamp GetTimestamp) GetTweetHa
 	return func(tweetArticleElement selenium.WebElement) (TweetHash, error) {
 		tweetAuthor, err := getAuthor(tweetArticleElement)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return TweetHash{}, FailedToObtainTweetAuthorInformation
 		}
 
 		tweetTimestamp, err := getTimestamp(tweetArticleElement)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return TweetHash{}, FailedToObtainTweetTimestampInformation
 		}
 
@@ -51,13 +51,13 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 		tweetText, err := getText(tweetArticleElement, isTweetAReply)
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 		if err != nil && hasText {
-			slog.Info(err.Error())
+			log.Info().Msg(err.Error())
 		}
 
 		tweetImages, err := getImages(tweetArticleElement, isTweetAReply)
 		hasImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 		if err != nil && hasImages {
-			slog.Info(err.Error())
+			log.Info().Msg(err.Error())
 		}
 
 		tweetOnlyHasText := hasText && !hasImages
@@ -71,13 +71,13 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 
 			quoteText, err := getQuoteText(tweetArticleElement, isTweetAReply, tweetOnlyHasText, tweetOnlyHasImages, isQuotedTweetAReply)
 			if err != nil {
-				slog.Info(err.Error())
+				log.Info().Msg(err.Error())
 			}
 			hasQuotedTweetText := !errors.Is(err, FailedToObtainQuotedTweetTextElement)
 
 			quoteImages, err := getQuoteImages(tweetArticleElement, isTweetAReply, tweetOnlyHasText)
 			if err != nil {
-				slog.Info(err.Error())
+				log.Info().Msg(err.Error())
 			}
 			hasQuotedTweetImages := !errors.Is(err, FailedToObtainQuotedTweetImagesElement)
 

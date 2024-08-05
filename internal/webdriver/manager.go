@@ -1,7 +1,7 @@
 package webdriver
 
 import (
-	"log/slog"
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/internal/setup"
 )
@@ -12,7 +12,7 @@ type NewManager func() Manager
 // MakeNewManager creates a new NewManager
 func MakeNewManager(localMode bool) NewManager {
 	return func() Manager {
-		slog.Info("Initializing WebDriver...")
+		log.Info().Msg("Initializing WebDriver...")
 		var manager Manager
 		if localMode {
 			manager = &LocalManager{}
@@ -21,7 +21,7 @@ func MakeNewManager(localMode bool) NewManager {
 		}
 		setup.Must(manager.InitWebDriverService())
 		setup.Must(manager.InitWebDriver())
-		slog.Info("WebDriver initialized!")
+		log.Info().Msg("WebDriver initialized!")
 
 		return manager
 	}

@@ -1,9 +1,9 @@
 package scrapper
 
 import (
-	"fmt"
-	"log/slog"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"goxcrap/cmd/api/auth"
 	"goxcrap/cmd/api/search"
@@ -23,13 +23,13 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 			return FailedToLogin
 		}
 
-		slog.Info(fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
+		log.Info().Msgf("Waiting %d seconds after login", waitTimeAfterLogin)
 		time.Sleep(waitTimeAfterLogin * time.Second)
 
-		slog.Info(fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
+		log.Info().Msgf("Criteria ID: %d", searchCriteria.ID)
 		since, until, err := searchCriteria.ParseDates()
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return FailedToParseDatesFromTheGivenCriteria
 		}
 
@@ -39,13 +39,13 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 			currentCriteria.Until = current.AddDays(1).String()
 			err := executeAdvanceSearch(currentCriteria)
 			if err != nil {
-				slog.Info(err.Error())
+				log.Info().Msg(err.Error())
 				continue
 			}
 
 			obtainedTweets, err := retrieveTweets()
 			if err != nil {
-				slog.Info(err.Error())
+				log.Info().Msg(err.Error())
 				continue
 			}
 
@@ -53,15 +53,15 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 				requestBody := createSaveTweetsBody(obtainedTweets, currentCriteria.ID)
 				err = saveTweets(requestBody)
 				if err != nil {
-					slog.Info(err.Error())
+					log.Info().Msg(err.Error())
 					continue
 				}
 			}
 
-			slog.Info(fmt.Sprintf("%v", obtainedTweets))
+			log.Info().Msgf("%v", obtainedTweets)
 		}
 
-		slog.Info(fmt.Sprintf("All the tweets of the criteria '%d' were retrieved", searchCriteria.ID))
+		log.Info().Msgf("All the tweets of the criteria '%d' were retrieved", searchCriteria.ID)
 
 		return nil
 	}

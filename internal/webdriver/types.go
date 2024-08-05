@@ -17,6 +17,11 @@ type Manager interface {
 	WebDriver() selenium.WebDriver
 }
 
+const (
+	chromeDriverPath        string = "./internal/webdriver/chromedriver"
+	chromeDriverServicePort int    = 9515
+)
+
 var (
 	capabilitiesPreferences = map[string]interface{}{
 		"profile.default_content_setting_values.media_stream": 2, // Disable media stream
@@ -53,9 +58,4 @@ var (
 		"--disable-blink-features=AutomationControlled",
 		"--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
 	}
-)
-
-const (
-	chromeDriverPath        string = "./internal/webdriver/chromedriver"
-	chromeDriverServicePort int    = 9515
 )

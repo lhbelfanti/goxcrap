@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"log/slog"
 	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/elements"
@@ -34,19 +34,19 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 	return func() error {
 		err := loadPage(logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return err
 		}
 
 		err = retrieveAndFillInput(selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return err
 		}
 
 		err = retrieveAndClickButton(selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return err
 		}
 
@@ -57,30 +57,30 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			// and then we can fill the password input
 			err = retrieveAndFillInput(selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout)
 			if err != nil {
-				slog.Error(err.Error())
+				log.Error().Msg(err.Error())
 				return err
 			}
 
 			err = retrieveAndClickButton(selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout)
 			if err != nil {
-				slog.Error(err.Error())
+				log.Error().Msg(err.Error())
 				return err
 			}
 		}
 
 		err = retrieveAndFillInput(selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return err
 		}
 
 		err = retrieveAndClickButton(selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout)
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 			return err
 		}
 
-		slog.Info("Log In completed")
+		log.Info().Msg("Log In completed")
 		return nil
 	}
 }

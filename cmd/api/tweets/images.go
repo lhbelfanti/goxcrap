@@ -1,8 +1,7 @@
 package tweets
 
 import (
-	"log/slog"
-
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 )
 
@@ -50,7 +49,7 @@ func MakeGetImages() GetImages {
 
 		tweetImagesElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return nil, FailedToObtainTweetImagesElement
 		}
 
@@ -78,7 +77,7 @@ func MakeGetQuoteImages() GetQuoteImages {
 
 		tweetImagesElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return nil, FailedToObtainQuotedTweetImagesElement
 		}
 
@@ -90,7 +89,7 @@ func MakeGetQuoteImages() GetQuoteImages {
 func obtainImagesFromTweet(tweetImagesElement selenium.WebElement, failedToObtainTweetImages, failedToObtainTweetSrcFromImage error) ([]string, error) {
 	tweetImagesElements, err := tweetImagesElement.FindElements(selenium.ByTagName, "img")
 	if err != nil {
-		slog.Error(err.Error())
+		log.Info().Msg(err.Error())
 		return nil, failedToObtainTweetImages
 	}
 

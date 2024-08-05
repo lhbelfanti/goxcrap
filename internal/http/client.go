@@ -3,11 +3,11 @@ package http
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 type (
@@ -36,17 +36,17 @@ func NewClient() *CustomClient {
 }
 
 func (c *CustomClient) NewRequest(method, url string, body interface{}) (Response, error) {
-	slog.Info(fmt.Sprintf("body: %#v, url: %s", body, url))
+	log.Debug().Msgf("Body: %#v, URL: %s", body, url)
 
 	jsonData, err := json.Marshal(body)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return Response{}, FailedToMarshalBody
 	}
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return Response{}, FailedToCreateRequest
 	}
 
@@ -54,19 +54,19 @@ func (c *CustomClient) NewRequest(method, url string, body interface{}) (Respons
 
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return Response{}, FailedToExecuteRequest
 	}
 	defer func(body io.ReadCloser) {
 		err := body.Close()
 		if err != nil {
-			slog.Error(err.Error())
+			log.Error().Msg(err.Error())
 		}
 	}(resp.Body)
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return Response{}, FailedToReadResponse
 	}
 

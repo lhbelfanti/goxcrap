@@ -2,9 +2,9 @@ package webdriver
 
 import (
 	"fmt"
-	"log/slog"
 	"strings"
 
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 )
@@ -17,10 +17,10 @@ type LocalManager struct {
 
 // InitWebDriverService initializes a new Chrome *selenium.Service
 func (lwd *LocalManager) InitWebDriverService() error {
-	slog.Info(fmt.Sprintf("Initializing Chrome Driver Service using driver from:\n%s", chromeDriverPath))
+	log.Info().Msgf("Initializing Chrome Driver Service using driver from:\n%s", chromeDriverPath)
 	service, err := selenium.NewChromeDriverService(chromeDriverPath, chromeDriverServicePort)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return CannotInitializeWebDriverService
 	}
 
@@ -36,26 +36,26 @@ func (lwd *LocalManager) InitWebDriver() error {
 		Args:  capabilitiesArgs,
 	}
 
-	slog.Info(fmt.Sprintf("Setting up Chrome Capacities using the following Args:\n%s\n", strings.Join(chromeCaps.Args, "\n")))
+	log.Info().Msgf("Setting up Chrome Capacities using the following Args:\n%s\n", strings.Join(chromeCaps.Args, "\n"))
 	if chromeCaps.Path != "" {
-		slog.Info(fmt.Sprintf("and the following Path:\n%s", chromeCaps.Path))
+		log.Info().Msgf("and the following Path:\n%s", chromeCaps.Path)
 	}
 
 	caps := selenium.Capabilities{"browserName": "chrome"}
 	caps.AddChrome(chromeCaps)
 
 	remotePath := fmt.Sprintf("http://localhost:%d/wd/hub", chromeDriverServicePort)
-	slog.Info(fmt.Sprintf("Creating Remote Client at: \n%s", remotePath))
+	log.Info().Msgf("Creating Remote Client at: \n%s", remotePath)
 	wd, err := selenium.NewRemote(caps, remotePath)
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return CannotInitializeWebDriver
 	}
 
 	// maximize the current window to avoid responsive rendering
 	err = wd.MaximizeWindow("")
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return CannotMaximizeWindow
 	}
 
@@ -68,13 +68,13 @@ func (lwd *LocalManager) InitWebDriver() error {
 func (lwd *LocalManager) Quit() error {
 	err := lwd.service.Stop()
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return FailedToStopWebDriverService
 	}
 
 	err = lwd.webDriver.Quit()
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error().Msg(err.Error())
 		return FailedToQuitWebDriver
 	}
 

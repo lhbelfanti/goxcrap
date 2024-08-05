@@ -1,8 +1,7 @@
 package tweets
 
 import (
-	"log/slog"
-
+	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 )
 
@@ -17,19 +16,19 @@ func MakeGetTimestamp() GetTimestamp {
 	return func(tweetArticleElement selenium.WebElement) (string, error) {
 		tweetTimestampElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(timestampXPath))
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return "", FailedToObtainTweetTimestampElement
 		}
 
 		tweetTimestampTimeTag, err := tweetTimestampElement.FindElement(selenium.ByTagName, "time")
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return "", FailedToObtainTweetTimestampTimeTag
 		}
 
 		tweetTimestamp, err := tweetTimestampTimeTag.GetAttribute("datetime")
 		if err != nil {
-			slog.Error(err.Error())
+			log.Info().Msg(err.Error())
 			return "", FailedToObtainTweetTimestamp
 		}
 
