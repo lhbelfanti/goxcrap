@@ -14,7 +14,7 @@ import (
 	"goxcrap/cmd/api/scrapper"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/internal/broker"
-	ghttp "goxcrap/internal/http"
+	_http "goxcrap/internal/http"
 	"goxcrap/internal/setup"
 	"goxcrap/internal/webdriver"
 )
@@ -46,7 +46,7 @@ func runLocal() {
 	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 	log.Logger = logger
 
-	httpClient := ghttp.NewClient()
+	httpClient := _http.NewClient()
 
 	setup.Must(godotenv.Load())
 
@@ -81,9 +81,9 @@ func runDockerized() {
 		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
 	}
 
-	httpClient := ghttp.NewClient()
+	httpClient := _http.NewClient()
 
-	messageBroker := setup.Init(broker.NewMessageBroker())
+	messageBroker := setup.Init(broker.NewMessageBroker(httpClient))
 	go messageBroker.InitMessageConsumer(2, "/scrapper/execute/v1")
 
 	newWebDriverManager := webdriver.MakeNewManager(localMode)

@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/rabbitmq/amqp091-go"
+
+	"goxcrap/internal/http"
 )
 
 const rabbitmqURL = "amqp://%s:%s@rabbitmq:5672/"
@@ -21,10 +23,11 @@ type (
 
 	// RabbitMQMessageBroker contains all the necessary variables for a message broker: the connection, the channel, the queue, and a chan of messages
 	RabbitMQMessageBroker struct {
-		conn     *amqp091.Connection
-		channel  *amqp091.Channel
-		queue    amqp091.Queue
-		messages <-chan amqp091.Delivery
+		conn       *amqp091.Connection
+		channel    *amqp091.Channel
+		queue      amqp091.Queue
+		messages   <-chan amqp091.Delivery
+		httpClient http.Client
 	}
 )
 

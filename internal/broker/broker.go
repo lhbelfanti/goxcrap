@@ -1,20 +1,21 @@
 package broker
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/rabbitmq/amqp091-go"
 	"github.com/rs/zerolog/log"
+
+	"goxcrap/internal/http"
 )
 
 // NewMessageBroker creates a new pointer of RabbitMQMessageBroker
-func NewMessageBroker() (*RabbitMQMessageBroker, error) {
-	messageBroker := &RabbitMQMessageBroker{}
-	var err error
+func NewMessageBroker(httpClient http.Client) (*RabbitMQMessageBroker, error) {
+	messageBroker := &RabbitMQMessageBroker{
+		httpClient: httpClient,
+	}
 
+	var err error
 	// Connect to RabbitMQ
 	messageBroker.conn, err = amqp091.Dial(resolveRabbitmqURL())
 	if err != nil {
@@ -98,38 +99,20 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumer(concurrentMessages int, pro
 				defer func() {
 					<-workerChan
 				}()
-				// TODO replace callEndpoint by the http client of the internal/http
-				callEndpoint(processorEndpoint, string(msg.Body))
-				err := msg.Ack(false)
+
+				url := fmt.Sprintf("http://localhost:8091%s", processorEndpoint)
+				resp, err := mb.httpClient.NewRequest("POST", url, msg.Body)
+				if err != nil {
+					log.Error().Msg(err.Error())
+				}
+
+				log.Info().Msgf("Message consumer endpoint called -> Status: %s | Response: %s", resp.Status, resp.Body)
+
+				err = msg.Ack(false)
 				if err != nil {
 					log.Error().Msg(err.Error())
 				}
 			}(msg)
 		}
 	}()
-}
-
-// callEndpoint calls the POST endpoint of this application passed by parameter. It also receives its body as string
-func callEndpoint(endpoint, body string) {
-	url := fmt.Sprintf("http://localhost:8091%s", endpoint)
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer([]byte(body)))
-	if err != nil {
-		log.Error().Msg(err.Error())
-		return
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Error().Msg(err.Error())
-		}
-	}(resp.Body)
-
-	response, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Error().Msg(err.Error())
-		return
-	}
-
-	log.Info().Msg(string(response))
 }
