@@ -25,10 +25,10 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 			return FailedToLogin
 		}
 
-		log.Info(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
+		log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
 		time.Sleep(waitTimeAfterLogin * time.Second)
 
-		log.Info(ctx, fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
+		log.Debug(ctx, fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
 		ctx = log.With(ctx, log.Param("criteria_id", searchCriteria.ID))
 
 		since, until, err := searchCriteria.ParseDates()
@@ -44,13 +44,11 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 			currentCriteria.Until = current.AddDays(1).String()
 			err = executeAdvanceSearch(ctx, currentCriteria)
 			if err != nil {
-				log.Warn(ctx, err.Error())
 				continue
 			}
 
 			obtainedTweets, err := retrieveTweets(ctx)
 			if err != nil {
-				log.Warn(ctx, err.Error())
 				continue
 			}
 
@@ -58,12 +56,9 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 				requestBody := createSaveTweetsBody(obtainedTweets, currentCriteria.ID)
 				err = saveTweets(ctx, requestBody)
 				if err != nil {
-					log.Warn(ctx, err.Error())
 					continue
 				}
 			}
-
-			log.Info(ctx, fmt.Sprintf("%#v", obtainedTweets))
 		}
 
 		log.Info(ctx, "All the tweets of the criteria were retrieved")

@@ -35,21 +35,19 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 
 			articles, err := waitAndRetrieveElements(ctx, selenium.ByXPATH, globalToLocalXPath(articlesXPath), articlesTimeout)
 			if err != nil {
-				log.Info(ctx, err.Error())
+				log.Error(ctx, err.Error())
 				return nil, FailedToRetrieveArticles
 			}
 
 			for _, article := range articles {
 				tweetHash, err := getTweetHash(ctx, article)
 				if err != nil {
-					log.Info(ctx, err.Error())
 					continue
 				}
 
 				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
 					tweet, err := getTweetInformation(ctx, article, tweetHash.ID, tweetHash.Timestamp)
 					if err != nil {
-						log.Info(ctx, err.Error())
 						continue
 					}
 					tweets = append(tweets, tweet)
@@ -59,7 +57,6 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 			if len(tweets) > previousTweetsQuantity {
 				err = scrollPage(ctx)
 				if err != nil {
-					log.Error(ctx, err.Error())
 					break
 				}
 

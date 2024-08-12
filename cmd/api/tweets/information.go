@@ -53,13 +53,13 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 		tweetText, err := getText(ctx, tweetArticleElement, isTweetAReply)
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 		if err != nil && hasText {
-			log.Info(ctx, err.Error())
+			log.Debug(ctx, err.Error())
 		}
 
 		tweetImages, err := getImages(ctx, tweetArticleElement, isTweetAReply)
 		hasImages := !errors.Is(err, FailedToObtainTweetImagesElement)
 		if err != nil && hasImages {
-			log.Info(ctx, err.Error())
+			log.Debug(ctx, err.Error())
 		}
 
 		tweetOnlyHasText := hasText && !hasImages
@@ -73,13 +73,13 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 
 			quoteText, err := getQuoteText(ctx, tweetArticleElement, isTweetAReply, tweetOnlyHasText, tweetOnlyHasImages, isQuotedTweetAReply)
 			if err != nil {
-				log.Info(ctx, err.Error())
+				log.Debug(ctx, err.Error())
 			}
 			hasQuotedTweetText := !errors.Is(err, FailedToObtainQuotedTweetTextElement)
 
 			quoteImages, err := getQuoteImages(ctx, tweetArticleElement, isTweetAReply, tweetOnlyHasText)
 			if err != nil {
-				log.Info(ctx, err.Error())
+				log.Debug(ctx, err.Error())
 			}
 			hasQuotedTweetImages := !errors.Is(err, FailedToObtainQuotedTweetImagesElement)
 

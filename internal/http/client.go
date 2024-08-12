@@ -37,8 +37,6 @@ func NewClient() *CustomClient {
 }
 
 func (c *CustomClient) NewRequest(ctx context.Context, method, url string, body interface{}) (Response, error) {
-	ctx = log.With(ctx, log.Param("body", body), log.Param("url", url))
-
 	var jsonData []byte
 	var err error
 

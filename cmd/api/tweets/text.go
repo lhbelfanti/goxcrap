@@ -110,7 +110,7 @@ func MakeGetQuoteText() GetQuoteText {
 func obtainTextFromTweet(ctx context.Context, tweetTextElement selenium.WebElement, failedToObtainTextParts, failedToObtainTextPartTagName, failedToObtainTextFromSpan error) (string, error) {
 	textParts, err := tweetTextElement.FindElements(selenium.ByCSSSelector, "span, img")
 	if err != nil {
-		log.Info(ctx, err.Error())
+		log.Debug(ctx, err.Error())
 		return "", failedToObtainTextParts
 	}
 
@@ -118,7 +118,7 @@ func obtainTextFromTweet(ctx context.Context, tweetTextElement selenium.WebEleme
 	for _, textPart := range textParts {
 		tagName, err := textPart.TagName()
 		if err != nil {
-			log.Info(ctx, err.Error())
+			log.Debug(ctx, err.Error())
 			return "", failedToObtainTextPartTagName
 		}
 
@@ -126,14 +126,14 @@ func obtainTextFromTweet(ctx context.Context, tweetTextElement selenium.WebEleme
 		case "span":
 			spanText, err := textPart.Text()
 			if err != nil {
-				log.Info(ctx, err.Error())
+				log.Debug(ctx, err.Error())
 				return "", failedToObtainTextFromSpan
 			}
 			tweetText += spanText
 		case "img":
 			alt, err := textPart.GetAttribute("alt")
 			if err != nil {
-				log.Info(ctx, fmt.Sprintf("Ignoring emoji: %v", err.Error()))
+				log.Debug(ctx, fmt.Sprintf("Ignoring emoji: %v", err.Error()))
 				continue
 			}
 

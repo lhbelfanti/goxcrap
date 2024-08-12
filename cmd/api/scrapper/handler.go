@@ -49,6 +49,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 				}
 			}
 
+			log.Error(ctx, FailedToRunScrapper)
 			http.Error(w, FailedToRunScrapper, http.StatusInternalServerError)
 			return
 		}
@@ -63,6 +64,6 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 func stop(ctx context.Context, webDriverManager webdriver.Manager) {
 	err := webDriverManager.Quit(ctx)
 	if err != nil {
-		log.Error(ctx, err.Error())
+		log.Warn(ctx, err.Error())
 	}
 }

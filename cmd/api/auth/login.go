@@ -35,19 +35,16 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 	return func(ctx context.Context) error {
 		err := loadPage(ctx, logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
-			log.Error(ctx, err.Error())
 			return err
 		}
 
 		err = retrieveAndFillInput(ctx, selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout)
 		if err != nil {
-			log.Error(ctx, err.Error())
 			return err
 		}
 
 		err = retrieveAndClickButton(ctx, selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout)
 		if err != nil {
-			log.Error(ctx, err.Error())
 			return err
 		}
 
@@ -58,26 +55,22 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			// and then we can fill the password input
 			err = retrieveAndFillInput(ctx, selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout)
 			if err != nil {
-				log.Error(ctx, err.Error())
 				return err
 			}
 
 			err = retrieveAndClickButton(ctx, selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout)
 			if err != nil {
-				log.Error(ctx, err.Error())
 				return err
 			}
 		}
 
 		err = retrieveAndFillInput(ctx, selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout)
 		if err != nil {
-			log.Error(ctx, err.Error())
 			return err
 		}
 
 		err = retrieveAndClickButton(ctx, selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout)
 		if err != nil {
-			log.Error(ctx, err.Error())
 			return err
 		}
 
