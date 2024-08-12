@@ -1,6 +1,7 @@
 package tweets_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -39,7 +40,7 @@ func TestGetImages_success(t *testing.T) {
 		getImages := tweets.MakeGetImages()
 
 		want := []string{"test_url", "test_url"}
-		got, err := getImages(mockTweetArticleWebElement, test.isAReply)
+		got, err := getImages(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -64,7 +65,7 @@ func TestGetImages_failsWhenSpanElementIsFound(t *testing.T) {
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetImagesElement
-		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
+		_, got := getImages(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -89,7 +90,7 @@ func TestGetImages_failsWhenFindElementThrowsError(t *testing.T) {
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetImagesElement
-		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
+		_, got := getImages(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -116,7 +117,7 @@ func TestGetImages_failsWhenFindElementsThrowsError(t *testing.T) {
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetImages
-		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
+		_, got := getImages(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -144,7 +145,7 @@ func TestGetImages_failsWhenAllImgGetAttributeThrowError(t *testing.T) {
 		getImages := tweets.MakeGetImages()
 
 		want := tweets.FailedToObtainTweetSrcFromImage
-		_, got := getImages(mockTweetArticleWebElement, test.isAReply)
+		_, got := getImages(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -172,7 +173,7 @@ func TestGetQuoteImages_success(t *testing.T) {
 		getQuoteImages := tweets.MakeGetQuoteImages()
 
 		want := []string{"test_url", "test_url"}
-		got, err := getQuoteImages(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		got, err := getQuoteImages(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -199,7 +200,7 @@ func TestGetQuoteImages_failsWhenFindElementThrowsError(t *testing.T) {
 		getQuoteImages := tweets.MakeGetQuoteImages()
 
 		want := tweets.FailedToObtainQuotedTweetImagesElement
-		_, got := getQuoteImages(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteImages(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -227,7 +228,7 @@ func TestGetQuoteImages_failsWhenFindElementsThrowsError(t *testing.T) {
 		getQuoteImages := tweets.MakeGetQuoteImages()
 
 		want := tweets.FailedToObtainQuotedTweetImages
-		_, got := getQuoteImages(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteImages(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -255,7 +256,7 @@ func TestGetQuoteImages_failsWhenAllImgGetAttributeThrowError(t *testing.T) {
 		getQuoteImages := tweets.MakeGetQuoteImages()
 
 		want := tweets.FailedToObtainQuotedTweetSrcFromImage
-		_, got := getQuoteImages(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
+		_, got := getQuoteImages(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)

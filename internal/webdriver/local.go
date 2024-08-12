@@ -1,12 +1,14 @@
 package webdriver
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
-	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+
+	"goxcrap/internal/log"
 )
 
 // LocalManager represents a Web Driver manager for the local version of this application
@@ -16,11 +18,11 @@ type LocalManager struct {
 }
 
 // InitWebDriverService initializes a new Chrome *selenium.Service
-func (lwd *LocalManager) InitWebDriverService() error {
-	log.Info().Msgf("Initializing Chrome Driver Service using driver from:\n%s", chromeDriverPath)
+func (lwd *LocalManager) InitWebDriverService(ctx context.Context) error {
+	log.Info(ctx, fmt.Sprintf("Initializing Chrome Driver Service using driver from: %s", chromeDriverPath))
 	service, err := selenium.NewChromeDriverService(chromeDriverPath, chromeDriverServicePort)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return CannotInitializeWebDriverService
 	}
 
@@ -30,32 +32,32 @@ func (lwd *LocalManager) InitWebDriverService() error {
 }
 
 // InitWebDriver initializes a new Chrome selenium.WebDriver
-func (lwd *LocalManager) InitWebDriver() error {
+func (lwd *LocalManager) InitWebDriver(ctx context.Context) error {
 	chromeCaps := chrome.Capabilities{
 		Prefs: capabilitiesPreferences,
 		Args:  capabilitiesArgs,
 	}
 
-	log.Info().Msgf("Setting up Chrome Capacities using the following Args:\n%s\n", strings.Join(chromeCaps.Args, "\n"))
+	log.Info(ctx, fmt.Sprintf("Setting up Chrome Capacities using the following Args: - %s -", strings.Join(chromeCaps.Args, " - ")))
 	if chromeCaps.Path != "" {
-		log.Info().Msgf("and the following Path:\n%s", chromeCaps.Path)
+		log.Info(ctx, fmt.Sprintf("and the following Path: %s", chromeCaps.Path))
 	}
 
 	caps := selenium.Capabilities{"browserName": "chrome"}
 	caps.AddChrome(chromeCaps)
 
 	remotePath := fmt.Sprintf("http://localhost:%d/wd/hub", chromeDriverServicePort)
-	log.Info().Msgf("Creating Remote Client at: \n%s", remotePath)
+	log.Info(ctx, fmt.Sprintf("Creating Remote Client at: \n%s", remotePath))
 	wd, err := selenium.NewRemote(caps, remotePath)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return CannotInitializeWebDriver
 	}
 
 	// maximize the current window to avoid responsive rendering
 	err = wd.MaximizeWindow("")
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return CannotMaximizeWindow
 	}
 
@@ -65,16 +67,16 @@ func (lwd *LocalManager) InitWebDriver() error {
 }
 
 // Quit stops the selenium.WebDriver and its *selenium.Service to avoid leaks if the app is terminated
-func (lwd *LocalManager) Quit() error {
+func (lwd *LocalManager) Quit(ctx context.Context) error {
 	err := lwd.service.Stop()
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return FailedToStopWebDriverService
 	}
 
 	err = lwd.webDriver.Quit()
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return FailedToQuitWebDriver
 	}
 

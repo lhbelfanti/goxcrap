@@ -1,14 +1,15 @@
 package tweets
 
 import (
+	"context"
 	"slices"
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/elements"
 	"goxcrap/cmd/api/page"
+	"goxcrap/internal/log"
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 
 type (
 	// RetrieveAll retrieves all the tweets from the current page
-	RetrieveAll func() ([]Tweet, error)
+	RetrieveAll func(ctx context.Context) ([]Tweet, error)
 
 	// compareTweets compares two tweets by Tweet.ID
 	compareTweets func(Tweet) bool
@@ -27,28 +28,28 @@ type (
 
 // MakeRetrieveAll creates a new RetrieveAll
 func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetHash GetTweetHash, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
-	return func() ([]Tweet, error) {
+	return func(ctx context.Context) ([]Tweet, error) {
 		var tweets []Tweet
 		for {
 			previousTweetsQuantity := len(tweets)
 
-			articles, err := waitAndRetrieveElements(selenium.ByXPATH, globalToLocalXPath(articlesXPath), articlesTimeout)
+			articles, err := waitAndRetrieveElements(ctx, selenium.ByXPATH, globalToLocalXPath(articlesXPath), articlesTimeout)
 			if err != nil {
-				log.Info().Msg(err.Error())
+				log.Info(ctx, err.Error())
 				return nil, FailedToRetrieveArticles
 			}
 
 			for _, article := range articles {
-				tweetHash, err := getTweetHash(article)
+				tweetHash, err := getTweetHash(ctx, article)
 				if err != nil {
-					log.Info().Msg(err.Error())
+					log.Info(ctx, err.Error())
 					continue
 				}
 
 				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
-					tweet, err := getTweetInformation(article, tweetHash.ID, tweetHash.Timestamp)
+					tweet, err := getTweetInformation(ctx, article, tweetHash.ID, tweetHash.Timestamp)
 					if err != nil {
-						log.Info().Msg(err.Error())
+						log.Info(ctx, err.Error())
 						continue
 					}
 					tweets = append(tweets, tweet)
@@ -56,9 +57,9 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 			}
 
 			if len(tweets) > previousTweetsQuantity {
-				err = scrollPage()
+				err = scrollPage(ctx)
 				if err != nil {
-					log.Error().Msg(err.Error())
+					log.Error(ctx, err.Error())
 					break
 				}
 

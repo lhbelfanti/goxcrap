@@ -1,6 +1,7 @@
 package tweets_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -23,7 +24,7 @@ func TestGetTimestamp_success(t *testing.T) {
 	getTimestamp := tweets.MakeGetTimestamp()
 
 	want := "test"
-	got, err := getTimestamp(mockTweetArticleWebElement)
+	got, err := getTimestamp(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -39,7 +40,7 @@ func TestGetTimestamp_failsWhenFirstFindElementThrowsError(t *testing.T) {
 	getTimestamp := tweets.MakeGetTimestamp()
 
 	want := tweets.FailedToObtainTweetTimestampElement
-	_, got := getTimestamp(mockTweetArticleWebElement)
+	_, got := getTimestamp(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	mockTweetArticleWebElement.AssertExpectations(t)
@@ -54,7 +55,7 @@ func TestGetTimestamp_failsWhenSecondFindElementThrowsError(t *testing.T) {
 	getTimestamp := tweets.MakeGetTimestamp()
 
 	want := tweets.FailedToObtainTweetTimestampTimeTag
-	_, got := getTimestamp(mockTweetArticleWebElement)
+	_, got := getTimestamp(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	mockTweetArticleWebElement.AssertExpectations(t)
@@ -72,7 +73,7 @@ func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
 	getTimestamp := tweets.MakeGetTimestamp()
 
 	want := tweets.FailedToObtainTweetTimestamp
-	_, got := getTimestamp(mockTweetArticleWebElement)
+	_, got := getTimestamp(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	mockTweetArticleWebElement.AssertExpectations(t)

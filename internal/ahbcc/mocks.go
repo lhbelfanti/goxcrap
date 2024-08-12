@@ -1,8 +1,10 @@
 package ahbcc
 
+import "context"
+
 // MockSaveTweets mocks SaveTweets function
 func MockSaveTweets(err error) SaveTweets {
-	return func(body SaveTweetsBody) error {
+	return func(ctx context.Context, body SaveTweetsBody) error {
 		return err
 	}
 }

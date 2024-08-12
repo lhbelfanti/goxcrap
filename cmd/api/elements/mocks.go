@@ -1,6 +1,7 @@
 package elements
 
 import (
+	"context"
 	"time"
 
 	"github.com/stretchr/testify/mock"
@@ -9,7 +10,7 @@ import (
 
 // MockWaitAndRetrieve mocks WaitAndRetrieve function
 func MockWaitAndRetrieve(element selenium.WebElement, err error) WaitAndRetrieve {
-	return func(by, value string, timeout time.Duration) (selenium.WebElement, error) {
+	return func(ctx context.Context, by, value string, timeout time.Duration) (selenium.WebElement, error) {
 		return element, err
 	}
 }
@@ -25,7 +26,7 @@ func MockWaitAndRetrieveCondition(elementFound bool) WaitAndRetrieveCondition {
 
 // MockWaitAndRetrieveAll mocks WaitAndRetrieveAll function
 func MockWaitAndRetrieveAll(elements []selenium.WebElement, err error) WaitAndRetrieveAll {
-	return func(by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
+	return func(ctx context.Context, by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
 		return elements, err
 	}
 }
@@ -41,7 +42,7 @@ func MockWaitAndRetrieveAllCondition(elementFound bool) WaitAndRetrieveAllCondit
 
 // MockRetrieveAndFillInput mocks RetrieveAndFillInput function
 func MockRetrieveAndFillInput(err error, elementID string) RetrieveAndFillInput {
-	return func(by, value, element, inputText string, timeout time.Duration) error {
+	return func(ctx context.Context, by, value, element, inputText string, timeout time.Duration) error {
 		if elementID == element || elementID == "" {
 			return err
 		}
@@ -52,7 +53,7 @@ func MockRetrieveAndFillInput(err error, elementID string) RetrieveAndFillInput 
 
 // MockRetrieveAndClickButton mocks RetrieveAndClickButton function
 func MockRetrieveAndClickButton(err error, elementID string) RetrieveAndClickButton {
-	return func(by, value, element string, timeout time.Duration) error {
+	return func(ctx context.Context, by, value, element string, timeout time.Duration) error {
 		if elementID == element || elementID == "" {
 			return err
 		}

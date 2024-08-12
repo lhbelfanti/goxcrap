@@ -1,6 +1,7 @@
 package broker
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -15,10 +16,10 @@ type (
 	// MessageBroker defines the necessary methods for a message broker implementation
 	MessageBroker interface {
 		// EnqueueMessage enqueues a new message in the messages queue
-		EnqueueMessage(body string) error
+		EnqueueMessage(ctx context.Context, body string) error
 
 		// InitMessageConsumer initializes the goroutine in charge of the messages consumption
-		InitMessageConsumer(concurrentMessages int, processorEndpoint string)
+		InitMessageConsumer(ctx context.Context, concurrentMessages int, processorEndpoint string)
 	}
 
 	// RabbitMQMessageBroker contains all the necessary variables for a message broker: the connection, the channel, the queue, and a chan of messages

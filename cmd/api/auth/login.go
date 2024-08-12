@@ -1,14 +1,15 @@
 package auth
 
 import (
+	"context"
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/elements"
 	"goxcrap/cmd/api/env"
 	"goxcrap/cmd/api/page"
+	"goxcrap/internal/log"
 )
 
 const (
@@ -27,60 +28,60 @@ const (
 )
 
 // Login finds de login button clicks it and then fill the email and password fields to log in the user
-type Login func() error
+type Login func(ctx context.Context) error
 
 // MakeLogin creates a new Login
 func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveElement elements.WaitAndRetrieve, retrieveAndFillInput elements.RetrieveAndFillInput, retrieveAndClickButton elements.RetrieveAndClickButton) Login {
-	return func() error {
-		err := loadPage(logInPageRelativeURL, pageLoaderTimeout)
+	return func(ctx context.Context) error {
+		err := loadPage(ctx, logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return err
 		}
 
-		err = retrieveAndFillInput(selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout)
+		err = retrieveAndFillInput(ctx, selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return err
 		}
 
-		err = retrieveAndClickButton(selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout)
+		err = retrieveAndClickButton(ctx, selenium.ByXPATH, nextButtonXPath, "email next button", elementTimeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return err
 		}
 
-		_, err = waitAndRetrieveElement(selenium.ByName, passwordInputName, passwordElementTimeout)
+		_, err = waitAndRetrieveElement(ctx, selenium.ByName, passwordInputName, passwordElementTimeout)
 		if err != nil {
 			// If the password input element is not rendered it is probably because the flow
 			// 'There was an unusual activity in your account', was triggered. So we need to fill the username input,
 			// and then we can fill the password input
-			err = retrieveAndFillInput(selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout)
+			err = retrieveAndFillInput(ctx, selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout)
 			if err != nil {
-				log.Error().Msg(err.Error())
+				log.Error(ctx, err.Error())
 				return err
 			}
 
-			err = retrieveAndClickButton(selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout)
+			err = retrieveAndClickButton(ctx, selenium.ByXPATH, unusualActivityNextButtonXPath, "username next button", elementTimeout)
 			if err != nil {
-				log.Error().Msg(err.Error())
+				log.Error(ctx, err.Error())
 				return err
 			}
 		}
 
-		err = retrieveAndFillInput(selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout)
+		err = retrieveAndFillInput(ctx, selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return err
 		}
 
-		err = retrieveAndClickButton(selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout)
+		err = retrieveAndClickButton(ctx, selenium.ByXPATH, logInButtonXPath, "log in button", elementTimeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return err
 		}
 
-		log.Info().Msg("Log In completed")
+		log.Info(ctx, "Log In completed")
 		return nil
 	}
 }

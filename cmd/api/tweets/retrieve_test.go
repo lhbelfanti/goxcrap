@@ -1,6 +1,7 @@
 package tweets_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -23,7 +24,7 @@ func TestRetrieveAll_success(t *testing.T) {
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGetTweetHash, mockGetTweetInformation, mockScroll)
 
 	want := []tweets.Tweet{mockTweet}
-	got, err := retrieveAll()
+	got, err := retrieveAll(context.Background())
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -39,7 +40,7 @@ func TestRetrieveAll_successEvenWhenGetTweetHashThrowsError(t *testing.T) {
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGetTweetHash, mockGetTweetInformation, mockScroll)
 
 	var want []tweets.Tweet
-	got, err := retrieveAll()
+	got, err := retrieveAll(context.Background())
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -55,7 +56,7 @@ func TestRetrieveAll_successEvenWhenGetTweetInformationThrowsError(t *testing.T)
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGetTweetHash, mockGetTweetInformation, mockScroll)
 
 	var want []tweets.Tweet
-	got, err := retrieveAll()
+	got, err := retrieveAll(context.Background())
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -72,7 +73,7 @@ func TestRetrieveAll_successEvenWhenScrollPageThrowsError(t *testing.T) {
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGetTweetHash, mockGetTweetInformation, mockScroll)
 
 	want := []tweets.Tweet{mockTweet}
-	got, err := retrieveAll()
+	got, err := retrieveAll(context.Background())
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -88,7 +89,7 @@ func TestRetrieveAll_failsWhenWaitAndRetrieveElementThrowsError(t *testing.T) {
 	retrieveAll := tweets.MakeRetrieveAll(mockRetrieveAll, mockGetTweetHash, mockGetTweetInformation, mockScroll)
 
 	want := tweets.FailedToRetrieveArticles
-	_, got := retrieveAll()
+	_, got := retrieveAll(context.Background())
 
 	assert.Equal(t, want, got)
 }

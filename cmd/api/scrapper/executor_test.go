@@ -1,6 +1,7 @@
 package scrapper_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -25,7 +26,7 @@ func TestExecute_success(t *testing.T) {
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
-	got := executeScrapper(mockCriteria, 0)
+	got := executeScrapper(context.Background(), mockCriteria, 0)
 
 	assert.Nil(t, got)
 }
@@ -41,7 +42,7 @@ func TestExecute_successSkippingCriteriaDueAnErrorInExecuteAdvanceSearch(t *test
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
-	got := executeScrapper(mockCriteria, 0)
+	got := executeScrapper(context.Background(), mockCriteria, 0)
 
 	assert.Nil(t, got)
 }
@@ -55,7 +56,7 @@ func TestExecute_successWhenRetrieveAllThrowsError(t *testing.T) {
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
-	got := executeScrapper(mockCriteria, 0)
+	got := executeScrapper(context.Background(), mockCriteria, 0)
 
 	assert.Nil(t, got)
 }
@@ -70,7 +71,7 @@ func TestExecute_successWhenSaveTweetsThrowsError(t *testing.T) {
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
-	got := executeScrapper(mockCriteria, 0)
+	got := executeScrapper(context.Background(), mockCriteria, 0)
 
 	assert.Nil(t, got)
 }
@@ -86,7 +87,7 @@ func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
 	want := scrapper.FailedToLogin
-	got := executeScrapper(mockCriteria, 0)
+	got := executeScrapper(context.Background(), mockCriteria, 0)
 
 	assert.Equal(t, want, got)
 }
@@ -103,7 +104,7 @@ func TestExecute_failsWhileTryingToParseDatesFromTheGivenCriteriaThrowsError(t *
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
 	want := scrapper.FailedToParseDatesFromTheGivenCriteria
-	got := executeScrapper(mockCriteria, 0)
+	got := executeScrapper(context.Background(), mockCriteria, 0)
 
 	assert.Equal(t, want, got)
 }

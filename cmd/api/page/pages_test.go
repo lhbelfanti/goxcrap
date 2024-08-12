@@ -1,6 +1,7 @@
 package page_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
@@ -19,7 +20,7 @@ func TestLoad_success(t *testing.T) {
 
 	load := page.MakeLoad(mockWebDriver)
 
-	got := load("/test", 10*time.Minute)
+	got := load(context.Background(), "/test", 10*time.Minute)
 
 	assert.Nil(t, got)
 }
@@ -32,7 +33,7 @@ func TestLoad_failsWhenSetPageLoadTimeoutThrowsError(t *testing.T) {
 	load := page.MakeLoad(mockWebDriver)
 
 	want := page.FailedToSetPageLoadTimeout
-	got := load("/test", 10*time.Minute)
+	got := load(context.Background(), "/test", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }
@@ -46,7 +47,7 @@ func TestLoad_failsWhenGetThrowsError(t *testing.T) {
 	load := page.MakeLoad(mockWebDriver)
 
 	want := page.FailedToRetrievePage
-	got := load("/test", 10*time.Minute)
+	got := load(context.Background(), "/test", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }
@@ -57,7 +58,7 @@ func TestScroll_success(t *testing.T) {
 
 	scroll := page.MakeScroll(mockWebDriver)
 
-	got := scroll()
+	got := scroll(context.Background())
 
 	assert.Nil(t, got)
 }
@@ -69,7 +70,7 @@ func TestScroll_failsWhenJSHeightCodeExecutionThrowsError(t *testing.T) {
 	scroll := page.MakeScroll(mockWebDriver)
 
 	want := page.FailedToGetInnerHeight
-	got := scroll()
+	got := scroll(context.Background())
 
 	assert.Equal(t, want, got)
 }
@@ -82,7 +83,7 @@ func TestScroll_failsWhenScrollByCodeExecutionThrowsError(t *testing.T) {
 	scroll := page.MakeScroll(mockWebDriver)
 
 	want := page.FailedToScroll
-	got := scroll()
+	got := scroll(context.Background())
 
 	assert.Equal(t, want, got)
 }

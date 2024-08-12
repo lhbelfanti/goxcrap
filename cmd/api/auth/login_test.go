@@ -1,6 +1,7 @@
 package auth_test
 
 import (
+	"context"
 	"errors"
 	"os"
 	"testing"
@@ -29,7 +30,7 @@ func TestLogin_success(t *testing.T) {
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Nil(t, got)
 }
@@ -45,7 +46,7 @@ func TestLogin_successWhenWaitAndRetrievePasswordElementThrowsError(t *testing.T
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Nil(t, got)
 }
@@ -61,7 +62,7 @@ func TestLogin_failsWhenLoadPageThrowsError(t *testing.T) {
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }
@@ -77,7 +78,7 @@ func TestLogin_failsWhenRetrieveAndFillEmailInputThrowsError(t *testing.T) {
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }
@@ -93,7 +94,7 @@ func TestLogin_failsWhenRetrieveAndClickEmailNextButtonThrowsError(t *testing.T)
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }
@@ -109,7 +110,7 @@ func TestLogin_failsWhenRetrieveAndFillUsernameInputThrowsError(t *testing.T) {
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }
@@ -125,7 +126,7 @@ func TestLogin_failsWhenRetrieveAndClickUsernameNextButtonThrowsError(t *testing
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }
@@ -141,7 +142,7 @@ func TestLogin_failsWhenRetrieveAndFillPasswordInputThrowsError(t *testing.T) {
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }
@@ -157,7 +158,7 @@ func TestLogin_failsWhenRetrieveAndClickLogInButtonThrowsError(t *testing.T) {
 
 	login := auth.MakeLogin(mockEnvVariables, mockLoadPage, mockWaitAndRetrieveElement, mockRetrieveAndFillInput, mockRetrieveAndClickButton)
 
-	got := login()
+	got := login(context.Background())
 
 	assert.Equal(t, got, want)
 }

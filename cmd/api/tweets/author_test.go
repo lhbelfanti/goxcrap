@@ -1,6 +1,7 @@
 package tweets_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -21,7 +22,7 @@ func TestGetAuthor_success(t *testing.T) {
 	getAuthor := tweets.MakeGetAuthor()
 
 	want := "test"
-	got, err := getAuthor(mockTweetArticleWebElement)
+	got, err := getAuthor(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -36,7 +37,7 @@ func TestGetAuthor_failsWhenFindElementThrowsError(t *testing.T) {
 	getAuthor := tweets.MakeGetAuthor()
 
 	want := tweets.FailedToObtainTweetAuthorElement
-	_, got := getAuthor(mockTweetArticleWebElement)
+	_, got := getAuthor(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	mockTweetArticleWebElement.AssertExpectations(t)
@@ -51,7 +52,7 @@ func TestGetAuthor_failsWhenTextThrowsError(t *testing.T) {
 	getAuthor := tweets.MakeGetAuthor()
 
 	want := tweets.FailedToObtainTweetAuthor
-	_, got := getAuthor(mockTweetArticleWebElement)
+	_, got := getAuthor(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 	mockTweetArticleWebElement.AssertExpectations(t)

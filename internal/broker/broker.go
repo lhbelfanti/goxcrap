@@ -1,34 +1,39 @@
 package broker
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/rabbitmq/amqp091-go"
-	"github.com/rs/zerolog/log"
 
 	"goxcrap/internal/http"
+	"goxcrap/internal/log"
 )
 
 // NewMessageBroker creates a new pointer of RabbitMQMessageBroker
-func NewMessageBroker(httpClient http.Client) (*RabbitMQMessageBroker, error) {
+func NewMessageBroker(ctx context.Context, httpClient http.Client) (*RabbitMQMessageBroker, error) {
 	messageBroker := &RabbitMQMessageBroker{
 		httpClient: httpClient,
 	}
-
 	var err error
+
 	// Connect to RabbitMQ
-	messageBroker.conn, err = amqp091.Dial(resolveRabbitmqURL())
+	url := resolveRabbitmqURL()
+	ctx = log.With(ctx, log.Param("rabbitmq_url", url))
+	messageBroker.conn, err = amqp091.Dial(url)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return nil, FailedToInitializeRabbitMQ
 	}
+	ctx = log.With(ctx, log.Param("message_broker", messageBroker))
 
 	// Create a channel
 	messageBroker.channel, err = messageBroker.conn.Channel()
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return nil, FailedToOpenAChannel
 	}
+	ctx = log.With(ctx, log.Param("message_broker", messageBroker))
 
 	// Declare a queue
 	messageBroker.queue, err = messageBroker.channel.QueueDeclare(
@@ -40,12 +45,14 @@ func NewMessageBroker(httpClient http.Client) (*RabbitMQMessageBroker, error) {
 		nil,          // arguments
 	)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return nil, FailedToDeclareAQueue
 	}
+	ctx = log.With(ctx, log.Param("message_broker", messageBroker))
 
 	// Initialize the consumer
-	messageBroker.messages, err = messageBroker.channel.Consume(
+	messageBroker.messages, err = messageBroker.channel.ConsumeWithContext(
+		ctx,
 		messageBroker.queue.Name, // queue
 		"",                       // consumer
 		false,                    // auto-ack
@@ -55,7 +62,7 @@ func NewMessageBroker(httpClient http.Client) (*RabbitMQMessageBroker, error) {
 		nil,                      // args
 	)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return nil, FailedToRegisterAConsumer
 	}
 
@@ -63,14 +70,17 @@ func NewMessageBroker(httpClient http.Client) (*RabbitMQMessageBroker, error) {
 }
 
 // EnqueueMessage enqueues a new message in the RabbitMQMessageBroker.queue
-func (mb *RabbitMQMessageBroker) EnqueueMessage(body string) error {
+func (mb *RabbitMQMessageBroker) EnqueueMessage(ctx context.Context, body string) error {
+	ctx = log.With(ctx, log.Param("body", body))
+
 	publishing := amqp091.Publishing{
 		DeliveryMode: amqp091.Persistent,
 		ContentType:  "application/json",
 		Body:         []byte(body),
 	}
 
-	err := mb.channel.Publish(
+	err := mb.channel.PublishWithContext(
+		ctx,
 		"",            // exchange
 		mb.queue.Name, // routing key
 		false,         // mandatory
@@ -78,7 +88,7 @@ func (mb *RabbitMQMessageBroker) EnqueueMessage(body string) error {
 		publishing,
 	)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Error(ctx, err.Error())
 		return FailedToPublishAPublishing
 	}
 
@@ -89,7 +99,7 @@ func (mb *RabbitMQMessageBroker) EnqueueMessage(body string) error {
 // It receives two params:
 // concurrentMessages: defines the amount of messages that can be processed in parallel
 // processorEndpoint: defines the endpoint that is called when a message from the queue is consumed. That endpoint is in charge of processing the enqueued messages
-func (mb *RabbitMQMessageBroker) InitMessageConsumer(concurrentMessages int, processorEndpoint string) {
+func (mb *RabbitMQMessageBroker) InitMessageConsumer(ctx context.Context, concurrentMessages int, processorEndpoint string) {
 	workerChan := make(chan struct{}, concurrentMessages)
 
 	go func() {
@@ -101,16 +111,17 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumer(concurrentMessages int, pro
 				}()
 
 				url := fmt.Sprintf("http://localhost:8091%s", processorEndpoint)
-				resp, err := mb.httpClient.NewRequest("POST", url, msg.Body)
+				resp, err := mb.httpClient.NewRequest(ctx, "POST", url, msg.Body)
 				if err != nil {
-					log.Error().Msg(err.Error())
+					log.Error(ctx, err.Error())
 				}
+				ctx = log.With(ctx, log.Param("msg_body", string(msg.Body)))
 
-				log.Info().Msgf("Message consumer endpoint called -> Status: %s | Response: %s", resp.Status, resp.Body)
+				log.Info(ctx, fmt.Sprintf("Message consumer endpoint called -> Status: %s | Response: %s", resp.Status, resp.Body))
 
 				err = msg.Ack(false)
 				if err != nil {
-					log.Error().Msg(err.Error())
+					log.Error(ctx, err.Error())
 				}
 			}(msg)
 		}

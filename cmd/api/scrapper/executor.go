@@ -1,35 +1,40 @@
 package scrapper
 
 import (
+	"context"
+	"fmt"
 	"time"
-
-	"github.com/rs/zerolog/log"
 
 	"goxcrap/cmd/api/auth"
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/cmd/api/tweets"
 	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/log"
 )
 
 // Execute starts the X (formerly Twitter) scrapper
-type Execute func(searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error
+type Execute func(ctx context.Context, searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error
 
 // MakeExecute creates a new Execute
 func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets ahbcc.SaveTweets) Execute {
-	return func(searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
-		err := login()
+	return func(ctx context.Context, searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
+		err := login(ctx)
 		if err != nil {
+			log.Error(ctx, err.Error())
 			return FailedToLogin
 		}
 
-		log.Info().Msgf("Waiting %d seconds after login", waitTimeAfterLogin)
+		log.Info(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
 		time.Sleep(waitTimeAfterLogin * time.Second)
 
-		log.Info().Msgf("Criteria ID: %d", searchCriteria.ID)
+		log.Info(ctx, fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
+		ctx = log.With(ctx, log.Param("criteria_id", searchCriteria.ID))
+
 		since, until, err := searchCriteria.ParseDates()
+		ctx = log.With(ctx, log.Param("criteria_since", searchCriteria.Since), log.Param("criteria_until", searchCriteria.Until))
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return FailedToParseDatesFromTheGivenCriteria
 		}
 
@@ -37,31 +42,31 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 		for current := since; !current.After(until); current = current.AddDays(1) {
 			currentCriteria.Since = current.String()
 			currentCriteria.Until = current.AddDays(1).String()
-			err := executeAdvanceSearch(currentCriteria)
+			err = executeAdvanceSearch(ctx, currentCriteria)
 			if err != nil {
-				log.Info().Msg(err.Error())
+				log.Warn(ctx, err.Error())
 				continue
 			}
 
-			obtainedTweets, err := retrieveTweets()
+			obtainedTweets, err := retrieveTweets(ctx)
 			if err != nil {
-				log.Info().Msg(err.Error())
+				log.Warn(ctx, err.Error())
 				continue
 			}
 
 			if len(obtainedTweets) > 0 {
 				requestBody := createSaveTweetsBody(obtainedTweets, currentCriteria.ID)
-				err = saveTweets(requestBody)
+				err = saveTweets(ctx, requestBody)
 				if err != nil {
-					log.Info().Msg(err.Error())
+					log.Warn(ctx, err.Error())
 					continue
 				}
 			}
 
-			log.Info().Msgf("%v", obtainedTweets)
+			log.Info(ctx, fmt.Sprintf("%#v", obtainedTweets))
 		}
 
-		log.Info().Msgf("All the tweets of the criteria '%d' were retrieved", searchCriteria.ID)
+		log.Info(ctx, "All the tweets of the criteria were retrieved")
 
 		return nil
 	}

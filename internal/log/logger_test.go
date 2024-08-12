@@ -13,10 +13,10 @@ import (
 
 func TestNewLogger_successWithNilWriter(t *testing.T) {
 	var buf bytes.Buffer
-	log.NewLogger(&buf)
+	log.NewCustomLogger(&buf, zerolog.TraceLevel)
 
 	// Replaces the previous logger, so the buffer should not have logs
-	log.NewLogger(nil)
+	log.NewCustomLogger(nil, zerolog.TraceLevel)
 
 	// Write a test message
 	log.Info(context.Background(), "test message")
@@ -29,7 +29,7 @@ func TestNewLogger_successWithNilWriter(t *testing.T) {
 
 func TestLogLevels_success(t *testing.T) {
 	var buf bytes.Buffer
-	log.NewLogger(&buf)
+	log.NewCustomLogger(&buf, zerolog.TraceLevel)
 
 	tests := []struct {
 		name        string
@@ -79,7 +79,7 @@ func TestLogLevels_success(t *testing.T) {
 
 func TestErr_success(t *testing.T) {
 	var buf bytes.Buffer
-	log.NewLogger(&buf)
+	log.NewCustomLogger(&buf, zerolog.TraceLevel)
 
 	tests := []struct {
 		name           string

@@ -1,6 +1,7 @@
 package elements_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
@@ -22,7 +23,7 @@ func TestWaitAndRetrieve_success(t *testing.T) {
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
 
-	got, err := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
+	got, err := waitAndRetrieve(context.Background(), selenium.ByName, "value", 10*time.Minute)
 
 	assert.Nil(t, err)
 	assert.Equal(t, want, got)
@@ -35,7 +36,7 @@ func TestWaitAndRetrieve_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
 
-	_, got := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
+	_, got := waitAndRetrieve(context.Background(), selenium.ByName, "value", 10*time.Minute)
 
 	assert.NotNil(t, got)
 }
@@ -49,7 +50,7 @@ func TestWaitAndRetrieve_failsFindElementThrowsError(t *testing.T) {
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieve(mockWebDriver, mockWaitAndRetrieveCondition)
 
-	_, got := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
+	_, got := waitAndRetrieve(context.Background(), selenium.ByName, "value", 10*time.Minute)
 
 	assert.NotNil(t, got)
 }
@@ -93,7 +94,7 @@ func TestWaitAndRetrieveAll_success(t *testing.T) {
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
 
-	got, err := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
+	got, err := waitAndRetrieve(context.Background(), selenium.ByName, "value", 10*time.Minute)
 
 	assert.Nil(t, err)
 	assert.Equal(t, want, got)
@@ -106,7 +107,7 @@ func TestWaitAndRetrieveAll_failsWhenWaitWithTimeoutThrowsError(t *testing.T) {
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
 
-	_, got := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
+	_, got := waitAndRetrieve(context.Background(), selenium.ByName, "value", 10*time.Minute)
 
 	assert.NotNil(t, got)
 }
@@ -120,7 +121,7 @@ func TestWaitAndRetrieveAll_failsFindElementThrowsError(t *testing.T) {
 
 	waitAndRetrieve := elements.MakeWaitAndRetrieveAll(mockWebDriver, mockWaitAndRetrieveAllCondition)
 
-	_, got := waitAndRetrieve(selenium.ByName, "value", 10*time.Minute)
+	_, got := waitAndRetrieve(context.Background(), selenium.ByName, "value", 10*time.Minute)
 
 	assert.NotNil(t, got)
 }

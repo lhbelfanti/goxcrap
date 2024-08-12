@@ -1,6 +1,7 @@
 package search_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -17,7 +18,7 @@ func TestExecuteAdvanceSearch_success(t *testing.T) {
 
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
-	got := executeAdvanceSearch(mockCriteria)
+	got := executeAdvanceSearch(context.Background(), mockCriteria)
 
 	assert.Nil(t, got)
 }
@@ -30,7 +31,7 @@ func TestExecuteAdvanceSearch_failsWhenLoadPageThrowsError(t *testing.T) {
 	executeAdvanceSearch := search.MakeExecuteAdvanceSearch(mockLoadPage)
 
 	want := search.FailedToLoadAdvanceSearchPage
-	got := executeAdvanceSearch(mockCriteria)
+	got := executeAdvanceSearch(context.Background(), mockCriteria)
 
 	assert.Equal(t, want, got)
 }

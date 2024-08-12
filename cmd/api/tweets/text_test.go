@@ -1,6 +1,7 @@
 package tweets_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -33,7 +34,7 @@ func TestGetText_success(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := "text🙂"
-		got, err := getText(mockTweetArticleWebElement, test.isAReply)
+		got, err := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -65,7 +66,7 @@ func TestGetText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := "text"
-		got, err := getText(mockTweetArticleWebElement, test.isAReply)
+		got, err := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -90,7 +91,7 @@ func TestGetText_failsWhenFindElementThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextElement
-		_, got := getText(mockTweetArticleWebElement, test.isAReply)
+		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -114,7 +115,7 @@ func TestGetText_failsWhenFindElementsThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextParts
-		_, got := getText(mockTweetArticleWebElement, test.isAReply)
+		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -140,7 +141,7 @@ func TestGetText_failsWhenTagNameThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextPartTagName
-		_, got := getText(mockTweetArticleWebElement, test.isAReply)
+		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -167,7 +168,7 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextFromSpan
-		_, got := getText(mockTweetArticleWebElement, test.isAReply)
+		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -210,7 +211,7 @@ func TestGetQuoteText_success(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := "text🙂"
-		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
+		got, err := getQuoteText(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -255,7 +256,7 @@ func TestGetQuoteText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := "text"
-		got, err := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
+		got, err := getQuoteText(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -293,7 +294,7 @@ func TestGetQuoteText_failsWhenFindElementThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextElement
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
+		_, got := getQuoteText(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -330,7 +331,7 @@ func TestGetQuoteText_failsWhenFindElementsThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextParts
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
+		_, got := getQuoteText(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -369,7 +370,7 @@ func TestGetQuoteText_failsWhenTagNameThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextPartTagName
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
+		_, got := getQuoteText(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -409,7 +410,7 @@ func TestGetQuoteText_failsWhenTextThrowsError(t *testing.T) {
 		getQuoteText := tweets.MakeGetQuoteText()
 
 		want := tweets.FailedToObtainQuotedTweetTextFromSpan
-		_, got := getQuoteText(mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
+		_, got := getQuoteText(context.Background(), mockTweetArticleWebElement, test.isAReply, test.hasTweetOnlyText, test.hasTweetOnlyImages, test.isQuoteAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)

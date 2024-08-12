@@ -1,8 +1,11 @@
 package tweets
 
 import (
-	"github.com/rs/zerolog/log"
+	"context"
+
 	"github.com/tebeka/selenium"
+
+	"goxcrap/internal/log"
 )
 
 const (
@@ -21,15 +24,15 @@ const (
 
 type (
 	// GetImages retrieves the tweet images
-	GetImages func(tweetArticleElement selenium.WebElement, isAReply bool) ([]string, error)
+	GetImages func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) ([]string, error)
 
 	// GetQuoteImages retrieves the quoted tweet images
-	GetQuoteImages func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error)
+	GetQuoteImages func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error)
 )
 
 // MakeGetImages creates a new GetImages
 func MakeGetImages() GetImages {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool) ([]string, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) ([]string, error) {
 		xPath := tweetOnlyTextXPath
 		if isAReply {
 			xPath = replyTweetOnlyTextXPath
@@ -49,17 +52,17 @@ func MakeGetImages() GetImages {
 
 		tweetImagesElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
-			log.Info().Msg(err.Error())
+			log.Warn(ctx, err.Error())
 			return nil, FailedToObtainTweetImagesElement
 		}
 
-		return obtainImagesFromTweet(tweetImagesElement, FailedToObtainTweetImages, FailedToObtainTweetSrcFromImage)
+		return obtainImagesFromTweet(ctx, tweetImagesElement, FailedToObtainTweetImages, FailedToObtainTweetSrcFromImage)
 	}
 }
 
 // MakeGetQuoteImages creates a new GetQuoteImages
 func MakeGetQuoteImages() GetQuoteImages {
-	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error) {
 		var xPath string
 		if isAReply {
 			if hasTweetOnlyText {
@@ -77,19 +80,19 @@ func MakeGetQuoteImages() GetQuoteImages {
 
 		tweetImagesElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
-			log.Info().Msg(err.Error())
+			log.Warn(ctx, err.Error())
 			return nil, FailedToObtainQuotedTweetImagesElement
 		}
 
-		return obtainImagesFromTweet(tweetImagesElement, FailedToObtainQuotedTweetImages, FailedToObtainQuotedTweetSrcFromImage)
+		return obtainImagesFromTweet(ctx, tweetImagesElement, FailedToObtainQuotedTweetImages, FailedToObtainQuotedTweetSrcFromImage)
 	}
 }
 
 // obtainImagesFromTweet retrieves the images from the given tweet images element
-func obtainImagesFromTweet(tweetImagesElement selenium.WebElement, failedToObtainTweetImages, failedToObtainTweetSrcFromImage error) ([]string, error) {
+func obtainImagesFromTweet(ctx context.Context, tweetImagesElement selenium.WebElement, failedToObtainTweetImages, failedToObtainTweetSrcFromImage error) ([]string, error) {
 	tweetImagesElements, err := tweetImagesElement.FindElements(selenium.ByTagName, "img")
 	if err != nil {
-		log.Info().Msg(err.Error())
+		log.Warn(ctx, err.Error())
 		return nil, failedToObtainTweetImages
 	}
 

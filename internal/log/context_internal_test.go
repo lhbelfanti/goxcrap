@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,6 +16,11 @@ func TestWithContextParams_success(t *testing.T) {
 		ctx  context.Context
 		want map[string]interface{}
 	}{
+		{
+			name: "Nil context",
+			ctx:  nil,
+			want: map[string]interface{}{},
+		},
 		{
 			name: "Empty context",
 			ctx:  context.Background(),
@@ -74,7 +80,7 @@ func TestWithContextParams_success(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var buf bytes.Buffer
-			NewLogger(&buf)
+			NewCustomLogger(&buf, zerolog.TraceLevel)
 			Info(tt.ctx, "")
 
 			got := buf.String()

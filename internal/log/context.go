@@ -38,6 +38,10 @@ func With(ctx context.Context, fields ...field) context.Context {
 }
 
 func withContextParams(ctx context.Context, event *zerolog.Event) *zerolog.Event {
+	if ctx == nil {
+		return event
+	}
+
 	params, ok := ctx.Value(logCtxKey{}).(map[string]interface{})
 	if !ok {
 		return event

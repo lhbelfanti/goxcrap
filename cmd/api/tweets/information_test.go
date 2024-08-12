@@ -1,6 +1,7 @@
 package tweets_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -60,7 +61,7 @@ func TestGetTweetBodyInformation_success(t *testing.T) {
 		}
 
 		want := mockTweet
-		got, err := getTweetInformation(mockTweetArticleWebElement, mockTweetHash.ID, mockTweetHash.Timestamp)
+		got, err := getTweetInformation(context.Background(), mockTweetArticleWebElement, mockTweetHash.ID, mockTweetHash.Timestamp)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -75,7 +76,7 @@ func TestMakeGetTweetHash_success(t *testing.T) {
 	getTweetHash := tweets.MakeGetTweetHash(mockGetAuthor, mockGetTimestamp)
 
 	want := tweets.MockTweetHash()
-	got, _ := getTweetHash(mockTweetArticleWebElement)
+	got, _ := getTweetHash(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }
@@ -88,7 +89,7 @@ func TestMakeGetTweetHash_failsWhenGetAuthorThrowsError(t *testing.T) {
 	getTweetHash := tweets.MakeGetTweetHash(mockGetAuthor, mockGetTimestamp)
 
 	want := tweets.FailedToObtainTweetAuthorInformation
-	_, got := getTweetHash(mockTweetArticleWebElement)
+	_, got := getTweetHash(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }
@@ -101,7 +102,7 @@ func TestMakeGetTweetHash_failsWhenGetTimestampThrowsError(t *testing.T) {
 	getTweetHash := tweets.MakeGetTweetHash(mockGetAuthor, mockGetTimestamp)
 
 	want := tweets.FailedToObtainTweetTimestampInformation
-	_, got := getTweetHash(mockTweetArticleWebElement)
+	_, got := getTweetHash(context.Background(), mockTweetArticleWebElement)
 
 	assert.Equal(t, want, got)
 }

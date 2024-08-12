@@ -1,17 +1,21 @@
 package webdriver
 
-import "github.com/tebeka/selenium"
+import (
+	"context"
+
+	"github.com/tebeka/selenium"
+)
 
 // Manager interface is adopted by the different implementations of a web driver manager used in this application
 type Manager interface {
 	// InitWebDriverService initializes a new *selenium.Service
-	InitWebDriverService() error
+	InitWebDriverService(ctx context.Context) error
 
 	// InitWebDriver initializes a new selenium.WebDriver
-	InitWebDriver() error
+	InitWebDriver(ctx context.Context) error
 
 	// Quit stops the selenium.WebDriver and its *selenium.Service to avoid leaks if the app is terminated
-	Quit() error
+	Quit(ctx context.Context) error
 
 	// WebDriver returns the initialized selenium.WebDriver
 	WebDriver() selenium.WebDriver

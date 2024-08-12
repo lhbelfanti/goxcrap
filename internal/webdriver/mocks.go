@@ -1,6 +1,7 @@
 package webdriver
 
 import (
+	"context"
 	"time"
 
 	"github.com/stretchr/testify/mock"
@@ -10,7 +11,7 @@ import (
 
 // MockNewManager mocks NewManager function
 func MockNewManager(manager Manager) NewManager {
-	return func() Manager {
+	return func(ctx context.Context) Manager {
 		return manager
 	}
 }
@@ -300,18 +301,18 @@ type MockManager struct {
 	mock.Mock
 }
 
-func (m *MockManager) InitWebDriverService() error {
-	args := m.Called()
+func (m *MockManager) InitWebDriverService(ctx context.Context) error {
+	args := m.Called(ctx)
 	return args.Error(0)
 }
 
-func (m *MockManager) InitWebDriver() error {
-	args := m.Called()
+func (m *MockManager) InitWebDriver(ctx context.Context) error {
+	args := m.Called(ctx)
 	return args.Error(0)
 }
 
-func (m *MockManager) Quit() error {
-	args := m.Called()
+func (m *MockManager) Quit(ctx context.Context) error {
+	args := m.Called(ctx)
 	return args.Error(0)
 }
 

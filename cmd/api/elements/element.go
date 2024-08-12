@@ -1,21 +1,23 @@
 package elements
 
 import (
+	"context"
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/tebeka/selenium"
+
+	"goxcrap/internal/log"
 )
 
 type (
 	// WaitAndRetrieve waits for a selenium.WebElement to be rendered in the page and retrieves it
-	WaitAndRetrieve func(by, value string, timeout time.Duration) (selenium.WebElement, error)
+	WaitAndRetrieve func(ctx context.Context, by, value string, timeout time.Duration) (selenium.WebElement, error)
 
 	// WaitAndRetrieveCondition is the function that returns the SeleniumCondition
 	WaitAndRetrieveCondition func(by, value string) SeleniumCondition
 
 	// WaitAndRetrieveAll waits for a slice of selenium.WebElement to be rendered in the page and retrieve them
-	WaitAndRetrieveAll func(by, value string, timeout time.Duration) ([]selenium.WebElement, error)
+	WaitAndRetrieveAll func(ctx context.Context, by, value string, timeout time.Duration) ([]selenium.WebElement, error)
 
 	// WaitAndRetrieveAllCondition is the function that returns the SeleniumCondition
 	WaitAndRetrieveAllCondition func(by, value string) SeleniumCondition
@@ -26,16 +28,16 @@ type (
 
 // MakeWaitAndRetrieve creates a new WaitAndRetrieve
 func MakeWaitAndRetrieve(wd selenium.WebDriver, condition WaitAndRetrieveCondition) WaitAndRetrieve {
-	return func(by, value string, timeout time.Duration) (selenium.WebElement, error) {
+	return func(ctx context.Context, by, value string, timeout time.Duration) (selenium.WebElement, error) {
 		err := wd.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return nil, FailedToExecuteWaitWithTimeout
 		}
 
 		element, err := wd.FindElement(by, value)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return nil, FailedToRetrieveElement
 		}
 
@@ -59,16 +61,16 @@ func MakeWaitAndRetrieveCondition() WaitAndRetrieveCondition {
 
 // MakeWaitAndRetrieveAll creates a new WaitAndRetrieveAll
 func MakeWaitAndRetrieveAll(wd selenium.WebDriver, condition WaitAndRetrieveAllCondition) WaitAndRetrieveAll {
-	return func(by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
+	return func(ctx context.Context, by, value string, timeout time.Duration) ([]selenium.WebElement, error) {
 		err := wd.WaitWithTimeout(selenium.Condition(condition(by, value)), timeout)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return nil, FailedToExecuteWaitWithTimeout
 		}
 
 		elements, err := wd.FindElements(by, value)
 		if err != nil {
-			log.Error().Msg(err.Error())
+			log.Error(ctx, err.Error())
 			return nil, FailedToRetrieveElements
 		}
 

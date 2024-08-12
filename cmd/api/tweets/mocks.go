@@ -1,38 +1,42 @@
 package tweets
 
-import "github.com/tebeka/selenium"
+import (
+	"context"
+
+	"github.com/tebeka/selenium"
+)
 
 // MockRetrieveAll mocks RetrieveAll function
 func MockRetrieveAll(tweets []Tweet, err error) RetrieveAll {
-	return func() ([]Tweet, error) {
+	return func(ctx context.Context) ([]Tweet, error) {
 		return tweets, err
 	}
 }
 
 // MockGetTweetHash mocks GetTweetHash function
 func MockGetTweetHash(tweetHash TweetHash, err error) GetTweetHash {
-	return func(tweetArticleElement selenium.WebElement) (TweetHash, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement) (TweetHash, error) {
 		return tweetHash, err
 	}
 }
 
 // MockGetTweetInformation mocks GetTweetInformation function
 func MockGetTweetInformation(tweet Tweet, err error) GetTweetInformation {
-	return func(tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error) {
 		return tweet, err
 	}
 }
 
 // MockGetAuthor mocks GetAuthor function
 func MockGetAuthor(author string, err error) GetAuthor {
-	return func(element selenium.WebElement) (string, error) {
+	return func(ctx context.Context, element selenium.WebElement) (string, error) {
 		return author, err
 	}
 }
 
 // MockGetTimestamp mocks GetTimestamp function
 func MockGetTimestamp(timestamp string, err error) GetTimestamp {
-	return func(element selenium.WebElement) (string, error) {
+	return func(ctx context.Context, element selenium.WebElement) (string, error) {
 		return timestamp, err
 	}
 }
@@ -46,14 +50,14 @@ func MockIsAReply(isAReply bool) IsAReply {
 
 // MockGetText mocks GetText function
 func MockGetText(text string, err error) GetText {
-	return func(element selenium.WebElement, isAReply bool) (string, error) {
+	return func(ctx context.Context, element selenium.WebElement, isAReply bool) (string, error) {
 		return text, err
 	}
 }
 
 // MockGetImages mocks GetImages function
 func MockGetImages(urls []string, err error) GetImages {
-	return func(element selenium.WebElement, isAReply bool) ([]string, error) {
+	return func(ctx context.Context, element selenium.WebElement, isAReply bool) ([]string, error) {
 		return urls, err
 	}
 }
@@ -74,14 +78,14 @@ func MockIsQuoteAReply(isQuoteAReply bool) IsQuoteAReply {
 
 // MockGetQuoteText mocks GetQuoteText function
 func MockGetQuoteText(text string, err error) GetQuoteText {
-	return func(element selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error) {
+	return func(ctx context.Context, element selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error) {
 		return text, err
 	}
 }
 
 // MockGetQuoteImages mocks GetQuoteImages function
 func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
-	return func(element selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error) {
+	return func(ctx context.Context, element selenium.WebElement, isAReply, hasTweetOnlyText bool) ([]string, error) {
 		return urls, err
 	}
 }

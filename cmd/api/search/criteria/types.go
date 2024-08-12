@@ -5,8 +5,6 @@ import (
 	"net/url"
 	"strings"
 	"time"
-
-	"github.com/rs/zerolog/log"
 )
 
 type (
@@ -36,7 +34,6 @@ type (
 func ParseDate(s string) (Date, error) {
 	t, err := time.Parse("2006-01-02", s)
 	if err != nil {
-		log.Error().Msg(err.Error())
 		return Date{}, FailedToParseDate
 	}
 	return Of(t), nil
@@ -85,13 +82,11 @@ func (d Date) After(other Date) bool {
 func (c Type) ParseDates() (Date, Date, error) {
 	since, err := ParseDate(c.Since)
 	if err != nil {
-		log.Error().Msg(err.Error())
 		return Date{}, Date{}, FailedToParseCriteriaSinceDate
 	}
 
 	until, err := ParseDate(c.Until)
 	if err != nil {
-		log.Error().Msg(err.Error())
 		return Date{}, Date{}, FailedToParseCriteriaUntilDate
 	}
 

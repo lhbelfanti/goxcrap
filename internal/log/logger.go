@@ -8,15 +8,15 @@ import (
 	"github.com/rs/zerolog"
 )
 
-var logger zerolog.Logger
+var logger = zerolog.New(os.Stdout).With().Timestamp().Logger().Level(zerolog.DebugLevel)
 
-// NewLogger returns a new custom logger writing to the provided writer
-func NewLogger(writer io.Writer) {
+// NewCustomLogger returns a new custom logger writing to the provided writer
+func NewCustomLogger(writer io.Writer, logLevel zerolog.Level) {
 	if writer == nil {
 		writer = os.Stdout
 	}
 
-	logger = zerolog.New(writer).With().Timestamp().Logger()
+	logger = zerolog.New(writer).With().Timestamp().Logger().Level(logLevel)
 }
 
 // Trace starts a new message with trace level

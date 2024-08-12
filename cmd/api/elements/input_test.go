@@ -1,6 +1,7 @@
 package elements_test
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
@@ -19,7 +20,7 @@ func TestRetrieveAndFillInput_success(t *testing.T) {
 
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
-	got := retrieveAndClickButton(selenium.ByName, "name", "element", "input", 10*time.Minute)
+	got := retrieveAndClickButton(context.Background(), selenium.ByName, "name", "element", "input", 10*time.Minute)
 
 	assert.Nil(t, got)
 }
@@ -31,7 +32,7 @@ func TestRetrieveAndFillInput_failsWhenWaitAndRetrieveElementThrowsError(t *test
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
 	want := elements.FailedToRetrieveInput
-	got := retrieveAndClickButton(selenium.ByName, "name", "test", "input", 10*time.Minute)
+	got := retrieveAndClickButton(context.Background(), selenium.ByName, "name", "test", "input", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }
@@ -45,7 +46,7 @@ func TestRetrieveAndFillInput_failsWhenInputClickThrowsError(t *testing.T) {
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
 	want := elements.FailedToClickInput
-	got := retrieveAndClickButton(selenium.ByName, "name", "test", "input", 10*time.Minute)
+	got := retrieveAndClickButton(context.Background(), selenium.ByName, "name", "test", "input", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }
@@ -60,7 +61,7 @@ func TestRetrieveAndFillInput_failsWhenInputSendKeysThrowsError(t *testing.T) {
 	retrieveAndClickButton := elements.MakeRetrieveAndFillInput(mockWaitAndRetrieve)
 
 	want := elements.FailedToFillInput
-	got := retrieveAndClickButton(selenium.ByName, "name", "test", "input", 10*time.Minute)
+	got := retrieveAndClickButton(context.Background(), selenium.ByName, "name", "test", "input", 10*time.Minute)
 
 	assert.Equal(t, want, got)
 }

@@ -1,27 +1,28 @@
 package webdriver
 
 import (
-	"github.com/rs/zerolog/log"
+	"context"
 
+	"goxcrap/internal/log"
 	"goxcrap/internal/setup"
 )
 
 // NewManager initializes a new WebDriver with all its elements
-type NewManager func() Manager
+type NewManager func(ctx context.Context) Manager
 
 // MakeNewManager creates a new NewManager
 func MakeNewManager(localMode bool) NewManager {
-	return func() Manager {
-		log.Info().Msg("Initializing WebDriver...")
+	return func(ctx context.Context) Manager {
+		log.Info(ctx, "Initializing WebDriver...")
 		var manager Manager
 		if localMode {
 			manager = &LocalManager{}
 		} else {
 			manager = &DockerizedManager{}
 		}
-		setup.Must(manager.InitWebDriverService())
-		setup.Must(manager.InitWebDriver())
-		log.Info().Msg("WebDriver initialized!")
+		setup.Must(manager.InitWebDriverService(ctx))
+		setup.Must(manager.InitWebDriver(ctx))
+		log.Info(ctx, "WebDriver initialized!")
 
 		return manager
 	}

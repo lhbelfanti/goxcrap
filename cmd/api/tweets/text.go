@@ -1,8 +1,12 @@
 package tweets
 
 import (
-	"github.com/rs/zerolog/log"
+	"context"
+	"fmt"
+
 	"github.com/tebeka/selenium"
+
+	"goxcrap/internal/log"
 )
 
 const (
@@ -26,15 +30,15 @@ const (
 
 type (
 	// GetText retrieves the tweet text
-	GetText func(tweetArticleElement selenium.WebElement, isAReply bool) (string, error)
+	GetText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, error)
 
 	// GetQuoteText retrieves the quoted tweet text
-	GetQuoteText func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error)
+	GetQuoteText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error)
 )
 
 // MakeGetText creates a new GetText
 func MakeGetText() GetText {
-	return func(tweetArticleElement selenium.WebElement, isAReply bool) (string, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, error) {
 		xPath := tweetTextXPath
 		if isAReply {
 			xPath = replyTweetTextXPath
@@ -46,13 +50,13 @@ func MakeGetText() GetText {
 			return "", FailedToObtainTweetTextElement
 		}
 
-		return obtainTextFromTweet(tweetTextElement, FailedToObtainTweetTextParts, FailedToObtainTweetTextPartTagName, FailedToObtainTweetTextFromSpan)
+		return obtainTextFromTweet(ctx, tweetTextElement, FailedToObtainTweetTextParts, FailedToObtainTweetTextPartTagName, FailedToObtainTweetTextFromSpan)
 	}
 }
 
 // MakeGetQuoteText creates a new GetQuoteText
 func MakeGetQuoteText() GetQuoteText {
-	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error) {
 		var xPath string
 		if isAReply {
 			if isQuoteAReply {
@@ -98,15 +102,15 @@ func MakeGetQuoteText() GetQuoteText {
 			return "", FailedToObtainQuotedTweetTextElement
 		}
 
-		return obtainTextFromTweet(tweetTextElement, FailedToObtainQuotedTweetTextParts, FailedToObtainQuotedTweetTextPartTagName, FailedToObtainQuotedTweetTextFromSpan)
+		return obtainTextFromTweet(ctx, tweetTextElement, FailedToObtainQuotedTweetTextParts, FailedToObtainQuotedTweetTextPartTagName, FailedToObtainQuotedTweetTextFromSpan)
 	}
 }
 
 // obtainTextFromTweet retrieves the text from the given tweet text element
-func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTextParts, failedToObtainTextPartTagName, failedToObtainTextFromSpan error) (string, error) {
+func obtainTextFromTweet(ctx context.Context, tweetTextElement selenium.WebElement, failedToObtainTextParts, failedToObtainTextPartTagName, failedToObtainTextFromSpan error) (string, error) {
 	textParts, err := tweetTextElement.FindElements(selenium.ByCSSSelector, "span, img")
 	if err != nil {
-		log.Info().Msg(err.Error())
+		log.Info(ctx, err.Error())
 		return "", failedToObtainTextParts
 	}
 
@@ -114,7 +118,7 @@ func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTex
 	for _, textPart := range textParts {
 		tagName, err := textPart.TagName()
 		if err != nil {
-			log.Info().Msg(err.Error())
+			log.Info(ctx, err.Error())
 			return "", failedToObtainTextPartTagName
 		}
 
@@ -122,14 +126,14 @@ func obtainTextFromTweet(tweetTextElement selenium.WebElement, failedToObtainTex
 		case "span":
 			spanText, err := textPart.Text()
 			if err != nil {
-				log.Info().Msg(err.Error())
+				log.Info(ctx, err.Error())
 				return "", failedToObtainTextFromSpan
 			}
 			tweetText += spanText
 		case "img":
 			alt, err := textPart.GetAttribute("alt")
 			if err != nil {
-				log.Info().Msg("Ignoring emoji: " + err.Error())
+				log.Info(ctx, fmt.Sprintf("Ignoring emoji: %v", err.Error()))
 				continue
 			}
 
