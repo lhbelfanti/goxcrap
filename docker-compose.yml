@@ -17,11 +17,8 @@ services:
     restart: on-failure
     volumes:
       - .:/app
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
     networks:
-      - network
+      - app
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:8091/ping/v1 || exit 1'" ]
       interval: 5s
@@ -32,27 +29,34 @@ services:
         limits:
           cpus: '2.0'
           memory: 2G
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   rabbitmq:
     image: "rabbitmq:3-management-alpine"
     container_name: rabbitmq
+    hostname: 'goxcrap'
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
       test: [ "CMD-SHELL", "rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms" ]
+      start_period: 1m
       interval: 10s
       timeout: 10s
       retries: 5
     networks:
-      - network
+      - app
 
 volumes:
-  database:
+  rabbitmq_data:
 
 networks:
-  network:
+  app:
     driver: bridge

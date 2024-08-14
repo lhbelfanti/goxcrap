@@ -18,7 +18,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the application source code, the migrations folder and the .env file
+# Copy the application source code and the .env file
 COPY cmd/ ./cmd
 COPY internal/ ./internal
 COPY .env ./
