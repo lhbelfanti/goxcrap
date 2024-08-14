@@ -79,8 +79,6 @@ func runDockerized() {
 		logLevel = zerolog.InfoLevel
 	}
 
-	// TODO: connect to ELK to save logs
-	//conn := setup.Init(net.Dial("tcp", "logstash:5000"))
 	log.NewCustomLogger(os.Stdout, logLevel)
 
 	httpClient := _http.NewClient()
