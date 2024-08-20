@@ -2,12 +2,12 @@ package auth
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/elements"
-	"goxcrap/cmd/api/env"
 	"goxcrap/cmd/api/page"
 	"goxcrap/internal/log"
 )
@@ -31,14 +31,14 @@ const (
 type Login func(ctx context.Context) error
 
 // MakeLogin creates a new Login
-func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveElement elements.WaitAndRetrieve, retrieveAndFillInput elements.RetrieveAndFillInput, retrieveAndClickButton elements.RetrieveAndClickButton) Login {
+func MakeLogin(loadPage page.Load, waitAndRetrieveElement elements.WaitAndRetrieve, retrieveAndFillInput elements.RetrieveAndFillInput, retrieveAndClickButton elements.RetrieveAndClickButton) Login {
 	return func(ctx context.Context) error {
 		err := loadPage(ctx, logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
 			return err
 		}
 
-		err = retrieveAndFillInput(ctx, selenium.ByName, emailInputName, "email input", envVariables.Email, elementTimeout)
+		err = retrieveAndFillInput(ctx, selenium.ByName, emailInputName, "email input", os.Getenv("EMAIL"), elementTimeout)
 		if err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			// If the password input element is not rendered it is probably because the flow
 			// 'There was an unusual activity in your account', was triggered. So we need to fill the username input,
 			// and then we can fill the password input
-			err = retrieveAndFillInput(ctx, selenium.ByName, usernameInputName, "username input", envVariables.Username, elementTimeout)
+			err = retrieveAndFillInput(ctx, selenium.ByName, usernameInputName, "username input", os.Getenv("USERNAME"), elementTimeout)
 			if err != nil {
 				return err
 			}
@@ -64,7 +64,7 @@ func MakeLogin(envVariables env.Variables, loadPage page.Load, waitAndRetrieveEl
 			}
 		}
 
-		err = retrieveAndFillInput(ctx, selenium.ByName, passwordInputName, "password input", envVariables.Password, elementTimeout)
+		err = retrieveAndFillInput(ctx, selenium.ByName, passwordInputName, "password input", os.Getenv("PASSWORD"), elementTimeout)
 		if err != nil {
 			return err
 		}

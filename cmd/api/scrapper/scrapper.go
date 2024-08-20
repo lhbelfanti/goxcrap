@@ -1,16 +1,17 @@
 package scrapper
 
 import (
-	"github.com/tebeka/selenium"
+	"os"
 
 	"goxcrap/cmd/api/auth"
 	"goxcrap/cmd/api/elements"
-	"goxcrap/cmd/api/env"
 	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/tweets"
 	"goxcrap/internal/ahbcc"
 	"goxcrap/internal/http"
+
+	"github.com/tebeka/selenium"
 )
 
 // New initializes all the functions of a scrapper (only Execute for now)
@@ -20,9 +21,6 @@ type New func(webDriver selenium.WebDriver) Execute
 // MakeNew creates a new New
 func MakeNew(httpClient http.Client) New {
 	return func(webDriver selenium.WebDriver) Execute {
-		// Env variables
-		variables := env.LoadVariables()
-
 		// Functions
 		loadPage := page.MakeLoad(webDriver)
 		scrollPage := page.MakeScroll(webDriver)
@@ -34,10 +32,10 @@ func MakeNew(httpClient http.Client) New {
 		retrieveAndClickButton := elements.MakeRetrieveAndClickButton(waitAndRetrieveElement)
 
 		// Calls to external services
-		saveTweets := ahbcc.MakeSaveTweets(httpClient, variables.AHBCCDomain)
+		saveTweets := ahbcc.MakeSaveTweets(httpClient, os.Getenv("SAVE_TWEETS_API_URL"))
 
 		// Services
-		login := auth.MakeLogin(variables, loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
+		login := auth.MakeLogin(loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
 		executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
 		getTweetAuthor := tweets.MakeGetAuthor()
 		getTweetTimestamp := tweets.MakeGetTimestamp()

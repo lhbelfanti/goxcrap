@@ -59,6 +59,7 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 					continue
 				}
 			}
+
 		}
 
 		log.Info(ctx, "All the tweets of the criteria were retrieved")
