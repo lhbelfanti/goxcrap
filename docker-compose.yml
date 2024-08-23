@@ -3,6 +3,9 @@ services:
     build:
       context: .
     container_name: goxcrap
+    command: ["/goxcrap", "--prod"]
+    ports:
+      - "${APP_EXPOSED_PORT}:${APP_INTERNAL_PORT}"
     environment:
       APP_API_PORT: ${APP_INTERNAL_PORT:-3001}
       EMAIL: ${EMAIL}
@@ -14,14 +17,16 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
       RABBITMQ_PORT: ${RABBITMQ_PORT:-5672}
-    command: ["/goxcrap", "--prod"]
-    ports:
-      - "${APP_EXPOSED_PORT}:${APP_INTERNAL_PORT}"
-    restart: on-failure
+    env_file:
+      - .env
     volumes:
       - .:/app
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - app
+    restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:${APP_INTERNAL_PORT}/ping/v1 || exit 1'" ]
       interval: 5s
@@ -32,9 +37,6 @@ services:
         limits:
           cpus: '2.0'
           memory: 2G
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
 
   rabbitmq:
     image: "rabbitmq:3-management-alpine"
@@ -48,14 +50,14 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app
     healthcheck:
       test: [ "CMD-SHELL", "rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms" ]
       start_period: 1m
       interval: 10s
       timeout: 10s
       retries: 5
-    networks:
-      - app
 
 volumes:
   rabbitmq_data:
