@@ -1,6 +1,8 @@
 ignore:
   - "**/mocks.go"
   - "cmd/api/main.go"
+  - "cmd/api/local.go"
+  - "cmd/api/dockerized.go"
   - "internal/broker/*"
   - "internal/debug/*"
   - "internal/webdriver/*"
