@@ -3,6 +3,8 @@ package scrapper
 import (
 	"os"
 
+	"github.com/tebeka/selenium"
+
 	"goxcrap/cmd/api/auth"
 	"goxcrap/cmd/api/elements"
 	"goxcrap/cmd/api/page"
@@ -10,8 +12,6 @@ import (
 	"goxcrap/cmd/api/tweets"
 	"goxcrap/internal/ahbcc"
 	"goxcrap/internal/http"
-
-	"github.com/tebeka/selenium"
 )
 
 // New initializes all the functions of a scrapper (only Execute for now)
