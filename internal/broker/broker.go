@@ -110,8 +110,7 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumer(ctx context.Context, concur
 					<-workerChan
 				}()
 
-				url := fmt.Sprintf("http://localhost:8091%s", processorEndpoint)
-				resp, err := mb.httpClient.NewRequest(ctx, "POST", url, msg.Body)
+				resp, err := mb.httpClient.NewRequest(ctx, "POST", processorEndpoint, msg.Body)
 				if err != nil {
 					log.Error(ctx, err.Error())
 				}

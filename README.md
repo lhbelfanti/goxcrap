@@ -66,6 +66,7 @@ APP_INTERNAL_PORT=<GoXCrap Container Port>
 EMAIL=<Twitter account email>
 USERNAME=<Twitter username>
 PASSWORD=<Twitter password>
+BROKER_CONCURRENT_MESSAGES=<Number of concurrent messages that will be processed>
 
 # Selenium Chrome driver paths
 DRIVER_PATH=<The path to the Chrome driver> --> Example: /usr/bin/chromedriver

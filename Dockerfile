@@ -21,13 +21,12 @@ RUN go mod download
 # Copy the application source code and the .env file
 COPY cmd/ ./cmd
 COPY internal/ ./internal
-COPY .env ./
 
 # Build the application and output the binary as 'goxcrap'
 RUN go build -o /goxcrap ./cmd/api
 
 # Expose port
-EXPOSE 8091
+EXPOSE 4000
 
 # Run application
 CMD [ "/goxcrap" ]

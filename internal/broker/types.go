@@ -10,7 +10,7 @@ import (
 	"goxcrap/internal/http"
 )
 
-const rabbitmqURL = "amqp://%s:%s@rabbitmq:5672/"
+const rabbitmqURL = "amqp://%s:%s@rabbitmq:%s/"
 
 type (
 	// MessageBroker defines the necessary methods for a message broker implementation
@@ -35,6 +35,7 @@ type (
 func resolveRabbitmqURL() string {
 	user := os.Getenv("RABBITMQ_USER")
 	pass := os.Getenv("RABBITMQ_PASS")
+	port := os.Getenv("RABBITMQ_PORT")
 
-	return fmt.Sprintf(rabbitmqURL, user, pass)
+	return fmt.Sprintf(rabbitmqURL, user, pass, port)
 }
