@@ -23,7 +23,7 @@ COPY cmd/ ./cmd
 COPY internal/ ./internal
 
 # Build the application and output the binary as 'goxcrap'
-RUN go build -o /goxcrap ./cmd/api
+RUN CGO_ENABLED=0 GOOS=linux go build -o /goxcrap ./cmd/api
 
 # Expose port
 EXPOSE 4000
