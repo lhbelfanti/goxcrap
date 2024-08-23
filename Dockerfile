@@ -9,7 +9,11 @@ RUN apk update && apk add --no-cache \
     nss \
     freetype \
     harfbuzz \
+    tzdata \
     && rm -rf /var/cache/apk/*
+
+# Set timezone
+ENV TZ=America/Argentina/Buenos_Aires
 
 # Create the application directory and set it as the working directory
 WORKDIR /app
