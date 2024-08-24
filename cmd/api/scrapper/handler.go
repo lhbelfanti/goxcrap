@@ -7,7 +7,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"time"
 
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/search/criteria"
@@ -15,8 +14,6 @@ import (
 	"goxcrap/internal/log"
 	"goxcrap/internal/webdriver"
 )
-
-const waitTimeAfterLogin time.Duration = 10
 
 // ExecuteHandlerV1 HTTP Handler of the endpoint /scrapper/execute/v1
 func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New, messageBroker broker.MessageBroker) http.HandlerFunc {
@@ -38,7 +35,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 		defer stop(ctx, webDriverManager)
 
 		execute := newScrapper(webDriverManager.WebDriver())
-		err = execute(ctx, dto.ToType(), waitTimeAfterLogin)
+		err = execute(ctx, dto.ToType())
 		if err != nil {
 			if errors.Is(err, FailedToLogin) || errors.Is(err, search.FailedToLoadAdvanceSearchPage) {
 				enqueueErr := messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))

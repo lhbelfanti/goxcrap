@@ -2,8 +2,6 @@ package scrapper
 
 import (
 	"context"
-	"time"
-
 	"github.com/tebeka/selenium"
 
 	"goxcrap/cmd/api/search/criteria"
@@ -18,7 +16,7 @@ func MockNew(err error) New {
 
 // MockExecute mocks Execute function
 func MockExecute(err error) Execute {
-	return func(ctx context.Context, searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
+	return func(ctx context.Context, searchCriteria criteria.Type) error {
 		return err
 	}
 }

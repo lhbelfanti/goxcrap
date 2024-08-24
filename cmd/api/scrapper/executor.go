@@ -3,6 +3,8 @@ package scrapper
 import (
 	"context"
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"goxcrap/cmd/api/auth"
@@ -14,11 +16,14 @@ import (
 )
 
 // Execute starts the X (formerly Twitter) scrapper
-type Execute func(ctx context.Context, searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error
+type Execute func(ctx context.Context, searchCriteria criteria.Type) error
 
 // MakeExecute creates a new Execute
 func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets ahbcc.SaveTweets) Execute {
-	return func(ctx context.Context, searchCriteria criteria.Type, waitTimeAfterLogin time.Duration) error {
+	waitTimeAfterLoginValue, _ := strconv.Atoi(os.Getenv("WAIT_TIME_AFTER_LOGIN"))
+	waitTimeAfterLogin := time.Duration(waitTimeAfterLoginValue) * time.Second
+
+	return func(ctx context.Context, searchCriteria criteria.Type) error {
 		err := login(ctx)
 		if err != nil {
 			log.Error(ctx, err.Error())
@@ -26,7 +31,7 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 		}
 
 		log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
-		time.Sleep(waitTimeAfterLogin * time.Second)
+		time.Sleep(waitTimeAfterLogin)
 
 		log.Debug(ctx, fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
 		ctx = log.With(ctx, log.Param("criteria_id", searchCriteria.ID))

@@ -31,7 +31,7 @@ func MakeMessageProcessor(newWebDriverManager webdriver.NewManager, newScrapper 
 		defer stop(ctx, webDriverManager)
 
 		execute := newScrapper(webDriverManager.WebDriver())
-		err = execute(ctx, dto.ToType(), waitTimeAfterLogin)
+		err = execute(ctx, dto.ToType())
 		if err != nil {
 			if errors.Is(err, FailedToLogin) || errors.Is(err, search.FailedToLoadAdvanceSearchPage) {
 				enqueueErr := messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))
