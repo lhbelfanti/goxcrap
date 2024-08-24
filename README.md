@@ -28,13 +28,13 @@ This application collects tweets based on a defined search criteria, and save th
 
 ```
 # App settings
-APP_EXPOSED_PORT=<GoXCrap Host Port>
-APP_INTERNAL_PORT=<GoXCrap Container Port>
+SCRAPPER_EXPOSED_PORT=<GoXCrap Host Port>
+SCRAPPER_INTERNAL_PORT=<GoXCrap Container Port>
 
 # Scrapper settings
-EMAIL=<Twitter account email>
-USERNAME=<Twitter username>
-PASSWORD=<Twitter password>
+SCRAPPER_EMAIL=<Twitter account email>
+SCRAPPER_USERNAME=<Twitter username>
+SCRAPPER_PASSWORD=<Twitter password>
 
 # External APIs URLs
 SAVE_TWEETS_API_URL=<Domain of the application with the endpoint /tweets/v1> --> Example: the URL to the AHBCC API
@@ -59,13 +59,13 @@ go run cmd/api/main.go --local
 
 ```
 # App settings
-APP_EXPOSED_PORT=<GoXCrap Host Port>
-APP_INTERNAL_PORT=<GoXCrap Container Port>
+SCRAPPER_EXPOSED_PORT=<GoXCrap Host Port>
+SCRAPPER_INTERNAL_PORT=<GoXCrap Container Port>
 
 # Scrapper settings
-EMAIL=<Twitter account email>
-USERNAME=<Twitter username>
-PASSWORD=<Twitter password>
+SCRAPPER_EMAIL=<Twitter account email>
+SCRAPPER_USERNAME=<Twitter username>
+SCRAPPER_PASSWORD=<Twitter password>
 BROKER_CONCURRENT_MESSAGES=<Number of concurrent messages that will be processed>
 
 # Selenium Chrome driver paths

@@ -5,12 +5,12 @@ services:
     container_name: goxcrap
     command: ["/goxcrap", "--prod"]
     ports:
-      - "${APP_EXPOSED_PORT}:${APP_INTERNAL_PORT}"
+      - "${SCRAPPER_EXPOSED_PORT}:${SCRAPPER_INTERNAL_PORT}"
     environment:
-      APP_API_PORT: ${APP_INTERNAL_PORT:-3001}
-      EMAIL: ${EMAIL}
-      PASSWORD: ${PASSWORD}
-      USERNAME: ${USERNAME}
+      API_PORT: ${SCRAPPER_INTERNAL_PORT:-3001}
+      EMAIL: ${SCRAPPER_EMAIL}
+      PASSWORD: ${SCRAPPER_PASSWORD}
+      USERNAME: ${SCRAPPER_USERNAME}
       DRIVER_PATH: ${DRIVER_PATH}
       BROWSER_PATH: ${BROWSER_PATH}
       BROKER_CONCURRENT_MESSAGES: ${BROKER_CONCURRENT_MESSAGES}
@@ -28,7 +28,7 @@ services:
       - app
     restart: on-failure
     healthcheck:
-      test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:${APP_INTERNAL_PORT}/ping/v1 || exit 1'" ]
+      test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:${SCRAPPER_INTERNAL_PORT}/ping/v1 || exit 1'" ]
       interval: 5s
       timeout: 10s
       retries: 5

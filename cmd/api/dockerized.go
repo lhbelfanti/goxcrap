@@ -31,7 +31,7 @@ func runDockerized() {
 	log.NewCustomLogger(os.Stdout, logLevel)
 
 	httpClient := _http.NewClient()
-	port := fmt.Sprintf(":%s", os.Getenv("APP_API_PORT"))
+	port := fmt.Sprintf(":%s", os.Getenv("API_PORT"))
 	processorEndpoint := fmt.Sprintf("http://localhost%s/scrapper/execute/v1", port)
 	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
 	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
