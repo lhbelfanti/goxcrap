@@ -3,11 +3,10 @@ package webdriver
 import (
 	"context"
 	"fmt"
-	"os"
-	"strings"
-
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+	"os"
+	"strings"
 
 	"goxcrap/internal/log"
 )
@@ -53,9 +52,10 @@ func (dwd *DockerizedManager) InitWebDriver(ctx context.Context) error {
 		chromeCaps.Path = browserPath
 	}
 
-	log.Info(ctx, fmt.Sprintf("Setting up Chrome Capacities using the following Args: - %s -", strings.Join(chromeCaps.Args, " - ")))
 	if chromeCaps.Path != "" {
-		log.Info(ctx, fmt.Sprintf("and the following Path: %s", chromeCaps.Path))
+		log.Info(ctx, fmt.Sprintf("Setting up Chrome Capacities using the following Args: ( %s ) and the following Path: %s", strings.Join(chromeCaps.Args, " | "), chromeCaps.Path))
+	} else {
+		log.Info(ctx, fmt.Sprintf("Setting up Chrome Capacities using the following Args: ( %s )", strings.Join(chromeCaps.Args, " | ")))
 	}
 
 	caps := selenium.Capabilities{"browserName": "chrome"}
