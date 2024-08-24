@@ -30,7 +30,7 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 			return FailedToLogin
 		}
 
-		log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin))
+		log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin/time.Second))
 		time.Sleep(waitTimeAfterLogin)
 
 		log.Debug(ctx, fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
