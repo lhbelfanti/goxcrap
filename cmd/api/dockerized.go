@@ -35,7 +35,7 @@ func runDockerized() {
 	processorEndpoint := fmt.Sprintf("http://localhost%s/scrapper/execute/v1", port)
 	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
 	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
-	go messageBroker.InitMessageConsumer(ctx, concurrentMessages, processorEndpoint)
+	go messageBroker.InitMessageConsumer(concurrentMessages, processorEndpoint)
 
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	newScrapper := scrapper.MakeNew(httpClient)

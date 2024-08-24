@@ -19,7 +19,7 @@ type (
 		EnqueueMessage(ctx context.Context, body string) error
 
 		// InitMessageConsumer initializes the goroutine in charge of the messages consumption
-		InitMessageConsumer(ctx context.Context, concurrentMessages int, processorEndpoint string)
+		InitMessageConsumer(concurrentMessages int, processorEndpoint string)
 	}
 
 	// RabbitMQMessageBroker contains all the necessary variables for a message broker: the connection, the channel, the queue, and a chan of messages

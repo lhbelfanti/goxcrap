@@ -99,7 +99,7 @@ func (mb *RabbitMQMessageBroker) EnqueueMessage(ctx context.Context, body string
 // It receives two params:
 // concurrentMessages: defines the amount of messages that can be processed in parallel
 // processorEndpoint: defines the endpoint that is called when a message from the queue is consumed. That endpoint is in charge of processing the enqueued messages
-func (mb *RabbitMQMessageBroker) InitMessageConsumer(ctx context.Context, concurrentMessages int, processorEndpoint string) {
+func (mb *RabbitMQMessageBroker) InitMessageConsumer(concurrentMessages int, processorEndpoint string) {
 	workerChan := make(chan struct{}, concurrentMessages)
 
 	go func() {
@@ -110,6 +110,7 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumer(ctx context.Context, concur
 					<-workerChan
 				}()
 
+				ctx := context.Background()
 				resp, err := mb.httpClient.NewRequest(ctx, "POST", processorEndpoint, msg.Body)
 				if err != nil {
 					log.Error(ctx, err.Error())
