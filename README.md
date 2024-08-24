@@ -30,6 +30,11 @@ This application collects tweets based on a defined search criteria, and save th
 # App settings
 SCRAPPER_EXPOSED_PORT=<GoXCrap Host Port>
 SCRAPPER_INTERNAL_PORT=<GoXCrap Container Port>
+SCRAPPER_LOGIN_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the login page to load completely before timing out>
+SCRAPPER_LOGIN_ELEMENTS_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the necessary elements (e.g., username and email fields, login button) to appear on the login page before timing out>
+SCRAPPER_LOGIN_PASSWORD_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the password element to appear on the login page before timing out>
+SCRAPPER_SEARCH_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the search page to load completely before timing out>
+SCRAPPER_ARTICLES_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the articles elements to appear on the search page before timing out>
 
 # Scrapper settings
 SCRAPPER_EMAIL=<Twitter account email>
@@ -67,6 +72,11 @@ SCRAPPER_EMAIL=<Twitter account email>
 SCRAPPER_USERNAME=<Twitter username>
 SCRAPPER_PASSWORD=<Twitter password>
 BROKER_CONCURRENT_MESSAGES=<Number of concurrent messages that will be processed>
+SCRAPPER_LOGIN_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the login page to load completely before timing out>
+SCRAPPER_LOGIN_ELEMENTS_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the necessary elements (e.g., username and email fields, login button) to appear on the login page before timing out>
+SCRAPPER_LOGIN_PASSWORD_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the password element to appear on the login page before timing out>
+SCRAPPER_SEARCH_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the search page to load completely before timing out>
+SCRAPPER_ARTICLES_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the articles elements to appear on the search page before timing out>
 
 # Selenium Chrome driver paths
 SELENIUM_DRIVER_PATH=<The path to the Chrome driver> --> Example: /usr/bin/chromedriver

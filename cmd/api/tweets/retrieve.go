@@ -2,7 +2,9 @@ package tweets
 
 import (
 	"context"
+	"os"
 	"slices"
+	"strconv"
 	"time"
 
 	"github.com/tebeka/selenium"
@@ -12,11 +14,7 @@ import (
 	"goxcrap/internal/log"
 )
 
-const (
-	articlesTimeout time.Duration = 10 * time.Second
-
-	articlesXPath string = "//article/div/div/div[2]/div[2]"
-)
+const articlesXPath string = "//article/div/div/div[2]/div[2]"
 
 type (
 	// RetrieveAll retrieves all the tweets from the current page
@@ -28,6 +26,9 @@ type (
 
 // MakeRetrieveAll creates a new RetrieveAll
 func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetHash GetTweetHash, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
+	articlesTimeoutValue, _ := strconv.Atoi(os.Getenv("ARTICLES_TIMEOUT"))
+	articlesTimeout := time.Duration(articlesTimeoutValue) * time.Second
+
 	return func(ctx context.Context) ([]Tweet, error) {
 		var tweets []Tweet
 		for {

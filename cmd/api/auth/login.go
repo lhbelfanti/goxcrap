@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/tebeka/selenium"
@@ -13,10 +14,6 @@ import (
 )
 
 const (
-	pageLoaderTimeout      time.Duration = 10 * time.Second
-	elementTimeout         time.Duration = 10 * time.Second
-	passwordElementTimeout time.Duration = 5 * time.Second
-
 	logInPageRelativeURL string = "/i/flow/login"
 
 	emailInputName                 string = "text"
@@ -32,7 +29,15 @@ type Login func(ctx context.Context) error
 
 // MakeLogin creates a new Login
 func MakeLogin(loadPage page.Load, waitAndRetrieveElement elements.WaitAndRetrieve, retrieveAndFillInput elements.RetrieveAndFillInput, retrieveAndClickButton elements.RetrieveAndClickButton) Login {
+	pageLoaderTimeoutValue, _ := strconv.Atoi(os.Getenv("LOGIN_PAGE_TIMEOUT"))
+	pageLoaderTimeout := time.Duration(pageLoaderTimeoutValue) * time.Second
+	elementTimeoutValue, _ := strconv.Atoi(os.Getenv("LOGIN_ELEMENTS_TIMEOUT"))
+	elementTimeout := time.Duration(elementTimeoutValue) * time.Second
+	passwordElementTimeoutValue, _ := strconv.Atoi(os.Getenv("LOGIN_PASSWORD_TIMEOUT"))
+	passwordElementTimeout := time.Duration(passwordElementTimeoutValue) * time.Second
+
 	return func(ctx context.Context) error {
+
 		err := loadPage(ctx, logInPageRelativeURL, pageLoaderTimeout)
 		if err != nil {
 			return err
