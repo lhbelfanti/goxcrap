@@ -30,7 +30,7 @@ COPY internal/ ./internal
 RUN CGO_ENABLED=0 GOOS=linux go build -o /goxcrap ./cmd/api
 
 # Expose port
-EXPOSE 4000
+EXPOSE ${API_PORT}
 
 # Run application
 CMD [ "/goxcrap" ]

@@ -69,8 +69,8 @@ SCRAPPER_PASSWORD=<Twitter password>
 BROKER_CONCURRENT_MESSAGES=<Number of concurrent messages that will be processed>
 
 # Selenium Chrome driver paths
-DRIVER_PATH=<The path to the Chrome driver> --> Example: /usr/bin/chromedriver
-BROWSER_PATH=<The path to the Chrome browser> --> Example: /usr/bin/chromium
+SELENIUM_DRIVER_PATH=<The path to the Chrome driver> --> Example: /usr/bin/chromedriver
+SELENIUM_BROWSER_PATH=<The path to the Chrome browser> --> Example: /usr/bin/chromium
 
 # RabbitMQ settings
 RABBITMQ_USER=<The RabbitMQ user>
