@@ -31,14 +31,14 @@ func runDockerized() {
 	log.NewCustomLogger(os.Stdout, logLevel)
 
 	httpClient := _http.NewClient()
-	port := fmt.Sprintf(":%s", os.Getenv("API_PORT"))
-	processorEndpoint := fmt.Sprintf("http://localhost%s/scrapper/execute/v1", port)
-	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
-	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
-	go messageBroker.InitMessageConsumer(concurrentMessages, processorEndpoint)
 
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	newScrapper := scrapper.MakeNew(httpClient)
+
+	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
+	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
+	messageProcessor := scrapper.MakeMessageProcessor(newWebDriverManager, newScrapper, messageBroker)
+	go messageBroker.InitMessageConsumerWithFunction(concurrentMessages, messageProcessor)
 
 	/* --- Router --- */
 	log.Info(ctx, "Initializing router...")
@@ -49,6 +49,7 @@ func runDockerized() {
 	log.Info(ctx, "Router initialized!")
 
 	/* --- Server --- */
+	port := fmt.Sprintf(":%s", os.Getenv("API_PORT"))
 	log.Info(ctx, fmt.Sprintf("GoXCrap server is ready to receive request on port %s", port))
 	setup.Must(http.ListenAndServe(port, router))
 }

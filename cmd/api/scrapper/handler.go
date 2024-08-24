@@ -41,15 +41,15 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 		err = execute(ctx, dto.ToType(), waitTimeAfterLogin)
 		if err != nil {
 			if errors.Is(err, FailedToLogin) || errors.Is(err, search.FailedToLoadAdvanceSearchPage) {
-				err = messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))
-				if err != nil {
-					log.Error(ctx, err.Error())
+				enqueueErr := messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))
+				if enqueueErr != nil {
+					log.Error(ctx, enqueueErr.Error())
 					http.Error(w, CantReEnqueueFailedMessage, http.StatusInternalServerError)
 					return
 				}
 			}
 
-			log.Error(ctx, FailedToRunScrapper)
+			log.Error(ctx, err.Error())
 			http.Error(w, FailedToRunScrapper, http.StatusInternalServerError)
 			return
 		}

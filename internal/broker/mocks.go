@@ -16,6 +16,10 @@ func (m *MockMessageBroker) EnqueueMessage(ctx context.Context, body string) err
 	return args.Error(0)
 }
 
-func (m *MockMessageBroker) InitMessageConsumer(concurrentMessages int, processorEndpoint string) {
+func (m *MockMessageBroker) InitMessageConsumerWithEndpoint(concurrentMessages int, processorEndpoint string) {
+	return
+}
+
+func (m *MockMessageBroker) InitMessageConsumerWithFunction(concurrentMessages int, processorFunc ProcessorFunction) {
 	return
 }

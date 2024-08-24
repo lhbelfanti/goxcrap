@@ -1,12 +1,9 @@
 package scrapper_test
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,7 +15,7 @@ import (
 	"goxcrap/internal/webdriver"
 )
 
-func TestExecuteHandlerV1_success(t *testing.T) {
+func TestMessageProcessor_success(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -29,20 +26,15 @@ func TestExecuteHandlerV1_success(t *testing.T) {
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
-	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
-	handlerV1(mockResponseWriter, mockRequest)
+	got := messageProcessor(context.Background(), mockBody)
 
-	want := http.StatusOK
-	got := mockResponseWriter.Result().StatusCode
-
-	assert.Equal(t, want, got)
+	assert.Nil(t, got)
 }
 
-func TestExecuteHandlerV1_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseItJustLogsTheError(t *testing.T) {
+func TestMessageProcessor_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseItJustLogsTheError(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -53,20 +45,15 @@ func TestExecuteHandlerV1_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseI
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
-	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
-	handlerV1(mockResponseWriter, mockRequest)
+	got := messageProcessor(context.Background(), mockBody)
 
-	want := http.StatusOK
-	got := mockResponseWriter.Result().StatusCode
-
-	assert.Equal(t, want, got)
+	assert.Nil(t, got)
 }
 
-func TestExecuteHandlerV1_failsWhenHandlerThrowsInvalidBody(t *testing.T) {
+func TestMessageProcessor_failsWhenBodyCantBeDecoded(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -76,20 +63,16 @@ func TestExecuteHandlerV1_failsWhenHandlerThrowsInvalidBody(t *testing.T) {
 	mockMessageBroker := new(broker.MockMessageBroker)
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
 	mockBody, _ := json.Marshal(`{"wrong": "body"}`)
-	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
-	handlerV1(mockResponseWriter, mockRequest)
-
-	want := http.StatusBadRequest
-	got := mockResponseWriter.Result().StatusCode
+	want := scrapper.FailedToDecodeBodyIntoCriteria
+	got := messageProcessor(context.Background(), mockBody)
 
 	assert.Equal(t, want, got)
 }
 
-func TestExecuteHandlerV1_failsWhenExecuteThrowsError(t *testing.T) {
+func TestMessageProcessor_failsWhenExecuteThrowsError(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -100,20 +83,16 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsError(t *testing.T) {
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
-	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
-	handlerV1(mockResponseWriter, mockRequest)
-
-	want := http.StatusInternalServerError
-	got := mockResponseWriter.Result().StatusCode
+	want := scrapper.FailedToRunScrapperProcess
+	got := messageProcessor(context.Background(), mockBody)
 
 	assert.Equal(t, want, got)
 }
 
-func TestExecuteHandlerV1_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
+func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -124,20 +103,16 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
-	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
-	handlerV1(mockResponseWriter, mockRequest)
-
-	want := http.StatusInternalServerError
-	got := mockResponseWriter.Result().StatusCode
+	want := scrapper.FailedToRunScrapperProcess
+	got := messageProcessor(context.Background(), mockBody)
 
 	assert.Equal(t, want, got)
 }
 
-func TestExecuteHandlerV1_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails(t *testing.T) {
+func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -148,15 +123,11 @@ func TestExecuteHandlerV1_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(errors.New("error while re enqueuing message"))
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
-	mockResponseWriter := httptest.NewRecorder()
-	mockRequest, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "/scrapper/execute/v1", bytes.NewReader(mockBody))
 
-	handlerV1 := scrapper.ExecuteHandlerV1(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
-	handlerV1(mockResponseWriter, mockRequest)
-
-	want := http.StatusInternalServerError
-	got := mockResponseWriter.Result().StatusCode
+	want := scrapper.FailedToReEnqueueFailedMessage
+	got := messageProcessor(context.Background(), mockBody)
 
 	assert.Equal(t, want, got)
 }
