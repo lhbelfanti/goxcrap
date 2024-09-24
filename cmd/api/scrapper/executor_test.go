@@ -12,7 +12,7 @@ import (
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/corpuscreator"
 )
 
 func TestExecute_success(t *testing.T) {
@@ -22,7 +22,7 @@ func TestExecute_success(t *testing.T) {
 	mockTweet.Quote = tweets.MockQuote(true, true, true, "test", []string{"test"})
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 	mockCriteria := criteria.MockCriteria()
-	mockSaveTweets := ahbcc.MockSaveTweets(nil)
+	mockSaveTweets := corpuscreator.MockSaveTweets(nil)
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
@@ -38,7 +38,7 @@ func TestExecute_successSkippingCriteriaDueAnErrorInExecuteAdvanceSearch(t *test
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 	mockCriteria := criteria.MockCriteria()
-	mockSaveTweets := ahbcc.MockSaveTweets(nil)
+	mockSaveTweets := corpuscreator.MockSaveTweets(nil)
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
@@ -52,7 +52,7 @@ func TestExecute_successWhenRetrieveAllThrowsError(t *testing.T) {
 	mockExecuteAdvanceSearch := search.MockExecuteAdvanceSearch(nil)
 	mockRetrieveAllTweets := tweets.MockRetrieveAll(nil, errors.New("error while executing RetrieveAll"))
 	mockCriteria := criteria.MockCriteria()
-	mockSaveTweets := ahbcc.MockSaveTweets(nil)
+	mockSaveTweets := corpuscreator.MockSaveTweets(nil)
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
@@ -67,7 +67,7 @@ func TestExecute_successWhenSaveTweetsThrowsError(t *testing.T) {
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 	mockCriteria := criteria.MockCriteria()
-	mockSaveTweets := ahbcc.MockSaveTweets(errors.New("error while executing RetrieveAll"))
+	mockSaveTweets := corpuscreator.MockSaveTweets(errors.New("error while executing RetrieveAll"))
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
@@ -82,7 +82,7 @@ func TestExecute_failsWhenLoginThrowsError(t *testing.T) {
 	mockTweet := tweets.MockTweet()
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 	mockCriteria := criteria.MockCriteria()
-	mockSaveTweets := ahbcc.MockSaveTweets(nil)
+	mockSaveTweets := corpuscreator.MockSaveTweets(nil)
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 
@@ -99,7 +99,7 @@ func TestExecute_failsWhileTryingToParseDatesFromTheGivenCriteriaThrowsError(t *
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 	mockCriteria := criteria.MockCriteria()
 	mockCriteria.Since = "error"
-	mockSaveTweets := ahbcc.MockSaveTweets(nil)
+	mockSaveTweets := corpuscreator.MockSaveTweets(nil)
 
 	executeScrapper := scrapper.MakeExecute(mockLogin, mockExecuteAdvanceSearch, mockRetrieveAllTweets, mockSaveTweets)
 

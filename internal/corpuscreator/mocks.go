@@ -1,4 +1,4 @@
-package ahbcc
+package corpuscreator
 
 import "context"
 

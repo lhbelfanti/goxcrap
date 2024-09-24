@@ -1,4 +1,4 @@
-package ahbcc
+package corpuscreator
 
 type (
 	// SaveTweetsBody represents the body for the Save Tweets endpoint call

@@ -1,4 +1,4 @@
-package ahbcc_test
+package corpuscreator_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/corpuscreator"
 	"goxcrap/internal/http"
 )
 
@@ -19,9 +19,9 @@ func TestSaveTweets_success(t *testing.T) {
 		Body:   `{"test": "body"}`,
 	}
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
-	mockSaveTweetsBody := ahbcc.MockSaveTweetsBody()
+	mockSaveTweetsBody := corpuscreator.MockSaveTweetsBody()
 	mockCtx := context.Background()
-	saveTweets := ahbcc.MakeSaveTweets(mockHTTPClient, "http://example.com")
+	saveTweets := corpuscreator.MakeSaveTweets(mockHTTPClient, "http://example.com")
 
 	got := saveTweets(mockCtx, mockSaveTweetsBody)
 
@@ -32,11 +32,11 @@ func TestSaveTweets_success(t *testing.T) {
 func TestSaveTweets_failsWhenNewRequestThrowsError(t *testing.T) {
 	mockHTTPClient := new(http.MockHTTPClient)
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(http.Response{}, errors.New("failed to execute NewRequest"))
-	mockSaveTweetsBody := ahbcc.MockSaveTweetsBody()
+	mockSaveTweetsBody := corpuscreator.MockSaveTweetsBody()
 	mockCtx := context.Background()
-	saveTweets := ahbcc.MakeSaveTweets(mockHTTPClient, "http://example.com")
+	saveTweets := corpuscreator.MakeSaveTweets(mockHTTPClient, "http://example.com")
 
-	want := ahbcc.FailedToExecuteRequest
+	want := corpuscreator.FailedToExecuteRequest
 	got := saveTweets(mockCtx, mockSaveTweetsBody)
 
 	assert.Equal(t, want, got)

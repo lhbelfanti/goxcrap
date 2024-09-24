@@ -10,7 +10,7 @@ import (
 	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/corpuscreator"
 	"goxcrap/internal/http"
 )
 
@@ -32,7 +32,7 @@ func MakeNew(httpClient http.Client) New {
 		retrieveAndClickButton := elements.MakeRetrieveAndClickButton(waitAndRetrieveElement)
 
 		// Calls to external services
-		saveTweets := ahbcc.MakeSaveTweets(httpClient, os.Getenv("SAVE_TWEETS_API_URL"))
+		saveTweets := corpuscreator.MakeSaveTweets(httpClient, os.Getenv("SAVE_TWEETS_API_URL"))
 
 		// Services
 		login := auth.MakeLogin(loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)

@@ -11,7 +11,7 @@ import (
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/ahbcc"
+	"goxcrap/internal/corpuscreator"
 	"goxcrap/internal/log"
 )
 
@@ -19,7 +19,7 @@ import (
 type Execute func(ctx context.Context, searchCriteria criteria.Type) error
 
 // MakeExecute creates a new Execute
-func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets ahbcc.SaveTweets) Execute {
+func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets corpuscreator.SaveTweets) Execute {
 	waitTimeAfterLoginValue, _ := strconv.Atoi(os.Getenv("WAIT_TIME_AFTER_LOGIN"))
 	waitTimeAfterLogin := time.Duration(waitTimeAfterLoginValue) * time.Second
 
@@ -74,10 +74,10 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 }
 
 // createSaveTweetsBody creates the SaveTweets Body with the obtained []tweets.Tweet
-func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) ahbcc.SaveTweetsBody {
-	saveTweetsBody := make(ahbcc.SaveTweetsBody, 0, len(obtainedTweets))
+func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) corpuscreator.SaveTweetsBody {
+	saveTweetsBody := make(corpuscreator.SaveTweetsBody, 0, len(obtainedTweets))
 	for _, tweet := range obtainedTweets {
-		requestTweet := ahbcc.TweetDTO{
+		requestTweet := corpuscreator.TweetDTO{
 			Hash:             &tweet.ID,
 			IsAReply:         tweet.IsAReply,
 			SearchCriteriaID: &searchCriteria,
@@ -92,7 +92,7 @@ func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) ahb
 		}
 
 		if tweet.HasQuote {
-			requestTweet.Quote = &ahbcc.QuoteDTO{IsAReply: tweet.Quote.IsAReply}
+			requestTweet.Quote = &corpuscreator.QuoteDTO{IsAReply: tweet.Quote.IsAReply}
 
 			if tweet.Quote.HasText {
 				requestTweet.Quote.TextContent = &tweet.Quote.Text
