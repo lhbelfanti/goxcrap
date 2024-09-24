@@ -32,6 +32,7 @@ services:
         condition: service_healthy
     networks:
       - app
+      - shared
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:${SCRAPPER_INTERNAL_PORT}/ping/v1 || exit 1'" ]
@@ -68,3 +69,5 @@ volumes:
 networks:
   app:
     driver: bridge
+  shared:
+    external: true
