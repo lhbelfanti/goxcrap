@@ -21,8 +21,16 @@ type (
 		Images      []string `json:"images,omitempty"`
 	}
 
-	// SearchCriteriaExecutionBody represents the body for the Update Search Criteria Execution endpoint call
-	SearchCriteriaExecutionBody struct {
+	// UpdateSearchCriteriaExecutionBody represents the body for the Update Search Criteria Execution endpoint call
+	UpdateSearchCriteriaExecutionBody struct {
 		Status string `json:"status"`
+	}
+
+	// InsertSearchCriteriaExecutionDayBody represents the body for the Insert Search Criteria Execution Day endpoint call
+	InsertSearchCriteriaExecutionDayBody struct {
+		ExecutionDate             string  `json:"execution_date"`
+		TweetsQuantity            int     `json:"tweets_quantity"`
+		ErrorReason               *string `json:"error_reason"`
+		SearchCriteriaExecutionID int     `json:"search_criteria_execution_id"`
 	}
 )

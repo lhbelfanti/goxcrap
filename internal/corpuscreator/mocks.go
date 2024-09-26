@@ -45,9 +45,19 @@ func MockQuoteDTO() QuoteDTO {
 	}
 }
 
-// MockSearchCriteriaExecutionBody mocks a SearchCriteriaExecutionBody
-func MockSearchCriteriaExecutionBody() SearchCriteriaExecutionBody {
-	return SearchCriteriaExecutionBody{
+// MockUpdateSearchCriteriaExecutionBody mocks a UpdateSearchCriteriaExecutionBody
+func MockUpdateSearchCriteriaExecutionBody() UpdateSearchCriteriaExecutionBody {
+	return UpdateSearchCriteriaExecutionBody{
 		Status: "DONE",
+	}
+}
+
+// MockInsertSearchCriteriaExecutionDayBody mocks a InsertSearchCriteriaExecutionDayBody
+func MockInsertSearchCriteriaExecutionDayBody() InsertSearchCriteriaExecutionDayBody {
+	return InsertSearchCriteriaExecutionDayBody{
+		ExecutionDate:             "01/01/2024",
+		TweetsQuantity:            10,
+		ErrorReason:               nil,
+		SearchCriteriaExecutionID: 1,
 	}
 }
