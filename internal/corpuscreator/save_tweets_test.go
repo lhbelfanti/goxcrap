@@ -20,10 +20,9 @@ func TestSaveTweets_success(t *testing.T) {
 	}
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
 	mockSaveTweetsBody := corpuscreator.MockSaveTweetsBody()
-	mockCtx := context.Background()
 	saveTweets := corpuscreator.MakeSaveTweets(mockHTTPClient, "http://example.com")
 
-	got := saveTweets(mockCtx, mockSaveTweetsBody)
+	got := saveTweets(context.Background(), mockSaveTweetsBody)
 
 	assert.Nil(t, got)
 	mockHTTPClient.AssertExpectations(t)
@@ -33,11 +32,10 @@ func TestSaveTweets_failsWhenNewRequestThrowsError(t *testing.T) {
 	mockHTTPClient := new(http.MockHTTPClient)
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(http.Response{}, errors.New("failed to execute NewRequest"))
 	mockSaveTweetsBody := corpuscreator.MockSaveTweetsBody()
-	mockCtx := context.Background()
 	saveTweets := corpuscreator.MakeSaveTweets(mockHTTPClient, "http://example.com")
 
 	want := corpuscreator.FailedToExecuteRequest
-	got := saveTweets(mockCtx, mockSaveTweetsBody)
+	got := saveTweets(context.Background(), mockSaveTweetsBody)
 
 	assert.Equal(t, want, got)
 	mockHTTPClient.AssertExpectations(t)

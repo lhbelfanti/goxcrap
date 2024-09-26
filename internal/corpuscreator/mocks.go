@@ -44,3 +44,10 @@ func MockQuoteDTO() QuoteDTO {
 		Images:      []string{"test1", "test2"},
 	}
 }
+
+// MockSearchCriteriaExecutionBody mocks a SearchCriteriaExecutionBody
+func MockSearchCriteriaExecutionBody() SearchCriteriaExecutionBody {
+	return SearchCriteriaExecutionBody{
+		Status: "DONE",
+	}
+}

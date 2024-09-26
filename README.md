@@ -42,7 +42,7 @@ SEARCH_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the sear
 ARTICLES_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the articles elements to appear on the search page before timing out>
 
 # External APIs URLs
-SAVE_TWEETS_API_URL=<Domain of the application with the endpoint /tweets/v1> --> Example: the URL to the AHBCC API
+CORPUS_CREATOR_API_URL=<Domain of the corpus creator application with all the endpoints defined in the corpuscreator pkg> --> Example: the URL to the AHBCC API
 ```
 [^1]
 
@@ -89,7 +89,7 @@ RABBITMQ_PASS=<The RabbitMQ password>
 RABBITMQ_PORT=<The RabbitMQ port> --> Usually 5672
 
 # External APIs URLs
-SAVE_TWEETS_API_URL=<Domain of the application with the endpoint /tweets/v1> --> Example: the URL to the AHBCC API
+CORPUS_CREATOR_API_URL=<Domain of the corpus creator application with all the endpoints defined in the corpuscreator pkg> --> Example: the URL to the AHBCC API
 ```
 [^1]
 

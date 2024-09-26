@@ -20,4 +20,9 @@ type (
 		TextContent *string  `json:"text_content,omitempty"`
 		Images      []string `json:"images,omitempty"`
 	}
+
+	// SearchCriteriaExecutionBody represents the body for the Update Search Criteria Execution endpoint call
+	SearchCriteriaExecutionBody struct {
+		Status string `json:"status"`
+	}
 )
