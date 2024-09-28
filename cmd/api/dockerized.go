@@ -37,8 +37,8 @@ func runDockerized() {
 
 	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
 	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
-	messageProcessor := scrapper.MakeMessageProcessor(newWebDriverManager, newScrapper, messageBroker)
-	go messageBroker.InitMessageConsumerWithFunction(concurrentMessages, messageProcessor)
+	searchCriteriaMessageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(newWebDriverManager, newScrapper, messageBroker)
+	go messageBroker.InitMessageConsumerWithFunction(concurrentMessages, searchCriteriaMessageProcessor)
 
 	/* --- Router --- */
 	log.Info(ctx, "Initializing router...")

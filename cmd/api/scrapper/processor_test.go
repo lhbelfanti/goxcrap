@@ -15,7 +15,7 @@ import (
 	"goxcrap/internal/webdriver"
 )
 
-func TestMessageProcessor_success(t *testing.T) {
+func TestSearchCriteriaMessageProcessor_success(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -27,14 +27,14 @@ func TestMessageProcessor_success(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 
-	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
 	got := messageProcessor(context.Background(), mockBody)
 
 	assert.Nil(t, got)
 }
 
-func TestMessageProcessor_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseItJustLogsTheError(t *testing.T) {
+func TestSearchCriteriaMessageProcessor_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseItJustLogsTheError(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -46,14 +46,14 @@ func TestMessageProcessor_successEvenWhenWebDriverManagerQuitThrowsErrorBecauseI
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 
-	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
 	got := messageProcessor(context.Background(), mockBody)
 
 	assert.Nil(t, got)
 }
 
-func TestMessageProcessor_failsWhenBodyCantBeDecoded(t *testing.T) {
+func TestSearchCriteriaMessageProcessor_failsWhenBodyCantBeDecoded(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -64,7 +64,7 @@ func TestMessageProcessor_failsWhenBodyCantBeDecoded(t *testing.T) {
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
 	mockBody, _ := json.Marshal(`{"wrong": "body"}`)
 
-	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
 	want := scrapper.FailedToDecodeBodyIntoCriteria
 	got := messageProcessor(context.Background(), mockBody)
@@ -72,7 +72,7 @@ func TestMessageProcessor_failsWhenBodyCantBeDecoded(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
-func TestMessageProcessor_failsWhenExecuteThrowsError(t *testing.T) {
+func TestSearchCriteriaMessageProcessor_failsWhenExecuteThrowsError(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -84,7 +84,7 @@ func TestMessageProcessor_failsWhenExecuteThrowsError(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 
-	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
 	want := scrapper.FailedToRunScrapperProcess
 	got := messageProcessor(context.Background(), mockBody)
@@ -92,7 +92,7 @@ func TestMessageProcessor_failsWhenExecuteThrowsError(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
-func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
+func TestSearchCriteriaMessageProcessor_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -104,7 +104,7 @@ func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 
-	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
 	want := scrapper.FailedToRunScrapperProcess
 	got := messageProcessor(context.Background(), mockBody)
@@ -112,7 +112,7 @@ func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrors(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
-func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails(t *testing.T) {
+func TestSearchCriteriaMessageProcessor_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockManager := new(webdriver.MockManager)
 	mockManager.On("WebDriver").Return(mockWebDriver)
@@ -124,7 +124,7 @@ func TestMessageProcessor_failsWhenExecuteThrowsSpecificErrorsAndTheEnqueueFails
 	mockCriteria := criteria.MockCriteria()
 	mockBody, _ := json.Marshal(mockCriteria)
 
-	messageProcessor := scrapper.MakeMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
+	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
 	want := scrapper.FailedToReEnqueueFailedMessage
 	got := messageProcessor(context.Background(), mockBody)

@@ -14,8 +14,8 @@ import (
 	"goxcrap/internal/webdriver"
 )
 
-// MakeMessageProcessor creates a new MessageProcessor
-func MakeMessageProcessor(newWebDriverManager webdriver.NewManager, newScrapper New, messageBroker broker.MessageBroker) broker.ProcessorFunction {
+// MakeSearchCriteriaMessageProcessor creates a new broker.ProcessorFunction
+func MakeSearchCriteriaMessageProcessor(newWebDriverManager webdriver.NewManager, newScrapper New, messageBroker broker.MessageBroker) broker.ProcessorFunction {
 	return func(ctx context.Context, body []byte) error {
 		bodyBuffer := new(bytes.Buffer)
 		teeReader := io.TeeReader(bytes.NewReader(body), bodyBuffer)
