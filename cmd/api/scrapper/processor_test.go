@@ -24,8 +24,8 @@ func TestSearchCriteriaMessageProcessor_success(t *testing.T) {
 	mockNewScrapper := scrapper.MockNew(nil)
 	mockMessageBroker := new(broker.MockMessageBroker)
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
-	mockCriteria := criteria.MockCriteria()
-	mockBody, _ := json.Marshal(mockCriteria)
+	mockMessage := criteria.MockMessageDTO()
+	mockBody, _ := json.Marshal(mockMessage)
 
 	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -43,8 +43,8 @@ func TestSearchCriteriaMessageProcessor_successEvenWhenWebDriverManagerQuitThrow
 	mockNewScrapper := scrapper.MockNew(nil)
 	mockMessageBroker := new(broker.MockMessageBroker)
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
-	mockCriteria := criteria.MockCriteria()
-	mockBody, _ := json.Marshal(mockCriteria)
+	mockMessage := criteria.MockMessageDTO()
+	mockBody, _ := json.Marshal(mockMessage)
 
 	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -81,8 +81,8 @@ func TestSearchCriteriaMessageProcessor_failsWhenExecuteThrowsError(t *testing.T
 	mockNewScrapper := scrapper.MockNew(errors.New("execute scrapper failed"))
 	mockMessageBroker := new(broker.MockMessageBroker)
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
-	mockCriteria := criteria.MockCriteria()
-	mockBody, _ := json.Marshal(mockCriteria)
+	mockMessage := criteria.MockMessageDTO()
+	mockBody, _ := json.Marshal(mockMessage)
 
 	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -101,8 +101,8 @@ func TestSearchCriteriaMessageProcessor_failsWhenExecuteThrowsSpecificErrors(t *
 	mockNewScrapper := scrapper.MockNew(scrapper.FailedToLogin)
 	mockMessageBroker := new(broker.MockMessageBroker)
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(nil)
-	mockCriteria := criteria.MockCriteria()
-	mockBody, _ := json.Marshal(mockCriteria)
+	mockMessage := criteria.MockMessageDTO()
+	mockBody, _ := json.Marshal(mockMessage)
 
 	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 
@@ -121,8 +121,8 @@ func TestSearchCriteriaMessageProcessor_failsWhenExecuteThrowsSpecificErrorsAndT
 	mockNewScrapper := scrapper.MockNew(scrapper.FailedToLogin)
 	mockMessageBroker := new(broker.MockMessageBroker)
 	mockMessageBroker.On("EnqueueMessage", mock.Anything, mock.Anything).Return(errors.New("error while re enqueuing message"))
-	mockCriteria := criteria.MockCriteria()
-	mockBody, _ := json.Marshal(mockCriteria)
+	mockMessage := criteria.MockMessageDTO()
+	mockBody, _ := json.Marshal(mockMessage)
 
 	messageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(mockNewWebDriverManager, mockNewScrapper, mockMessageBroker)
 

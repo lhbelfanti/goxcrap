@@ -47,3 +47,11 @@ func MockExampleCriteria() Type {
 		Until:            "2024-01-02",
 	}
 }
+
+// MockMessageDTO mocks a criteria.MessageDTO
+func MockMessageDTO() MessageDTO {
+	return MessageDTO{
+		Criteria:    MockCriteriaDTO(),
+		ExecutionID: 1,
+	}
+}

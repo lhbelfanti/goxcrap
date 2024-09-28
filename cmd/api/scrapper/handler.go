@@ -23,7 +23,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 		bodyBuffer := new(bytes.Buffer)
 		teeReader := io.TeeReader(r.Body, bodyBuffer)
 
-		var dto criteria.DTO
+		var dto criteria.MessageDTO
 		err := json.NewDecoder(teeReader).Decode(&dto)
 		if err != nil {
 			log.Error(ctx, err.Error())
@@ -35,7 +35,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 		defer stop(ctx, webDriverManager)
 
 		execute := newScrapper(webDriverManager.WebDriver())
-		err = execute(ctx, dto.ToType())
+		err = execute(ctx, dto.Criteria.ToType())
 		if err != nil {
 			if errors.Is(err, FailedToLogin) || errors.Is(err, search.FailedToLoadAdvanceSearchPage) {
 				enqueueErr := messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))

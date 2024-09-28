@@ -21,6 +21,12 @@ type (
 	IncomingBrokerMessageDTO struct {
 		Message json.RawMessage `json:"message"`
 	}
+
+	// MessageDTO is the necessary struct to decode the message consumed from the broker
+	MessageDTO struct {
+		Criteria    DTO `json:"criteria"`
+		ExecutionID int `json:"execution_id"`
+	}
 )
 
 // ToType converts a DTO into a Type
