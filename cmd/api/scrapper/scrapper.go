@@ -33,6 +33,7 @@ func MakeNew(httpClient http.Client) New {
 
 		// Calls to external services
 		saveTweets := corpuscreator.MakeSaveTweets(httpClient, os.Getenv("SAVE_TWEETS_API_URL"))
+		// TODO: Add here the rest of the corpus creator calls
 
 		// Services
 		login := auth.MakeLogin(loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)

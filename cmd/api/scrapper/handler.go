@@ -35,7 +35,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 		defer stop(ctx, webDriverManager)
 
 		execute := newScrapper(webDriverManager.WebDriver())
-		err = execute(ctx, dto.Criteria.ToType())
+		err = execute(ctx, dto.Criteria.ToType(), dto.ExecutionID)
 		if err != nil {
 			if errors.Is(err, FailedToLogin) || errors.Is(err, search.FailedToLoadAdvanceSearchPage) {
 				enqueueErr := messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))

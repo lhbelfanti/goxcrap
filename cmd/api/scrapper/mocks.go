@@ -16,7 +16,7 @@ func MockNew(err error) New {
 
 // MockExecute mocks Execute function
 func MockExecute(err error) Execute {
-	return func(ctx context.Context, searchCriteria criteria.Type) error {
+	return func(ctx context.Context, searchCriteria criteria.Type, executionID int) error {
 		return err
 	}
 }

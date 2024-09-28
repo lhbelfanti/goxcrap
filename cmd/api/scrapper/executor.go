@@ -16,14 +16,14 @@ import (
 )
 
 // Execute starts the X (formerly Twitter) scrapper
-type Execute func(ctx context.Context, searchCriteria criteria.Type) error
+type Execute func(ctx context.Context, searchCriteria criteria.Type, executionID int) error
 
 // MakeExecute creates a new Execute
 func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets corpuscreator.SaveTweets) Execute {
 	waitTimeAfterLoginValue, _ := strconv.Atoi(os.Getenv("WAIT_TIME_AFTER_LOGIN"))
 	waitTimeAfterLogin := time.Duration(waitTimeAfterLoginValue) * time.Second
 
-	return func(ctx context.Context, searchCriteria criteria.Type) error {
+	return func(ctx context.Context, searchCriteria criteria.Type, executionID int) error {
 		err := login(ctx)
 		if err != nil {
 			log.Error(ctx, err.Error())

@@ -39,7 +39,7 @@ func runLocal() {
 
 	/* --- Run --- */
 	log.Info(ctx, "Executing scrapper...")
-	setup.Must(executeScrapper(ctx, criteria.MockExampleCriteria()))
+	setup.Must(executeScrapper(ctx, criteria.MockExampleCriteria(), 1))
 	log.Info(ctx, "Scrapper executed!")
 	time.Sleep(10 * time.Minute) // Wait time to visually understand what happened
 }
