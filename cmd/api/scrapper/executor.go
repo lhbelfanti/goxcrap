@@ -19,7 +19,7 @@ import (
 type Execute func(ctx context.Context, searchCriteria criteria.Type, executionID int) error
 
 // MakeExecute creates a new Execute
-func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets corpuscreator.SaveTweets) Execute {
+func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.UpdateSearchCriteriaExecution, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets corpuscreator.SaveTweets) Execute {
 	waitTimeAfterLoginValue, _ := strconv.Atoi(os.Getenv("WAIT_TIME_AFTER_LOGIN"))
 	waitTimeAfterLogin := time.Duration(waitTimeAfterLoginValue) * time.Second
 
@@ -32,6 +32,12 @@ func MakeExecute(login auth.Login, executeAdvanceSearch search.ExecuteAdvanceSea
 
 		log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after login", waitTimeAfterLogin/time.Second))
 		time.Sleep(waitTimeAfterLogin)
+
+		err = updateSearchCriteriaExecution(ctx, executionID, corpuscreator.NewUpdateExecutionBody(corpuscreator.InProgressStatus))
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToUpdateSearchCriteriaExecution
+		}
 
 		log.Debug(ctx, fmt.Sprintf("Criteria ID: %d", searchCriteria.ID))
 		ctx = log.With(ctx, log.Param("criteria_id", searchCriteria.ID))

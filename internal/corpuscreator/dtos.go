@@ -34,3 +34,15 @@ type (
 		SearchCriteriaExecutionID int     `json:"search_criteria_execution_id"`
 	}
 )
+
+const (
+	InProgressStatus string = "IN PROGRESS"
+	DoneStatus       string = "DONE"
+)
+
+// NewUpdateExecutionBody creates a new UpdateSearchCriteriaExecutionBody with the given status
+func NewUpdateExecutionBody(status string) UpdateSearchCriteriaExecutionBody {
+	return UpdateSearchCriteriaExecutionBody{
+		Status: status,
+	}
+}

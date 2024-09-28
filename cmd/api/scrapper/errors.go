@@ -11,6 +11,7 @@ const (
 
 var (
 	FailedToLogin                          = errors.New("failed to login")
+	FailedToUpdateSearchCriteriaExecution  = errors.New("failed to update search criteria execution")
 	FailedToParseDatesFromTheGivenCriteria = errors.New("failed to parse dates from the given criteria")
 
 	FailedToDecodeBodyIntoCriteria = errors.New("failed to decode body into a criteria")

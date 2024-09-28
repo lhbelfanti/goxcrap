@@ -9,6 +9,13 @@ func MockSaveTweets(err error) SaveTweets {
 	}
 }
 
+// MockUpdateSearchCriteriaExecution mocks UpdateSearchCriteriaExecution function
+func MockUpdateSearchCriteriaExecution(err error) UpdateSearchCriteriaExecution {
+	return func(ctx context.Context, executionID int, body UpdateSearchCriteriaExecutionBody) error {
+		return err
+	}
+}
+
 // MockSaveTweetsBody mocks a SaveTweetsBody
 func MockSaveTweetsBody() SaveTweetsBody {
 	return SaveTweetsBody{
