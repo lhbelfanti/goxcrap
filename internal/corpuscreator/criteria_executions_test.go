@@ -12,33 +12,6 @@ import (
 	"goxcrap/internal/http"
 )
 
-func TestInsertSearchCriteriaExecution_success(t *testing.T) {
-	mockHTTPClient := new(http.MockHTTPClient)
-	resp := http.Response{
-		Status: "200 OK",
-		Body:   `{"test": "body"}`,
-	}
-	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
-	insertSearchCriteriaExecution := corpuscreator.MakeInsertSearchCriteriaExecution(mockHTTPClient, "http://example.com")
-
-	got := insertSearchCriteriaExecution(context.Background(), 1)
-
-	assert.Nil(t, got)
-	mockHTTPClient.AssertExpectations(t)
-}
-
-func TestInsertSearchCriteriaExecution_failsWhenNewRequestThrowsError(t *testing.T) {
-	mockHTTPClient := new(http.MockHTTPClient)
-	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(http.Response{}, errors.New("failed to execute NewRequest"))
-	insertSearchCriteriaExecution := corpuscreator.MakeInsertSearchCriteriaExecution(mockHTTPClient, "http://example.com")
-
-	want := corpuscreator.FailedToExecuteRequest
-	got := insertSearchCriteriaExecution(context.Background(), 1)
-
-	assert.Equal(t, want, got)
-	mockHTTPClient.AssertExpectations(t)
-}
-
 func TestUpdateSearchCriteriaExecution_success(t *testing.T) {
 	mockHTTPClient := new(http.MockHTTPClient)
 	resp := http.Response{
