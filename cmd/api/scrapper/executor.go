@@ -85,7 +85,7 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 				corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, len(obtainedTweets), nil, executionID))
 		}
 
-		// It is not a problem if the Criteria Execution is not transitioned to Done because it will be re enqueued and
+		// It is not a problem if the Criteria Execution is not transitioned to Done because it will be re enqueued and the execution
 		// will start from the last day executed, which is the last day of the execution and will try to transition it again to Done
 		_ = updateSearchCriteriaExecution(ctx, executionID, corpuscreator.NewUpdateExecutionBody(corpuscreator.DoneStatus))
 
