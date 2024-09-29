@@ -16,6 +16,13 @@ func MockUpdateSearchCriteriaExecution(err error) UpdateSearchCriteriaExecution 
 	}
 }
 
+// MockInsertSearchCriteriaExecutionDay mocks InsertSearchCriteriaExecutionDay function
+func MockInsertSearchCriteriaExecutionDay(err error) InsertSearchCriteriaExecutionDay {
+	return func(ctx context.Context, executionID int, body InsertSearchCriteriaExecutionDayBody) error {
+		return err
+	}
+}
+
 // MockSaveTweetsBody mocks a SaveTweetsBody
 func MockSaveTweetsBody() SaveTweetsBody {
 	return SaveTweetsBody{

@@ -46,3 +46,13 @@ func NewUpdateExecutionBody(status string) UpdateSearchCriteriaExecutionBody {
 		Status: status,
 	}
 }
+
+// NewInsertExecutionDayBody creates a new InsertSearchCriteriaExecutionDayBody with the given parameters
+func NewInsertExecutionDayBody(executionDate string, tweetsQuantity int, errorReason *string, executionID int) InsertSearchCriteriaExecutionDayBody {
+	return InsertSearchCriteriaExecutionDayBody{
+		ExecutionDate:             executionDate,
+		TweetsQuantity:            tweetsQuantity,
+		ErrorReason:               errorReason,
+		SearchCriteriaExecutionID: executionID,
+	}
+}

@@ -35,7 +35,7 @@ func MakeNew(httpClient http.Client) New {
 		domain := os.Getenv("CORPUS_CREATOR_API_URL")
 		saveTweets := corpuscreator.MakeSaveTweets(httpClient, domain)
 		updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(httpClient, domain)
-		// TODO: Add here the rest of the corpus creator calls
+		insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(httpClient, domain)
 
 		// Services
 		login := auth.MakeLogin(loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
@@ -53,7 +53,7 @@ func MakeNew(httpClient http.Client) New {
 		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
 		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
 
-		executeScrapper := MakeExecute(login, updateSearchCriteriaExecution, executeAdvanceSearch, retrieveAllTweets, saveTweets)
+		executeScrapper := MakeExecute(login, updateSearchCriteriaExecution, insertSearchCriteriaExecutionDay, executeAdvanceSearch, retrieveAllTweets, saveTweets)
 
 		return executeScrapper
 	}

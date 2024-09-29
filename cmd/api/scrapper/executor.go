@@ -19,7 +19,7 @@ import (
 type Execute func(ctx context.Context, searchCriteria criteria.Type, executionID int) error
 
 // MakeExecute creates a new Execute
-func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.UpdateSearchCriteriaExecution, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets corpuscreator.SaveTweets) Execute {
+func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.UpdateSearchCriteriaExecution, insertSearchCriteriaExecutionDay corpuscreator.InsertSearchCriteriaExecutionDay, executeAdvanceSearch search.ExecuteAdvanceSearch, retrieveTweets tweets.RetrieveAll, saveTweets corpuscreator.SaveTweets) Execute {
 	waitTimeAfterLoginValue, _ := strconv.Atoi(os.Getenv("WAIT_TIME_AFTER_LOGIN"))
 	waitTimeAfterLogin := time.Duration(waitTimeAfterLoginValue) * time.Second
 
@@ -53,13 +53,20 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 		for current := since; !current.After(until); current = current.AddDays(1) {
 			currentCriteria.Since = current.String()
 			currentCriteria.Until = current.AddDays(1).String()
+
 			err = executeAdvanceSearch(ctx, currentCriteria)
 			if err != nil {
+				errString := err.Error()
+				_ = insertSearchCriteriaExecutionDay(ctx, executionID,
+					corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, 0, &errString, executionID))
 				continue
 			}
 
 			obtainedTweets, err := retrieveTweets(ctx)
 			if err != nil {
+				errString := err.Error()
+				_ = insertSearchCriteriaExecutionDay(ctx, executionID,
+					corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, 0, &errString, executionID))
 				continue
 			}
 
@@ -67,10 +74,15 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 				requestBody := createSaveTweetsBody(obtainedTweets, currentCriteria.ID)
 				err = saveTweets(ctx, requestBody)
 				if err != nil {
+					errString := err.Error()
+					_ = insertSearchCriteriaExecutionDay(ctx, executionID,
+						corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, 0, &errString, executionID))
 					continue
 				}
 			}
 
+			_ = insertSearchCriteriaExecutionDay(ctx, executionID,
+				corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, len(obtainedTweets), nil, executionID))
 		}
 
 		log.Info(ctx, "All the tweets of the criteria were retrieved")
