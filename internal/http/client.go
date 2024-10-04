@@ -69,7 +69,7 @@ func (c *CustomClient) NewRequest(ctx context.Context, method, url string, body 
 		req.Header.Set("Content-Type", "application/json")
 
 		resp, err := c.HTTPClient.Do(req)
-		if err == nil && resp.StatusCode >= 200 && resp.StatusCode < 30 {
+		if err == nil && resp.StatusCode >= 200 && resp.StatusCode < 300 {
 			// Successful response: returning the data
 			defer func(body io.ReadCloser) {
 				err = body.Close()
@@ -90,7 +90,7 @@ func (c *CustomClient) NewRequest(ctx context.Context, method, url string, body 
 			}, nil
 		} // else { // Unsuccessful response: retrying request }
 
-		log.Error(ctx, fmt.Sprintf("Request to %s failed with error %v. \nRetrying... (Attempt %d/%d)", url, err, attempt, maxRetries))
+		log.Error(ctx, fmt.Sprintf("Request to %s ", url)+fmt.Sprintf("failed with error %v. \nRetrying... (Attempt %d/%d)", err, attempt, maxRetries))
 
 		// Delay before retrying
 		time.Sleep(100 * time.Millisecond)

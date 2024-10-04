@@ -21,9 +21,9 @@ func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string) Up
 	url := domain + "/criteria/executions/%d/v1"
 
 	return func(ctx context.Context, executionID int, body UpdateSearchCriteriaExecutionBody) error {
-		url = fmt.Sprintf(url, executionID)
+		finalURL := fmt.Sprintf(url, executionID)
 
-		resp, err := httpClient.NewRequest(ctx, "PUT", url, body)
+		resp, err := httpClient.NewRequest(ctx, "PUT", finalURL, body)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return FailedToExecuteRequest
@@ -40,9 +40,9 @@ func MakeInsertSearchCriteriaExecutionDay(httpClient http.Client, domain string)
 	url := domain + "/criteria/executions/%d/day/v1"
 
 	return func(ctx context.Context, executionID int, body InsertSearchCriteriaExecutionDayBody) error {
-		url = fmt.Sprintf(url, executionID)
+		finalURL := fmt.Sprintf(url, executionID)
 
-		resp, err := httpClient.NewRequest(ctx, "POST", url, body)
+		resp, err := httpClient.NewRequest(ctx, "POST", finalURL, body)
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return FailedToExecuteRequest
