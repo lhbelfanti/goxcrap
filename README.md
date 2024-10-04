@@ -27,9 +27,6 @@ This application collects tweets based on a defined search criteria, and save th
 2. Create a `.env` file at the root of the project (or rename the provided [.env.example](.env.example)), and add the following environment variables:
 
 ```
-# App settings
-API_PORT=<GoXCrap API Port>
-
 # Scrapper settings
 EMAIL=<Twitter account email>
 USERNAME=<Twitter username>
