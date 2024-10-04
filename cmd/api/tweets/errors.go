@@ -3,7 +3,8 @@ package tweets
 import "errors"
 
 var (
-	FailedToRetrieveArticles = errors.New("failed to retrieve articles")
+	FailedToRetrieveArticles       = errors.New("failed to retrieve articles")
+	EmptyStateNoArticlesToRetrieve = errors.New("empty state, no articles to retrieve")
 
 	FailedToObtainTweetAuthorElement     = errors.New("failed to obtain tweet author element")
 	FailedToObtainTweetAuthor            = errors.New("failed to obtain tweet author")

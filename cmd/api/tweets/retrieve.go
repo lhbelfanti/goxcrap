@@ -14,7 +14,10 @@ import (
 	"goxcrap/internal/log"
 )
 
-const articlesXPath string = "//article/div/div/div[2]/div[2]"
+const (
+	articlesXPath   string = "//article/div/div/div[2]/div[2]"
+	emptyStateXPath string = "//*[@data-testid='emptyState']"
+)
 
 type (
 	// RetrieveAll retrieves all the tweets from the current page
@@ -25,7 +28,7 @@ type (
 )
 
 // MakeRetrieveAll creates a new RetrieveAll
-func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetHash GetTweetHash, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
+func MakeRetrieveAll(waitAndRetrieveElement elements.WaitAndRetrieve, waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetHash GetTweetHash, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
 	articlesTimeoutValue, _ := strconv.Atoi(os.Getenv("ARTICLES_TIMEOUT"))
 	articlesTimeout := time.Duration(articlesTimeoutValue) * time.Second
 
@@ -33,6 +36,13 @@ func MakeRetrieveAll(waitAndRetrieveElements elements.WaitAndRetrieveAll, getTwe
 		var tweets []Tweet
 		for {
 			previousTweetsQuantity := len(tweets)
+
+			// If the empty state is present, is not necessary to keep waiting for the articles to appear on screen
+			_, err := waitAndRetrieveElement(ctx, selenium.ByXPATH, emptyStateXPath, articlesTimeout)
+			if err == nil {
+				log.Info(ctx, EmptyStateNoArticlesToRetrieve.Error())
+				return nil, EmptyStateNoArticlesToRetrieve
+			}
 
 			articles, err := waitAndRetrieveElements(ctx, selenium.ByXPATH, globalToLocalXPath(articlesXPath), articlesTimeout)
 			if err != nil {

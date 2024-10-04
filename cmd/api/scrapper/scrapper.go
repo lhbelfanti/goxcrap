@@ -51,7 +51,7 @@ func MakeNew(httpClient http.Client) New {
 		getQuoteImages := tweets.MakeGetQuoteImages()
 		getTweetHash := tweets.MakeGetTweetHash(getTweetAuthor, getTweetTimestamp)
 		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteText, getQuoteImages)
-		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
+		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElement, waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
 
 		executeScrapper := MakeExecute(login, updateSearchCriteriaExecution, insertSearchCriteriaExecutionDay, executeAdvanceSearch, retrieveAllTweets, saveTweets)
 
