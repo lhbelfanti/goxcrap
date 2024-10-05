@@ -23,6 +23,11 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 	waitTimeAfterLoginValue, _ := strconv.Atoi(os.Getenv("WAIT_TIME_AFTER_LOGIN"))
 	waitTimeAfterLogin := time.Duration(waitTimeAfterLoginValue) * time.Second
 
+	rateLimiterPeriod, _ := strconv.Atoi(os.Getenv("RATE_LIMITER_PERIOD"))
+	rateLimiterRequests, _ := strconv.Atoi(os.Getenv("RATE_LIMITER_REQUESTS"))
+	rateLimiterDelay := (rateLimiterPeriod / rateLimiterRequests) + 1 // adding 1 extra second justo to ensure that it won't hit the rate limit
+	delayBetweenRequest := time.Duration(rateLimiterDelay) * time.Second
+
 	return func(ctx context.Context, searchCriteria criteria.Type, executionID int) error {
 		err := login(ctx)
 		if err != nil {
@@ -83,6 +88,9 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 
 			_ = insertSearchCriteriaExecutionDay(ctx, executionID,
 				corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, len(obtainedTweets), nil, executionID))
+
+			log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after next request", rateLimiterDelay))
+			time.Sleep(delayBetweenRequest)
 		}
 
 		// It is not a problem if the Criteria Execution is not transitioned to Done because it will be re enqueued and the execution
