@@ -56,6 +56,9 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 
 		currentCriteria := searchCriteria
 		for current := since; !current.After(until); current = current.AddDays(1) {
+			log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after next request", rateLimiterDelay))
+			time.Sleep(delayBetweenRequest)
+			
 			currentCriteria.Since = current.String()
 			currentCriteria.Until = current.AddDays(1).String()
 
@@ -88,9 +91,6 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 
 			_ = insertSearchCriteriaExecutionDay(ctx, executionID,
 				corpuscreator.NewInsertExecutionDayBody(currentCriteria.Since, len(obtainedTweets), nil, executionID))
-
-			log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after next request", rateLimiterDelay))
-			time.Sleep(delayBetweenRequest)
 		}
 
 		// It is not a problem if the Criteria Execution is not transitioned to Done because it will be re enqueued and the execution
