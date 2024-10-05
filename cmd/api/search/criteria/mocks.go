@@ -11,8 +11,8 @@ func MockCriteria() Type {
 		NoneOfTheseWords: []string{"none1", "none2"},
 		TheseHashtags:    []string{"#hashtag1", "#hashtag2"},
 		Language:         "es",
-		Since:            "2006-01-01",
-		Until:            "2024-01-01",
+		Since:            "2024-01-01",
+		Until:            "2024-01-02",
 	}
 }
 
@@ -27,8 +27,8 @@ func MockCriteriaDTO() DTO {
 		NoneOfTheseWords: []string{"none1", "none2"},
 		TheseHashtags:    []string{"#hashtag1", "#hashtag2"},
 		Language:         "es",
-		Since:            "2006-01-01",
-		Until:            "2024-01-01",
+		Since:            "2024-01-01",
+		Until:            "2024-01-02",
 	}
 }
 

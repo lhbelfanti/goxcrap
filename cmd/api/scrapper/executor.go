@@ -25,6 +25,10 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 
 	rateLimiterPeriod, _ := strconv.Atoi(os.Getenv("RATE_LIMITER_PERIOD"))
 	rateLimiterRequests, _ := strconv.Atoi(os.Getenv("RATE_LIMITER_REQUESTS"))
+	if rateLimiterRequests == 0 {
+		rateLimiterRequests = 50
+	}
+
 	rateLimiterDelay := (rateLimiterPeriod / rateLimiterRequests) + 1 // adding 1 extra second justo to ensure that it won't hit the rate limit
 	delayBetweenRequest := time.Duration(rateLimiterDelay) * time.Second
 
@@ -58,7 +62,7 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 		for current := since; !current.After(until); current = current.AddDays(1) {
 			log.Debug(ctx, fmt.Sprintf("Waiting %d seconds after next request", rateLimiterDelay))
 			time.Sleep(delayBetweenRequest)
-			
+
 			currentCriteria.Since = current.String()
 			currentCriteria.Until = current.AddDays(1).String()
 
