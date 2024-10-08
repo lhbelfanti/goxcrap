@@ -29,7 +29,7 @@ func MakeExecute(login auth.Login, updateSearchCriteriaExecution corpuscreator.U
 		rateLimiterRequests = 50
 	}
 
-	rateLimiterDelay := (rateLimiterPeriod / rateLimiterRequests) + 1 // adding 1 extra second justo to ensure that it won't hit the rate limit
+	rateLimiterDelay := (rateLimiterPeriod / rateLimiterRequests) + 1 // adding 1 extra second just to ensure that it won't hit the rate limit
 	delayBetweenRequest := time.Duration(rateLimiterDelay) * time.Second
 
 	return func(ctx context.Context, searchCriteria criteria.Type, executionID int) error {

@@ -15,6 +15,7 @@ func NewMessageBroker(ctx context.Context, httpClient http.Client) (*RabbitMQMes
 	messageBroker := &RabbitMQMessageBroker{
 		httpClient: httpClient,
 	}
+
 	var err error
 
 	// Connect to RabbitMQ
@@ -154,6 +155,13 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumerWithFunction(concurrentMessa
 
 				log.Info(ctx, "Message consumer function called")
 
+				// Ensure connection is still open before processing.
+				// It could take many days to finish the processing, so the channel is probably closed.
+				err = mb.ensureConnection(ctx)
+				if err != nil {
+					log.Error(ctx, err.Error())
+				}
+
 				err = msg.Ack(false)
 				if err != nil {
 					log.Error(ctx, err.Error())
@@ -161,4 +169,36 @@ func (mb *RabbitMQMessageBroker) InitMessageConsumerWithFunction(concurrentMessa
 			}(msg)
 		}
 	}()
+}
+
+// reconnect Reconnects to RabbitMQ.
+// RabbitMQ's connections and channels can close due to inactivity, errors, or network issues
+func (mb *RabbitMQMessageBroker) reconnect() error {
+	if mb.conn != nil {
+		_ = mb.conn.Close() // Close the old connection if any
+	}
+
+	var err error
+	url := resolveRabbitmqURL()
+	mb.conn, err = amqp091.Dial(url)
+	if err != nil {
+		return fmt.Errorf("failed to connect to RabbitMQ: %w", err)
+	}
+
+	mb.channel, err = mb.conn.Channel()
+	if err != nil {
+		return fmt.Errorf("failed to open a channel: %w", err)
+	}
+
+	return nil
+}
+
+// ensureConnection Reconnect if the connection is lost
+func (mb *RabbitMQMessageBroker) ensureConnection(ctx context.Context) error {
+	if mb.conn == nil || mb.conn.IsClosed() {
+		log.Info(ctx, "Reconnecting to RabbitMQ")
+		return mb.reconnect()
+	}
+
+	return nil
 }
