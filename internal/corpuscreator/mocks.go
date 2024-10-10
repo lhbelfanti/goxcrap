@@ -9,6 +9,13 @@ func MockSaveTweets(err error) SaveTweets {
 	}
 }
 
+// MockGetSearchCriteriaExecution mocks GetSearchCriteriaExecution function
+func MockGetSearchCriteriaExecution(execution Execution, err error) GetSearchCriteriaExecution {
+	return func(ctx context.Context, executionID int) (Execution, error) {
+		return execution, err
+	}
+}
+
 // MockUpdateSearchCriteriaExecution mocks UpdateSearchCriteriaExecution function
 func MockUpdateSearchCriteriaExecution(err error) UpdateSearchCriteriaExecution {
 	return func(ctx context.Context, executionID int, body UpdateSearchCriteriaExecutionBody) error {
@@ -56,6 +63,15 @@ func MockQuoteDTO() QuoteDTO {
 		IsAReply:    true,
 		TextContent: &textContent,
 		Images:      []string{"test1", "test2"},
+	}
+}
+
+// MockExecution mocks an Execution
+func MockExecution(status string) Execution {
+	return Execution{
+		ID:               1,
+		Status:           status,
+		SearchCriteriaID: 2,
 	}
 }
 

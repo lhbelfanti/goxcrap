@@ -21,6 +21,13 @@ type (
 		Images      []string `json:"images,omitempty"`
 	}
 
+	// Execution represents the response for the Get Search Criteria Execution endpoint call
+	Execution struct {
+		ID               int    `json:"id"`
+		Status           string `json:"status"`
+		SearchCriteriaID int    `json:"search_criteria_id"`
+	}
+
 	// UpdateSearchCriteriaExecutionBody represents the body for the Update Search Criteria Execution endpoint call
 	UpdateSearchCriteriaExecutionBody struct {
 		Status string `json:"status"`

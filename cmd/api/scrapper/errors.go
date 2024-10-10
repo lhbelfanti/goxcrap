@@ -14,7 +14,8 @@ var (
 	FailedToUpdateSearchCriteriaExecution  = errors.New("failed to update search criteria execution")
 	FailedToParseDatesFromTheGivenCriteria = errors.New("failed to parse dates from the given criteria")
 
-	FailedToDecodeBodyIntoCriteria = errors.New("failed to decode body into a criteria")
-	FailedToReEnqueueFailedMessage = errors.New("failed to re-enqueue failed message")
-	FailedToRunScrapperProcess     = errors.New("failed to run scrapper")
+	FailedToDecodeBodyIntoCriteria              = errors.New("failed to decode body into a criteria")
+	FailedToRetrieveSearchCriteriaExecutionData = errors.New("failed to retrieve search criteria execution data")
+	FailedToReEnqueueFailedMessage              = errors.New("failed to re-enqueue failed message")
+	FailedToRunScrapperProcess                  = errors.New("failed to run scrapper")
 )

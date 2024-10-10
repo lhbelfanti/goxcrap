@@ -2,6 +2,7 @@ package corpuscreator
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"goxcrap/internal/http"
@@ -9,12 +10,41 @@ import (
 )
 
 type (
+	// GetSearchCriteriaExecution calls the endpoint in charge of retrieving a search criteria execution seeking by its execution id
+	GetSearchCriteriaExecution func(ctx context.Context, executionID int) (Execution, error)
+
 	// UpdateSearchCriteriaExecution calls the endpoint in charge of updating a search criteria execution seeking by its execution id
 	UpdateSearchCriteriaExecution func(ctx context.Context, executionID int, body UpdateSearchCriteriaExecutionBody) error
 
 	// InsertSearchCriteriaExecutionDay calls the endpoint in charge of inserting a new search criteria execution day into the database
 	InsertSearchCriteriaExecutionDay func(ctx context.Context, executionID int, body InsertSearchCriteriaExecutionDayBody) error
 )
+
+// MakeGetSearchCriteriaExecution creates a new GetSearchCriteriaExecution
+func MakeGetSearchCriteriaExecution(httpClient http.Client, domain string) GetSearchCriteriaExecution {
+	url := domain + "/criteria/executions/%d/v1"
+
+	return func(ctx context.Context, executionID int) (Execution, error) {
+		finalURL := fmt.Sprintf(url, executionID)
+
+		resp, err := httpClient.NewRequest(ctx, "GET", finalURL, nil)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return Execution{}, FailedToExecuteRequest
+		}
+
+		var execution Execution
+		err = json.Unmarshal([]byte(resp.Body), &execution)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return Execution{}, FailedToUnmarshalResponse
+		}
+
+		log.Info(ctx, fmt.Sprintf("Get search criteria execution endpoint called -> Status: %s | Response: %s", resp.Status, resp.Body))
+
+		return execution, nil
+	}
+}
 
 // MakeUpdateSearchCriteriaExecution creates a new UpdateSearchCriteriaExecution
 func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string) UpdateSearchCriteriaExecution {

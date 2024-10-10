@@ -13,6 +13,7 @@ import (
 	"goxcrap/cmd/api/scrapper"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/internal/broker"
+	"goxcrap/internal/corpuscreator"
 	_http "goxcrap/internal/http"
 	"goxcrap/internal/log"
 	"goxcrap/internal/setup"
@@ -35,9 +36,10 @@ func runDockerized() {
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	newScrapper := scrapper.MakeNew(httpClient)
 
+	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(httpClient, os.Getenv("CORPUS_CREATOR_API_URL"))
 	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
 	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
-	searchCriteriaMessageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(newWebDriverManager, newScrapper, messageBroker)
+	searchCriteriaMessageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(getSearchCriteriaExecution, newWebDriverManager, newScrapper, messageBroker)
 	go messageBroker.InitMessageConsumerWithFunction(concurrentMessages, searchCriteriaMessageProcessor)
 
 	/* --- Router --- */
