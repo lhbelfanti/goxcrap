@@ -113,8 +113,14 @@ func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) cor
 	for _, tweet := range obtainedTweets {
 		requestTweet := corpuscreator.TweetDTO{
 			Hash:             &tweet.ID,
+			Author:           tweet.Author,
+			PostedAt:         tweet.Timestamp,
 			IsAReply:         tweet.IsAReply,
 			SearchCriteriaID: &searchCriteria,
+		}
+
+		if tweet.Avatar != "" {
+			requestTweet.Avatar = &tweet.Avatar
 		}
 
 		if tweet.HasText {
@@ -126,7 +132,15 @@ func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) cor
 		}
 
 		if tweet.HasQuote {
-			requestTweet.Quote = &corpuscreator.QuoteDTO{IsAReply: tweet.Quote.IsAReply}
+			requestTweet.Quote = &corpuscreator.QuoteDTO{
+				IsAReply: tweet.Quote.IsAReply,
+				Author:   tweet.Quote.Author,
+				PostedAt: tweet.Quote.Timestamp,
+			}
+
+			if tweet.Quote.Avatar != "" {
+				requestTweet.Quote.Avatar = &tweet.Quote.Avatar
+			}
 
 			if tweet.Quote.HasText {
 				requestTweet.Quote.TextContent = &tweet.Quote.Text

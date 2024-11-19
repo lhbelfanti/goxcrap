@@ -7,6 +7,9 @@ type (
 	// TweetDTO represents the tweet to be saved
 	TweetDTO struct {
 		Hash             *string   `json:"hash,omitempty"`
+		Author           string    `json:"author"`
+		Avatar           *string   `json:"avatar,omitempty"`
+		PostedAt         string    `json:"posted_at"`
 		IsAReply         bool      `json:"is_a_reply"`
 		TextContent      *string   `json:"text_content,omitempty"`
 		Images           []string  `json:"images,omitempty"`
@@ -16,6 +19,9 @@ type (
 
 	// QuoteDTO represents the quote of the tweet to be saved
 	QuoteDTO struct {
+		Author      string   `json:"author"`
+		Avatar      *string  `json:"avatar,omitempty"`
+		PostedAt    string   `json:"posted_at"`
 		IsAReply    bool     `json:"is_a_reply"`
 		TextContent *string  `json:"text_content,omitempty"`
 		Images      []string `json:"images,omitempty"`

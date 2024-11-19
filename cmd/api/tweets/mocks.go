@@ -93,11 +93,13 @@ func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
 // MockTweet mocks a Tweet
 func MockTweet() Tweet {
 	return Tweet{
-		ID:        "02bd92faa38aaa6cc0ea75e59937a1ef8d6ad3a9f75f3ac4166fef23da9f209b",
-		Timestamp: "2024-02-26T18:31:49.000Z",
-		IsAReply:  true,
-		HasQuote:  true,
+		ID:       "02bd92faa38aaa6cc0ea75e59937a1ef8d6ad3a9f75f3ac4166fef23da9f209b",
+		HasQuote: true,
 		Data: Data{
+			Author:    "tweetauthor",
+			Avatar:    "https://tweet_avatar.com",
+			Timestamp: "2024-02-26T18:31:49.000Z",
+			IsAReply:  true,
 			HasText:   true,
 			HasImages: true,
 			Text:      "Tweet Text",
@@ -109,8 +111,11 @@ func MockTweet() Tweet {
 // MockQuote mocks a Quote
 func MockQuote(IsAReply, hasText, hasImages bool, text string, images []string) Quote {
 	return Quote{
-		IsAReply: IsAReply,
 		Data: Data{
+			Author:    "quoteauthor",
+			Avatar:    "https://quote_avatar.com",
+			Timestamp: "2023-02-26T18:31:49.000Z",
+			IsAReply:  IsAReply,
 			HasText:   hasText,
 			HasImages: hasImages,
 			Text:      text,

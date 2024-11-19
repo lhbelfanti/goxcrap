@@ -84,8 +84,11 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 			hasQuotedTweetImages := !errors.Is(err, FailedToObtainQuotedTweetImagesElement)
 
 			quote = Quote{
-				IsAReply: isQuotedTweetAReply,
 				Data: Data{
+					Author:    "", // TODO: Complete it
+					Avatar:    "", // TODO: Complete it
+					Timestamp: "", // TODO: Complete it
+					IsAReply:  isQuotedTweetAReply,
 					HasText:   hasQuotedTweetText,
 					HasImages: hasQuotedTweetImages,
 					Text:      quoteText,
@@ -95,11 +98,13 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 		}
 
 		return Tweet{
-			ID:        tweetID,
-			Timestamp: tweetTimestamp,
-			IsAReply:  isTweetAReply,
-			HasQuote:  hasAQuote,
+			ID:       tweetID,
+			HasQuote: hasAQuote,
 			Data: Data{
+				Author:    "", // TODO: Complete it
+				Avatar:    "", // TODO: Complete it
+				Timestamp: tweetTimestamp,
+				IsAReply:  isTweetAReply,
 				HasText:   hasText,
 				HasImages: hasImages,
 				Text:      tweetText,
