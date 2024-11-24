@@ -37,25 +37,31 @@ type (
 
 // String converts Tweet properties to a string
 func (tweet Tweet) String() string {
-	return fmt.Sprintf("\n------------------------\n--- Tweet ---\n ID: %s \n HasQuote: %t %s %s\n------------------------\n\n",
+	return fmt.Sprintf("\n------------------------\n"+
+		"--- Tweet ---\n"+
+		"ID: %s \n"+
+		"HasQuote: %t\n"+
+		"%s\n"+
+		"%s\n"+
+		"------------------------\n\n",
 		tweet.ID, tweet.HasQuote, tweet.Data.String(), tweet.Quote.String())
 }
 
 // String converts Data properties to a string
 func (data Data) String() string {
-	return fmt.Sprintf("\n   --- Data ---\n   "+
-		"Author: %s \n "+
-		"Avatar: %s \n "+
-		"Timestamp: %s \n "+
-		"IsAReply: %t \n "+
-		"HasText: %t \n   "+
-		"HasImages: %t \n   "+
-		"Text: %s \n   "+
-		"Images: %v",
+	return fmt.Sprintf(" --- Data ---\n"+
+		" Author: %s\n"+
+		" Avatar: %s\n"+
+		" Timestamp: %s\n"+
+		" IsAReply: %t\n"+
+		" HasText: %t\n"+
+		" HasImages: %t\n"+
+		" Text: %s\n"+
+		" Images: %v",
 		data.Author, data.Avatar, data.Timestamp, data.IsAReply, data.HasText, data.HasImages, data.Text, data.Images)
 }
 
 // String converts Quote properties to a string
 func (quote Quote) String() string {
-	return fmt.Sprintf("\n --- Quote ---\n %s", quote.Data.String())
+	return fmt.Sprintf("--- Quote ---\n%s", quote.Data.String())
 }
