@@ -10,7 +10,7 @@ func TestTweet_String_success(t *testing.T) {
 	want := `
 ------------------------
 --- Tweet ---
-ID: 02bd92faa38aaa6cc0ea75e59937a1ef8d6ad3a9f75f3ac4166fef23da9f209b 
+ID: 6b19232cdaa5ab34588aa59614fb2e868d6ad3a9f75f3ac4166fef23da9f209b 
 HasQuote: true
  --- Data ---
  Author: tweetauthor
