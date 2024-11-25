@@ -80,3 +80,99 @@ func TestGetTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
 	mockTweetTimestampWebElement.AssertExpectations(t)
 	mockTweetTimestampTimeTagWebElement.AssertExpectations(t)
 }
+
+func TestGetQuoteTimestamp_success(t *testing.T) {
+	for _, test := range []struct {
+		hasTweetOnlyText bool
+	}{
+		{hasTweetOnlyText: false},
+		{hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockQuoteTimestampWebElement := new(elements.MockWebElement)
+		mockQuoteTimestampTimeTagWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockQuoteTimestampWebElement), nil)
+		mockQuoteTimestampWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockQuoteTimestampTimeTagWebElement), nil)
+		mockQuoteTimestampTimeTagWebElement.On("GetAttribute", mock.Anything).Return("test", nil)
+
+		getQuoteTimestamp := tweets.MakeGetQuoteTimestamp()
+
+		want := "test"
+		got, err := getQuoteTimestamp(context.Background(), mockTweetArticleWebElement, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+		assert.Nil(t, err)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockQuoteTimestampWebElement.AssertExpectations(t)
+		mockQuoteTimestampTimeTagWebElement.AssertExpectations(t)
+	}
+}
+
+func TestGetQuoteTimestamp_failsWhenFirstFindElementThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		hasTweetOnlyText bool
+	}{
+		{hasTweetOnlyText: false},
+		{hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
+
+		getQuoteTimestamp := tweets.MakeGetQuoteTimestamp()
+
+		want := tweets.FailedToObtainQuotedTweetTimestampElement
+		_, got := getQuoteTimestamp(context.Background(), mockTweetArticleWebElement, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+	}
+}
+
+func TestGetQuoteTimestamp_failsWhenSecondFindElementThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		hasTweetOnlyText bool
+	}{
+		{hasTweetOnlyText: false},
+		{hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockQuoteTimestampWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockQuoteTimestampWebElement), nil)
+		mockQuoteTimestampWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
+
+		getQuoteTimestamp := tweets.MakeGetQuoteTimestamp()
+
+		want := tweets.FailedToObtainQuotedTweetTimestampTimeTag
+		_, got := getQuoteTimestamp(context.Background(), mockTweetArticleWebElement, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockQuoteTimestampWebElement.AssertExpectations(t)
+	}
+}
+
+func TestGetQuoteTimestamp_failsWhenGetAttributeThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		hasTweetOnlyText bool
+	}{
+		{hasTweetOnlyText: false},
+		{hasTweetOnlyText: true},
+	} {
+		mockTweetArticleWebElement := new(elements.MockWebElement)
+		mockQuoteTimestampWebElement := new(elements.MockWebElement)
+		mockQuoteTimestampTimeTagWebElement := new(elements.MockWebElement)
+		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockQuoteTimestampWebElement), nil)
+		mockQuoteTimestampWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockQuoteTimestampTimeTagWebElement), nil)
+		mockQuoteTimestampTimeTagWebElement.On("GetAttribute", mock.Anything).Return("", errors.New("error while executing GetAttribute"))
+
+		getQuoteTimestamp := tweets.MakeGetQuoteTimestamp()
+
+		want := tweets.FailedToObtainQuotedTweetTimestamp
+		_, got := getQuoteTimestamp(context.Background(), mockTweetArticleWebElement, test.hasTweetOnlyText)
+
+		assert.Equal(t, want, got)
+		mockTweetArticleWebElement.AssertExpectations(t)
+		mockQuoteTimestampWebElement.AssertExpectations(t)
+		mockQuoteTimestampTimeTagWebElement.AssertExpectations(t)
+	}
+}
