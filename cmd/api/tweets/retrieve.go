@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	articlesXPath   string = "//article/div/div/div[2]/div[2]"
+	articlesXPath   string = "//article/div/div/div[2]"
 	emptyStateXPath string = "//*[@data-testid='emptyState']"
 )
 
@@ -57,7 +57,7 @@ func MakeRetrieveAll(waitAndRetrieveElement elements.WaitAndRetrieve, waitAndRet
 				}
 
 				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
-					tweet, err := getTweetInformation(ctx, article, tweetHash.ID, tweetHash.Timestamp)
+					tweet, err := getTweetInformation(ctx, article, tweetHash)
 					if err != nil {
 						continue
 					}

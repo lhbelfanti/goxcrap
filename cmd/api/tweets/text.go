@@ -10,22 +10,22 @@ import (
 )
 
 const (
-	tweetTextXPath      string = "div[2]/div"
-	replyTweetTextXPath string = "div[3]/div"
+	tweetTextXPath      string = "div[2]/div[2]/div"
+	replyTweetTextXPath string = "div[2]/div[3]/div"
 
-	tweetIsReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[4]/div/div[2]/div/div[2]/div[2]"
-	tweetIsReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsReplyHasTextAndImagesQuoteIsReplyTextXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsReplyHasOnlyTextQuoteIsNotReplyTextXPath      string = "div[4]/div/div[2]/div/div[2]/div"
-	tweetIsReplyHasOnlyImagesQuoteIsNotReplyTextXPath    string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
-	tweetIsReplyHasTextAndImagesQuoteIsNotReplyTextXPath string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[2]/div[4]/div/div[2]/div/div[2]/div[2]"
+	tweetIsReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasTextAndImagesQuoteIsReplyTextXPath    string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsReplyHasOnlyTextQuoteIsNotReplyTextXPath      string = "div[2]/div[4]/div/div[2]/div/div[2]/div"
+	tweetIsReplyHasOnlyImagesQuoteIsNotReplyTextXPath    string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsReplyHasTextAndImagesQuoteIsNotReplyTextXPath string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div"
 
-	tweetIsNotReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[3]/div/div[2]/div/div[2]/div[2]"
-	tweetIsNotReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsNotReplyHasTextAndImagesQuoteIsReplyTextXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
-	tweetIsNotReplyHasOnlyTextQuoteIsNotReplyTextXPath      string = "div[3]/div/div[2]/div/div[2]/div"
-	tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyTextXPath    string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
-	tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyTextXPath string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsNotReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[2]/div[3]/div/div[2]/div/div[2]/div[2]"
+	tweetIsNotReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsNotReplyHasTextAndImagesQuoteIsReplyTextXPath    string = "div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
+	tweetIsNotReplyHasOnlyTextQuoteIsNotReplyTextXPath      string = "div[2]/div[3]/div/div[2]/div/div[2]/div"
+	tweetIsNotReplyHasOnlyImagesQuoteIsNotReplyTextXPath    string = "div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
+	tweetIsNotReplyHasTextAndImagesQuoteIsNotReplyTextXPath string = "div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div"
 )
 
 type (

@@ -7,17 +7,17 @@ import (
 )
 
 const (
-	replyXPath string = "div[2]/div"
+	replyXPath string = "div[2]/div[2]/div"
 
-	quoteXPath                   string = "div[3]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]"
-	quoteOnlyTextXPath           string = "div[3]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]"
-	replyTweetQuoteXPath         string = "div[4]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
-	replyTweetQuoteOnlyTextXPath string = "div[4]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
+	quoteXPath                   string = "div[2]/div[3]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]"
+	quoteOnlyTextXPath           string = "div[2]/div[3]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]"
+	replyTweetQuoteXPath         string = "div[2]/div[4]/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
+	replyTweetQuoteOnlyTextXPath string = "div[2]/div[4]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div[2]/div/div[3]/div/div"
 
-	replyTweetReplyQuoteXPath         string = "div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
-	replyTweetOnlyTextReplyQuoteXPath string = "div[4]/div/div[2]/div/div[2]/div[1]"
-	replyQuoteXPath                   string = "div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
-	tweetOnlyTextReplyQuoteXPath      string = "div[3]/div/div[2]/div/div[2]/div[1]"
+	replyTweetReplyQuoteXPath         string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
+	replyTweetOnlyTextReplyQuoteXPath string = "div[2]/div[4]/div/div[2]/div/div[2]/div[1]"
+	replyQuoteXPath                   string = "div[2]/div[3]/div[2]/div[2]/div/div[2]/div[2]/div/div[1]"
+	tweetOnlyTextReplyQuoteXPath      string = "div[2]/div[3]/div/div[2]/div/div[2]/div[1]"
 )
 
 type (
