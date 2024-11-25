@@ -55,9 +55,13 @@ func TestGetTweetBodyInformation_success(t *testing.T) {
 		mockTweet.IsAReply = test.isAReply
 		mockTweet.HasQuote = test.hasQuote
 		mockTweet.Quote = tweets.MockQuote(test.isQuoteAReply, test.hasQuote, test.hasQuote, "", nil)
+
 		if test.hasQuote {
 			mockTweet.Quote.Text = "Quote Text"
 			mockTweet.Quote.Images = []string{"https://url1.com", "https://url2.com"}
+			mockTweet.Quote.Author = "quoteauthor"
+			mockTweet.Quote.Avatar = "https://quote_avatar.com"
+			mockTweet.Quote.Timestamp = "2023-02-26T18:31:49.000Z"
 		}
 
 		want := mockTweet

@@ -86,9 +86,9 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 
 			quote = Quote{
 				Data: Data{
-					Author:    "", // TODO: Complete it
-					Avatar:    "", // TODO: Complete it
-					Timestamp: "", // TODO: Complete it
+					Author:    "quoteauthor",              // TODO: Replace it
+					Avatar:    "https://quote_avatar.com", // TODO: Replace it
+					Timestamp: "2023-02-26T18:31:49.000Z", // TODO: Replace it
 					IsAReply:  isQuotedTweetAReply,
 					HasText:   hasQuotedTweetText,
 					HasImages: hasQuotedTweetImages,
@@ -103,7 +103,7 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 			HasQuote: hasAQuote,
 			Data: Data{
 				Author:    tweetHash.Author,
-				Avatar:    "", // TODO: Complete it
+				Avatar:    "https://tweet_avatar.com", // TODO: Replace it
 				Timestamp: tweetHash.Timestamp,
 				IsAReply:  isTweetAReply,
 				HasText:   hasText,

@@ -36,6 +36,9 @@ HasQuote: true
 `
 	mockTweet := MockTweet()
 	mockQuote := MockQuote(false, true, true, "test", []string{"https://quote_url.com"})
+	mockQuote.Author = "quoteauthor"
+	mockQuote.Avatar = "https://quote_avatar.com"
+	mockQuote.Timestamp = "2023-02-26T18:31:49.000Z"
 	mockTweet.Quote = mockQuote
 
 	got := mockTweet.String()

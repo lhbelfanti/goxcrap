@@ -112,9 +112,6 @@ func MockTweet() Tweet {
 func MockQuote(IsAReply, hasText, hasImages bool, text string, images []string) Quote {
 	return Quote{
 		Data: Data{
-			Author:    "quoteauthor",
-			Avatar:    "https://quote_avatar.com",
-			Timestamp: "2023-02-26T18:31:49.000Z",
 			IsAReply:  IsAReply,
 			HasText:   hasText,
 			HasImages: hasImages,
