@@ -31,6 +31,7 @@ type (
 	// TweetHash contains the ID (hash) calculated with the author and the Timestamp (which is also contained in this struct)
 	TweetHash struct {
 		ID        string
+		Author    string
 		Timestamp string
 	}
 )

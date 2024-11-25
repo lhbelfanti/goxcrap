@@ -61,7 +61,7 @@ func TestGetTweetBodyInformation_success(t *testing.T) {
 		}
 
 		want := mockTweet
-		got, err := getTweetInformation(context.Background(), mockTweetArticleWebElement, mockTweetHash.ID, mockTweetHash.Timestamp)
+		got, err := getTweetInformation(context.Background(), mockTweetArticleWebElement, mockTweetHash)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -69,7 +69,7 @@ func TestGetTweetBodyInformation_success(t *testing.T) {
 }
 
 func TestMakeGetTweetHash_success(t *testing.T) {
-	mockGetAuthor := tweets.MockGetAuthor("author", nil)
+	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
 	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 

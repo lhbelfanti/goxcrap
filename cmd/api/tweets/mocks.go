@@ -22,7 +22,7 @@ func MockGetTweetHash(tweetHash TweetHash, err error) GetTweetHash {
 
 // MockGetTweetInformation mocks GetTweetInformation function
 func MockGetTweetInformation(tweet Tweet, err error) GetTweetInformation {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error) {
 		return tweet, err
 	}
 }
@@ -93,7 +93,7 @@ func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
 // MockTweet mocks a Tweet
 func MockTweet() Tweet {
 	return Tweet{
-		ID:       "02bd92faa38aaa6cc0ea75e59937a1ef8d6ad3a9f75f3ac4166fef23da9f209b",
+		ID:       "6b19232cdaa5ab34588aa59614fb2e868d6ad3a9f75f3ac4166fef23da9f209b",
 		HasQuote: true,
 		Data: Data{
 			Author:    "tweetauthor",
@@ -127,7 +127,8 @@ func MockQuote(IsAReply, hasText, hasImages bool, text string, images []string) 
 // MockTweetHash mocks a TweetHash
 func MockTweetHash() TweetHash {
 	return TweetHash{
-		ID:        "02bd92faa38aaa6cc0ea75e59937a1ef8d6ad3a9f75f3ac4166fef23da9f209b",
+		ID:        "6b19232cdaa5ab34588aa59614fb2e868d6ad3a9f75f3ac4166fef23da9f209b",
+		Author:    "tweetauthor",
 		Timestamp: "2024-02-26T18:31:49.000Z",
 	}
 }

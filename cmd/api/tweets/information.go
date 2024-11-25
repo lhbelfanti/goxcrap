@@ -16,7 +16,7 @@ type (
 	GetTweetHash func(ctx context.Context, tweetArticleElement selenium.WebElement) (TweetHash, error)
 
 	// GetTweetInformation retrieves the tweet information from the given tweet element
-	GetTweetInformation func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error)
+	GetTweetInformation func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error)
 )
 
 // MakeGetTweetHash creates a new GetTweetHash
@@ -40,6 +40,7 @@ func MakeGetTweetHash(getAuthor GetAuthor, getTimestamp GetTimestamp) GetTweetHa
 
 		return TweetHash{
 			ID:        tweetID,
+			Author:    tweetAuthor,
 			Timestamp: tweetTimestamp,
 		}, nil
 	}
@@ -47,7 +48,7 @@ func MakeGetTweetHash(getAuthor GetAuthor, getTimestamp GetTimestamp) GetTweetHa
 
 // MakeGetTweetInformation creates a new GetTweetInformation
 func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID, tweetTimestamp string) (Tweet, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error) {
 		isTweetAReply := isAReply(tweetArticleElement)
 
 		tweetText, err := getText(ctx, tweetArticleElement, isTweetAReply)
@@ -98,12 +99,12 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 		}
 
 		return Tweet{
-			ID:       tweetID,
+			ID:       tweetHash.ID,
 			HasQuote: hasAQuote,
 			Data: Data{
-				Author:    "", // TODO: Complete it
+				Author:    tweetHash.Author,
 				Avatar:    "", // TODO: Complete it
-				Timestamp: tweetTimestamp,
+				Timestamp: tweetHash.Timestamp,
 				IsAReply:  isTweetAReply,
 				HasText:   hasText,
 				HasImages: hasImages,
