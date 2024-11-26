@@ -47,9 +47,14 @@ func MakeGetTweetHash(getAuthor GetAuthor, getTimestamp GetTimestamp) GetTweetHa
 }
 
 // MakeGetTweetInformation creates a new GetTweetInformation
-func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
+func MakeGetTweetInformation(isAReply IsAReply, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
 	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error) {
 		isTweetAReply := isAReply(tweetArticleElement)
+
+		tweetAvatar, err := getAvatar(ctx, tweetArticleElement)
+		if err != nil {
+			log.Debug(ctx, err.Error())
+		}
 
 		tweetText, err := getText(ctx, tweetArticleElement, isTweetAReply)
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
@@ -72,6 +77,21 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 		if hasAQuote {
 			isQuotedTweetAReply := isQuoteAReply(tweetArticleElement, isTweetAReply, tweetOnlyHasText)
 
+			quoteAuthor, err := getQuoteAuthor(ctx, tweetArticleElement, tweetOnlyHasText)
+			if err != nil {
+				log.Debug(ctx, err.Error())
+			}
+
+			quoteAvatar, err := getQuoteAvatar(ctx, tweetArticleElement, tweetOnlyHasText)
+			if err != nil {
+				log.Debug(ctx, err.Error())
+			}
+
+			quoteTimestamp, err := getQuoteTimestamp(ctx, tweetArticleElement, tweetOnlyHasText)
+			if err != nil {
+				log.Debug(ctx, err.Error())
+			}
+
 			quoteText, err := getQuoteText(ctx, tweetArticleElement, isTweetAReply, tweetOnlyHasText, tweetOnlyHasImages, isQuotedTweetAReply)
 			if err != nil {
 				log.Debug(ctx, err.Error())
@@ -86,9 +106,9 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 
 			quote = Quote{
 				Data: Data{
-					Author:    "quoteauthor",              // TODO: Replace it
-					Avatar:    "https://quote_avatar.com", // TODO: Replace it
-					Timestamp: "2023-02-26T18:31:49.000Z", // TODO: Replace it
+					Author:    quoteAuthor,
+					Avatar:    quoteAvatar,
+					Timestamp: quoteTimestamp,
 					IsAReply:  isQuotedTweetAReply,
 					HasText:   hasQuotedTweetText,
 					HasImages: hasQuotedTweetImages,
@@ -103,7 +123,7 @@ func MakeGetTweetInformation(isAReply IsAReply, getText GetText, getImages GetIm
 			HasQuote: hasAQuote,
 			Data: Data{
 				Author:    tweetHash.Author,
-				Avatar:    "https://tweet_avatar.com", // TODO: Replace it
+				Avatar:    tweetAvatar,
 				Timestamp: tweetHash.Timestamp,
 				IsAReply:  isTweetAReply,
 				HasText:   hasText,

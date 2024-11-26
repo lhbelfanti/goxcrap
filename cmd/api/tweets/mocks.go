@@ -27,6 +27,13 @@ func MockGetTweetInformation(tweet Tweet, err error) GetTweetInformation {
 	}
 }
 
+// MockGetAvatar mocks GetAvatar function
+func MockGetAvatar(avatar string, err error) GetAvatar {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement) (string, error) {
+		return avatar, err
+	}
+}
+
 // MockGetAuthor mocks GetAuthor function
 func MockGetAuthor(author string, err error) GetAuthor {
 	return func(ctx context.Context, element selenium.WebElement) (string, error) {
@@ -73,6 +80,27 @@ func MockHasQuote(hasQuote bool) HasQuote {
 func MockIsQuoteAReply(isQuoteAReply bool) IsQuoteAReply {
 	return func(tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText bool) bool {
 		return isQuoteAReply
+	}
+}
+
+// MockGetQuoteAuthor mocks GetQuoteAuthor function
+func MockGetQuoteAuthor(author string, err error) GetQuoteAuthor {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, hasTweetOnlyText bool) (string, error) {
+		return author, err
+	}
+}
+
+// MockGetQuoteAvatar mocks GetQuoteAvatar function
+func MockGetQuoteAvatar(avatar string, err error) GetQuoteAvatar {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, hasTweetOnlyText bool) (string, error) {
+		return avatar, err
+	}
+}
+
+// MockGetQuoteTimestamp mocks GetQuoteTimestamp function
+func MockGetQuoteTimestamp(timestamp string, err error) GetQuoteTimestamp {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, hasTweetOnlyText bool) (string, error) {
+		return timestamp, err
 	}
 }
 
