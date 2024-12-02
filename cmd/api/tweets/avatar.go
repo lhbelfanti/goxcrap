@@ -11,8 +11,8 @@ import (
 const (
 	tweetAvatarXPath string = "div[1]/div"
 
-	quoteAvatarTweetHasOnlyTextXPath     string = "/div[2]/div[3]/div/div[2]/div/div[1]/div/div/div/div[1]"
-	quoteAvatarTweetHasTextAndImageXPath string = "/div[2]/div[3]/div[2]/div[2]/div/div[1]/div/div/div/div[1]"
+	quoteAvatarTweetHasOnlyTextXPath     string = "div[2]/div[3]/div/div[2]/div/div[1]/div/div/div/div[1]"
+	quoteAvatarTweetHasTextAndImageXPath string = "div[2]/div[3]/div[2]/div[2]/div/div[1]/div/div/div/div[1]"
 )
 
 type (
