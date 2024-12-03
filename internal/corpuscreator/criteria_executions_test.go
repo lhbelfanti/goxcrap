@@ -16,9 +16,20 @@ func TestGetSearchCriteriaExecution_success(t *testing.T) {
 	mockHTTPClient := new(http.MockHTTPClient)
 	resp := http.Response{Status: "200 OK", Body: `{"id": 1, "status": "DONE", "search_criteria_id": 2}`}
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
-	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com")
+	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com", false)
 
 	want := corpuscreator.Execution{ID: 1, Status: "DONE", SearchCriteriaID: 2}
+	got, _ := getSearchCriteriaExecution(context.Background(), 1)
+
+	assert.Equal(t, want, got)
+	mockHTTPClient.AssertExpectations(t)
+}
+
+func TestGetSearchCriteriaExecution_successInLocalMode(t *testing.T) {
+	mockHTTPClient := new(http.MockHTTPClient)
+	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com", true)
+
+	want := corpuscreator.Execution{}
 	got, _ := getSearchCriteriaExecution(context.Background(), 1)
 
 	assert.Equal(t, want, got)
@@ -28,7 +39,7 @@ func TestGetSearchCriteriaExecution_success(t *testing.T) {
 func TestGetSearchCriteriaExecution_failsWhenNewRequestThrowsError(t *testing.T) {
 	mockHTTPClient := new(http.MockHTTPClient)
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(http.Response{}, errors.New("failed to execute NewRequest"))
-	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com")
+	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com", false)
 
 	want := corpuscreator.FailedToExecuteRequest
 	_, got := getSearchCriteriaExecution(context.Background(), 1)
@@ -41,7 +52,7 @@ func TestGetSearchCriteriaExecution_failsWhenResponseUnmarshalThrowsError(t *tes
 	mockHTTPClient := new(http.MockHTTPClient)
 	resp := http.Response{Status: "200 OK", Body: `"wrong": "json"`}
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
-	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com")
+	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(mockHTTPClient, "http://example.com", false)
 
 	want := corpuscreator.FailedToUnmarshalResponse
 	_, got := getSearchCriteriaExecution(context.Background(), 1)
@@ -55,7 +66,18 @@ func TestUpdateSearchCriteriaExecution_success(t *testing.T) {
 	resp := http.Response{Status: "200 OK", Body: `{"test": "body"}`}
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
 	mockUpdateSearchCriteriaExecutionBody := corpuscreator.MockUpdateSearchCriteriaExecutionBody()
-	updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(mockHTTPClient, "http://example.com")
+	updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(mockHTTPClient, "http://example.com", false)
+
+	got := updateSearchCriteriaExecution(context.Background(), 1, mockUpdateSearchCriteriaExecutionBody)
+
+	assert.Nil(t, got)
+	mockHTTPClient.AssertExpectations(t)
+}
+
+func TestUpdateSearchCriteriaExecution_successInLocalMode(t *testing.T) {
+	mockHTTPClient := new(http.MockHTTPClient)
+	mockUpdateSearchCriteriaExecutionBody := corpuscreator.MockUpdateSearchCriteriaExecutionBody()
+	updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(mockHTTPClient, "http://example.com", true)
 
 	got := updateSearchCriteriaExecution(context.Background(), 1, mockUpdateSearchCriteriaExecutionBody)
 
@@ -67,7 +89,7 @@ func TestUpdateSearchCriteriaExecution_failsWhenNewRequestThrowsError(t *testing
 	mockHTTPClient := new(http.MockHTTPClient)
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(http.Response{}, errors.New("failed to execute NewRequest"))
 	mockUpdateSearchCriteriaExecutionBody := corpuscreator.MockUpdateSearchCriteriaExecutionBody()
-	updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(mockHTTPClient, "http://example.com")
+	updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(mockHTTPClient, "http://example.com", false)
 
 	want := corpuscreator.FailedToExecuteRequest
 	got := updateSearchCriteriaExecution(context.Background(), 1, mockUpdateSearchCriteriaExecutionBody)
@@ -81,7 +103,18 @@ func TestInsertSearchCriteriaExecutionDay_success(t *testing.T) {
 	resp := http.Response{Status: "200 OK", Body: `{"test": "body"}`}
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(resp, nil)
 	mockInsertSearchCriteriaExecutionDayBody := corpuscreator.MockInsertSearchCriteriaExecutionDayBody()
-	insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(mockHTTPClient, "http://example.com")
+	insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(mockHTTPClient, "http://example.com", false)
+
+	got := insertSearchCriteriaExecutionDay(context.Background(), 1, mockInsertSearchCriteriaExecutionDayBody)
+
+	assert.Nil(t, got)
+	mockHTTPClient.AssertExpectations(t)
+}
+
+func TestInsertSearchCriteriaExecutionDay_successInLocalMode(t *testing.T) {
+	mockHTTPClient := new(http.MockHTTPClient)
+	mockInsertSearchCriteriaExecutionDayBody := corpuscreator.MockInsertSearchCriteriaExecutionDayBody()
+	insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(mockHTTPClient, "http://example.com", true)
 
 	got := insertSearchCriteriaExecutionDay(context.Background(), 1, mockInsertSearchCriteriaExecutionDayBody)
 
@@ -93,7 +126,7 @@ func TestInsertSearchCriteriaExecutionDay_failsWhenNewRequestThrowsError(t *test
 	mockHTTPClient := new(http.MockHTTPClient)
 	mockHTTPClient.On("NewRequest", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(http.Response{}, errors.New("failed to execute NewRequest"))
 	mockInsertSearchCriteriaExecutionDayBody := corpuscreator.MockInsertSearchCriteriaExecutionDayBody()
-	insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(mockHTTPClient, "http://example.com")
+	insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(mockHTTPClient, "http://example.com", false)
 
 	want := corpuscreator.FailedToExecuteRequest
 	got := insertSearchCriteriaExecutionDay(context.Background(), 1, mockInsertSearchCriteriaExecutionDayBody)

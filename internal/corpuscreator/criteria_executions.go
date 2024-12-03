@@ -21,10 +21,14 @@ type (
 )
 
 // MakeGetSearchCriteriaExecution creates a new GetSearchCriteriaExecution
-func MakeGetSearchCriteriaExecution(httpClient http.Client, domain string) GetSearchCriteriaExecution {
+func MakeGetSearchCriteriaExecution(httpClient http.Client, domain string, localMode bool) GetSearchCriteriaExecution {
 	url := domain + "/criteria/executions/%d/v1"
 
 	return func(ctx context.Context, executionID int) (Execution, error) {
+		if localMode {
+			return Execution{}, nil
+		}
+
 		finalURL := fmt.Sprintf(url, executionID)
 
 		resp, err := httpClient.NewRequest(ctx, "GET", finalURL, nil)
@@ -47,10 +51,14 @@ func MakeGetSearchCriteriaExecution(httpClient http.Client, domain string) GetSe
 }
 
 // MakeUpdateSearchCriteriaExecution creates a new UpdateSearchCriteriaExecution
-func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string) UpdateSearchCriteriaExecution {
+func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string, localMode bool) UpdateSearchCriteriaExecution {
 	url := domain + "/criteria/executions/%d/v1"
 
 	return func(ctx context.Context, executionID int, body UpdateSearchCriteriaExecutionBody) error {
+		if localMode {
+			return nil
+		}
+
 		finalURL := fmt.Sprintf(url, executionID)
 
 		resp, err := httpClient.NewRequest(ctx, "PUT", finalURL, body)
@@ -66,10 +74,14 @@ func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string) Up
 }
 
 // MakeInsertSearchCriteriaExecutionDay creates a new InsertSearchCriteriaExecutionDay
-func MakeInsertSearchCriteriaExecutionDay(httpClient http.Client, domain string) InsertSearchCriteriaExecutionDay {
+func MakeInsertSearchCriteriaExecutionDay(httpClient http.Client, domain string, localMode bool) InsertSearchCriteriaExecutionDay {
 	url := domain + "/criteria/executions/%d/day/v1"
 
 	return func(ctx context.Context, executionID int, body InsertSearchCriteriaExecutionDayBody) error {
+		if localMode {
+			return nil
+		}
+
 		finalURL := fmt.Sprintf(url, executionID)
 
 		resp, err := httpClient.NewRequest(ctx, "POST", finalURL, body)

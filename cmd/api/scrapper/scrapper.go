@@ -1,6 +1,7 @@
 package scrapper
 
 import (
+	"flag"
 	"os"
 
 	"github.com/tebeka/selenium"
@@ -20,6 +21,10 @@ type New func(webDriver selenium.WebDriver) Execute
 
 // MakeNew creates a new New
 func MakeNew(httpClient http.Client) New {
+	var localMode bool
+	flag.BoolVar(&localMode, "local", false, "Run locally instead of in a container")
+	flag.Parse()
+
 	return func(webDriver selenium.WebDriver) Execute {
 		// Functions
 		loadPage := page.MakeLoad(webDriver)
@@ -34,8 +39,8 @@ func MakeNew(httpClient http.Client) New {
 		// Calls to external services
 		domain := os.Getenv("CORPUS_CREATOR_API_URL")
 		saveTweets := corpuscreator.MakeSaveTweets(httpClient, domain)
-		updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(httpClient, domain)
-		insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(httpClient, domain)
+		updateSearchCriteriaExecution := corpuscreator.MakeUpdateSearchCriteriaExecution(httpClient, domain, localMode)
+		insertSearchCriteriaExecutionDay := corpuscreator.MakeInsertSearchCriteriaExecutionDay(httpClient, domain, localMode)
 
 		// Services
 		login := auth.MakeLogin(loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
