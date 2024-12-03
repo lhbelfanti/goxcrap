@@ -22,6 +22,7 @@ func TestExecute_success(t *testing.T) {
 	mockInsertSearchCriteriaExecutionDay := corpuscreator.MockInsertSearchCriteriaExecutionDay(nil)
 	mockTweet := tweets.MockTweet()
 	mockTweet.Quote = tweets.MockQuote(true, true, true, "test", []string{"test"})
+	mockTweet.Quote.Avatar = "https://quote_avatar.com"
 	mockRetrieveAllTweets := tweets.MockRetrieveAll([]tweets.Tweet{mockTweet, mockTweet}, nil)
 	mockCriteria := criteria.MockCriteria()
 	mockSaveTweets := corpuscreator.MockSaveTweets(nil)
