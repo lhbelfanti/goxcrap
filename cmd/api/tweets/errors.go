@@ -19,6 +19,10 @@ var (
 	FailedToObtainQuotedTweetAvatarImage        = errors.New("failed to obtain quoted tweet avatar image")
 	FailedToObtainQuotedTweetAvatarSrcFromImage = errors.New("failed to obtain quoted tweet avatar src from image")
 
+	FailedToObtainTweetIDElement  = errors.New("failed to obtain tweet ID element")
+	FailedToObtainTweetIDATag     = errors.New("failed to obtain tweet ID a tag")
+	FailedToObtainTweetIDATagHref = errors.New("failed to obtain tweet id a tag href")
+
 	FailedToObtainTweetTimestampElement       = errors.New("failed to obtain tweet timestamp element")
 	FailedToObtainTweetTimestampTimeTag       = errors.New("failed to obtain tweet timestamp time tag")
 	FailedToObtainTweetTimestamp              = errors.New("failed to obtain tweet timestamp")
