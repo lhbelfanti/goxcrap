@@ -40,13 +40,12 @@ func MockSaveTweetsBody() SaveTweetsBody {
 
 // MockTweetDTO mocks a TweetDTO
 func MockTweetDTO() TweetDTO {
-	hash := "02bd92faa38aaa6cc0ea75e59937a1ef8d6ad3a9f75f3ac4166fef23da9f209b"
 	textContent := "test"
 	quote := MockQuoteDTO()
 	searchCriteriaID := 1
 
 	return TweetDTO{
-		Hash:             &hash,
+		ID:               "123456789012345",
 		IsAReply:         true,
 		TextContent:      &textContent,
 		Images:           []string{"test1", "test2"},

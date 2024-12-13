@@ -2,8 +2,6 @@ package tweets
 
 import (
 	"context"
-	"crypto/md5"
-	"encoding/hex"
 	"errors"
 
 	"github.com/tebeka/selenium"
@@ -11,45 +9,25 @@ import (
 	"goxcrap/internal/log"
 )
 
-type (
-	// GetTweetHash retrieves the tweet timestamp and hash from the given tweet element
-	GetTweetHash func(ctx context.Context, tweetArticleElement selenium.WebElement) (TweetHash, error)
+// GetTweetInformation retrieves the tweet information from the given tweet element
+type GetTweetInformation func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error)
 
-	// GetTweetInformation retrieves the tweet information from the given tweet element
-	GetTweetInformation func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error)
-)
+// MakeGetTweetInformation creates a new GetTweetInformation
+func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestamp GetTimestamp, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error) {
+		isTweetAReply := isAReply(tweetArticleElement)
 
-// MakeGetTweetHash creates a new GetTweetHash
-func MakeGetTweetHash(getAuthor GetAuthor, getTimestamp GetTimestamp) GetTweetHash {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement) (TweetHash, error) {
 		tweetAuthor, err := getAuthor(ctx, tweetArticleElement)
 		if err != nil {
 			log.Warn(ctx, err.Error())
-			return TweetHash{}, FailedToObtainTweetAuthorInformation
+			return Tweet{}, FailedToObtainTweetAuthorInformation
 		}
 
 		tweetTimestamp, err := getTimestamp(ctx, tweetArticleElement)
 		if err != nil {
 			log.Warn(ctx, err.Error())
-			return TweetHash{}, FailedToObtainTweetTimestampInformation
+			return Tweet{}, FailedToObtainTweetTimestampInformation
 		}
-
-		tweetAuthorHash := md5.Sum([]byte(tweetAuthor))
-		tweetTimestampHash := md5.Sum([]byte(tweetTimestamp))
-		tweetID := hex.EncodeToString(tweetAuthorHash[:]) + hex.EncodeToString(tweetTimestampHash[:])
-
-		return TweetHash{
-			ID:        tweetID,
-			Author:    tweetAuthor,
-			Timestamp: tweetTimestamp,
-		}, nil
-	}
-}
-
-// MakeGetTweetInformation creates a new GetTweetInformation
-func MakeGetTweetInformation(isAReply IsAReply, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error) {
-		isTweetAReply := isAReply(tweetArticleElement)
 
 		tweetAvatar, err := getAvatar(ctx, tweetArticleElement)
 		if err != nil {
@@ -119,12 +97,12 @@ func MakeGetTweetInformation(isAReply IsAReply, getAvatar GetAvatar, getText Get
 		}
 
 		return Tweet{
-			ID:       tweetHash.ID,
+			ID:       tweetID,
 			HasQuote: hasAQuote,
 			Data: Data{
-				Author:    tweetHash.Author,
+				Author:    tweetAuthor,
 				Avatar:    tweetAvatar,
-				Timestamp: tweetHash.Timestamp,
+				Timestamp: tweetTimestamp,
 				IsAReply:  isTweetAReply,
 				HasText:   hasText,
 				HasImages: hasImages,

@@ -13,24 +13,17 @@ func MockRetrieveAll(tweets []Tweet, err error) RetrieveAll {
 	}
 }
 
-// MockGetTweetHash mocks GetTweetHash function
-func MockGetTweetHash(tweetHash TweetHash, err error) GetTweetHash {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement) (TweetHash, error) {
-		return tweetHash, err
-	}
-}
-
 // MockGetTweetInformation mocks GetTweetInformation function
 func MockGetTweetInformation(tweet Tweet, err error) GetTweetInformation {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetHash TweetHash) (Tweet, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error) {
 		return tweet, err
 	}
 }
 
-// MockGetAvatar mocks GetAvatar function
-func MockGetAvatar(avatar string, err error) GetAvatar {
+// MockGetID mocks GetID function
+func MockGetID(id string, err error) GetID {
 	return func(ctx context.Context, tweetArticleElement selenium.WebElement) (string, error) {
-		return avatar, err
+		return id, err
 	}
 }
 
@@ -45,6 +38,13 @@ func MockGetAuthor(author string, err error) GetAuthor {
 func MockGetTimestamp(timestamp string, err error) GetTimestamp {
 	return func(ctx context.Context, element selenium.WebElement) (string, error) {
 		return timestamp, err
+	}
+}
+
+// MockGetAvatar mocks GetAvatar function
+func MockGetAvatar(avatar string, err error) GetAvatar {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement) (string, error) {
+		return avatar, err
 	}
 }
 
@@ -121,7 +121,7 @@ func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
 // MockTweet mocks a Tweet
 func MockTweet() Tweet {
 	return Tweet{
-		ID:       "6b19232cdaa5ab34588aa59614fb2e868d6ad3a9f75f3ac4166fef23da9f209b",
+		ID:       "123456789012345",
 		HasQuote: true,
 		Data: Data{
 			Author:    "tweetauthor",
@@ -146,14 +146,5 @@ func MockQuote(IsAReply, hasText, hasImages bool, text string, images []string) 
 			Text:      text,
 			Images:    images,
 		},
-	}
-}
-
-// MockTweetHash mocks a TweetHash
-func MockTweetHash() TweetHash {
-	return TweetHash{
-		ID:        "6b19232cdaa5ab34588aa59614fb2e868d6ad3a9f75f3ac4166fef23da9f209b",
-		Author:    "tweetauthor",
-		Timestamp: "2024-02-26T18:31:49.000Z",
 	}
 }

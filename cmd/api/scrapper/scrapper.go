@@ -45,6 +45,7 @@ func MakeNew(httpClient http.Client) New {
 		// Services
 		login := auth.MakeLogin(loadPage, waitAndRetrieveElement, retrieveAndFillInput, retrieveAndClickButton)
 		executeAdvanceSearch := search.MakeExecuteAdvanceSearch(loadPage)
+		getTweetID := tweets.MakeGetID()
 		getTweetAuthor := tweets.MakeGetAuthor()
 		getTweetTimestamp := tweets.MakeGetTimestamp()
 		isAReply := tweets.MakeIsAReply()
@@ -58,9 +59,8 @@ func MakeNew(httpClient http.Client) New {
 		getQuoteTimestamp := tweets.MakeGetQuoteTimestamp()
 		getQuoteText := tweets.MakeGetQuoteText()
 		getQuoteImages := tweets.MakeGetQuoteImages()
-		getTweetHash := tweets.MakeGetTweetHash(getTweetAuthor, getTweetTimestamp)
-		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetAvatar, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteAuthor, getQuoteAvatar, getQuoteTimestamp, getQuoteText, getQuoteImages)
-		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElement, waitAndRetrieveElements, getTweetHash, getTweetInformation, scrollPage)
+		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetAuthor, getTweetTimestamp, getTweetAvatar, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteAuthor, getQuoteAvatar, getQuoteTimestamp, getQuoteText, getQuoteImages)
+		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElement, waitAndRetrieveElements, getTweetID, getTweetInformation, scrollPage)
 
 		executeScrapper := MakeExecute(login, updateSearchCriteriaExecution, insertSearchCriteriaExecutionDay, executeAdvanceSearch, retrieveAllTweets, saveTweets)
 

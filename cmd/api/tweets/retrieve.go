@@ -28,7 +28,7 @@ type (
 )
 
 // MakeRetrieveAll creates a new RetrieveAll
-func MakeRetrieveAll(waitAndRetrieveElement elements.WaitAndRetrieve, waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetHash GetTweetHash, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
+func MakeRetrieveAll(waitAndRetrieveElement elements.WaitAndRetrieve, waitAndRetrieveElements elements.WaitAndRetrieveAll, getTweetID GetID, getTweetInformation GetTweetInformation, scrollPage page.Scroll) RetrieveAll {
 	articlesTimeoutValue, _ := strconv.Atoi(os.Getenv("ARTICLES_TIMEOUT"))
 	articlesTimeout := time.Duration(articlesTimeoutValue) * time.Second
 
@@ -51,16 +51,17 @@ func MakeRetrieveAll(waitAndRetrieveElement elements.WaitAndRetrieve, waitAndRet
 			}
 
 			for _, article := range articles {
-				tweetHash, err := getTweetHash(ctx, article)
+				tweetID, err := getTweetID(ctx, article)
 				if err != nil {
 					continue
 				}
 
-				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetHash.ID)) {
-					tweet, err := getTweetInformation(ctx, article, tweetHash)
+				if !slices.ContainsFunc(tweets, compareTweetsByID(tweetID)) {
+					tweet, err := getTweetInformation(ctx, article, tweetID)
 					if err != nil {
 						continue
 					}
+
 					tweets = append(tweets, tweet)
 				}
 			}

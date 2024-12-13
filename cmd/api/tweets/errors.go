@@ -21,7 +21,7 @@ var (
 
 	FailedToObtainTweetIDElement  = errors.New("failed to obtain tweet ID element")
 	FailedToObtainTweetIDATag     = errors.New("failed to obtain tweet ID a tag")
-	FailedToObtainTweetIDATagHref = errors.New("failed to obtain tweet id a tag href")
+	FailedToObtainTweetIDATagHref = errors.New("failed to obtain tweet ID a tag href")
 
 	FailedToObtainTweetTimestampElement       = errors.New("failed to obtain tweet timestamp element")
 	FailedToObtainTweetTimestampTimeTag       = errors.New("failed to obtain tweet timestamp time tag")
