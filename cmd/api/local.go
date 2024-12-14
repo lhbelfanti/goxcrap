@@ -34,7 +34,7 @@ func runLocal() {
 		}
 	}(webDriverManager)
 
-	newScrapper := scrapper.MakeNew(httpClient)
+	newScrapper := scrapper.MakeNew(httpClient, localMode)
 	executeScrapper := newScrapper(webDriverManager.WebDriver())
 
 	/* --- Run --- */

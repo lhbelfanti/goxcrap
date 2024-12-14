@@ -34,7 +34,7 @@ func runDockerized() {
 	httpClient := _http.NewClient()
 
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
-	newScrapper := scrapper.MakeNew(httpClient)
+	newScrapper := scrapper.MakeNew(httpClient, localMode)
 
 	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(httpClient, os.Getenv("CORPUS_CREATOR_API_URL"), localMode)
 	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))

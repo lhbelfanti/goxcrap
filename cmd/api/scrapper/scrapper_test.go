@@ -13,7 +13,7 @@ import (
 func TestNew_success(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
 	mockHTTPClient := new(http.MockHTTPClient)
-	makeNew := scrapper.MakeNew(mockHTTPClient)
+	makeNew := scrapper.MakeNew(mockHTTPClient, true)
 
 	got := makeNew(mockWebDriver)
 

@@ -1,7 +1,6 @@
 package scrapper
 
 import (
-	"flag"
 	"os"
 
 	"github.com/tebeka/selenium"
@@ -20,11 +19,7 @@ import (
 type New func(webDriver selenium.WebDriver) Execute
 
 // MakeNew creates a new New
-func MakeNew(httpClient http.Client) New {
-	var localMode bool
-	flag.BoolVar(&localMode, "local", false, "Run locally instead of in a container")
-	flag.Parse()
-
+func MakeNew(httpClient http.Client, localMode bool) New {
 	return func(webDriver selenium.WebDriver) Execute {
 		// Functions
 		loadPage := page.MakeLoad(webDriver)
