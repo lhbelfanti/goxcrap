@@ -34,7 +34,8 @@ func MakeGetID() GetID {
 			return "", FailedToObtainTweetIDATagHref
 		}
 
-		tweetID := strings.Split(tweetIDHref, "/")[1]
+		hrefSplit := strings.Split(tweetIDHref, "/")
+		tweetID := hrefSplit[len(hrefSplit)-1]
 
 		return tweetID, nil
 	}
