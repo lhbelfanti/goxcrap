@@ -8,4 +8,6 @@ var (
 
 	FailedToGetInnerHeight = errors.New("failed to execute JavaScript to get innerHeight")
 	FailedToScroll         = errors.New("failed to execute JavaScript to scroll")
+
+	FailedToGoBack = errors.New("failed to execute JavaScript to go back to the previous page")
 )
