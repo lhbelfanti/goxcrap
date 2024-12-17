@@ -87,3 +87,26 @@ func TestScroll_failsWhenScrollByCodeExecutionThrowsError(t *testing.T) {
 
 	assert.Equal(t, want, got)
 }
+
+func TestGoBack_success(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("ExecuteScript", mock.Anything, mock.Anything).Return(nil, nil)
+
+	goBack := page.MakeGoBack(mockWebDriver)
+
+	got := goBack(context.Background())
+
+	assert.Nil(t, got)
+}
+
+func TestGoBack_failsWhenGoBackCodeExecutionThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("ExecuteScript", mock.Anything, mock.Anything).Return(nil, errors.New("error while executing code"))
+
+	goBack := page.MakeGoBack(mockWebDriver)
+
+	want := page.FailedToGoBack
+	got := goBack(context.Background())
+
+	assert.Equal(t, want, got)
+}

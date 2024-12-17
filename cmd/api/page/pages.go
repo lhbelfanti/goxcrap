@@ -18,6 +18,9 @@ type (
 
 	// Scroll executes window.scrollTo, to scroll the page
 	Scroll func(ctx context.Context) error
+
+	// GoBack executes window.history.go(-1) to go to the previous page in the history
+	GoBack func(ctx context.Context) error
 )
 
 // MakeLoad creates a new Load
@@ -59,6 +62,20 @@ func MakeScroll(wd selenium.WebDriver) Scroll {
 		if err != nil {
 			log.Error(ctx, err.Error())
 			return FailedToScroll
+		}
+
+		return nil
+	}
+}
+
+// MakeGoBack creates a new GoBack
+func MakeGoBack(wd selenium.WebDriver) GoBack {
+	return func(ctx context.Context) error {
+		goBack := `window.history.go(-1);`
+		_, err := wd.ExecuteScript(goBack, nil)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToGoBack
 		}
 
 		return nil
