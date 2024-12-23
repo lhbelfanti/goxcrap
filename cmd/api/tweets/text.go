@@ -3,15 +3,21 @@ package tweets
 import (
 	"context"
 	"fmt"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/tebeka/selenium"
 
+	"goxcrap/cmd/api/elements"
 	"goxcrap/internal/log"
 )
 
 const (
-	tweetTextXPath      string = "div[2]/div[2]/div"
-	replyTweetTextXPath string = "div[2]/div[3]/div"
+	tweetTextXPath              string = "div[2]/div[2]/div[1]"
+	tweetShowMoreTextXpath      string = "div[2]/div[2]/div[2]"
+	replyTweetTextXPath         string = "div[2]/div[3]/div[1]"
+	replyTweetShowMoreTextXPath string = "div[2]/div[3]/div[1]"
 
 	tweetIsReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[2]/div[4]/div/div[2]/div/div[2]/div[2]"
 	tweetIsReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
@@ -30,7 +36,10 @@ const (
 
 type (
 	// GetText retrieves the tweet text
-	GetText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, error)
+	GetText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, bool, error)
+
+	// GetLongText retrieves the tweet text when it is so long that the Show More link is displayed
+	GetLongText func(ctx context.Context, isAReply bool) (string, error)
 
 	// GetQuoteText retrieves the quoted tweet text
 	GetQuoteText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error)
@@ -38,7 +47,7 @@ type (
 
 // MakeGetText creates a new GetText
 func MakeGetText() GetText {
-	return func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, error) {
+	return func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, bool, error) {
 		xPath := tweetTextXPath
 		if isAReply {
 			xPath = replyTweetTextXPath
@@ -47,10 +56,43 @@ func MakeGetText() GetText {
 		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
 			// This tweet does not contain text
-			return "", FailedToObtainTweetTextElement
+			return "", false, FailedToObtainTweetTextElement
 		}
 
-		return obtainTextFromTweet(ctx, tweetTextElement, FailedToObtainTweetTextParts, FailedToObtainTweetTextPartTagName, FailedToObtainTweetTextFromSpan)
+		longTextXPath := tweetShowMoreTextXpath
+		if isAReply {
+			longTextXPath = replyTweetShowMoreTextXPath
+		}
+
+		tweetLongTextElement, _ := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(longTextXPath))
+		hasLongText := tweetLongTextElement != nil
+
+		text, err := obtainTextFromTweet(ctx, tweetTextElement, FailedToObtainTweetTextParts, FailedToObtainTweetTextPartTagName, FailedToObtainTweetTextFromSpan)
+		if err != nil {
+			return text, hasLongText, err
+		}
+
+		return text, hasLongText, nil
+	}
+}
+
+// MakeGetLongText creates a new GetLongText
+func MakeGetLongText(waitAndRetrieveElement elements.WaitAndRetrieve) GetLongText {
+	pageLoaderTimeoutValue, _ := strconv.Atoi(os.Getenv("TWEET_PAGE_TIMEOUT"))
+	pageLoaderTimeout := time.Duration(pageLoaderTimeoutValue) * time.Second
+
+	return func(ctx context.Context, isAReply bool) (string, error) {
+		xPath := tweetShowMoreTextXpath
+		if isAReply {
+			xPath = replyTweetShowMoreTextXPath
+		}
+
+		tweetLongTextElement, err := waitAndRetrieveElement(ctx, selenium.ByXPATH, xPath, pageLoaderTimeout)
+		if err != nil {
+			return "", FailedToObtainTweetLongTextElement
+		}
+
+		return obtainTextFromTweet(ctx, tweetLongTextElement, FailedToObtainTweetLongTextParts, FailedToObtainTweetLongTextPartTagName, FailedToObtainTweetLongTextFromSpan)
 	}
 }
 

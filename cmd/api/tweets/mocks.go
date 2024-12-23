@@ -3,7 +3,10 @@ package tweets
 import (
 	"context"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/tebeka/selenium"
+
+	"goxcrap/cmd/api/elements"
 )
 
 // MockRetrieveAll mocks RetrieveAll function
@@ -56,9 +59,9 @@ func MockIsAReply(isAReply bool) IsAReply {
 }
 
 // MockGetText mocks GetText function
-func MockGetText(text string, err error) GetText {
-	return func(ctx context.Context, element selenium.WebElement, isAReply bool) (string, error) {
-		return text, err
+func MockGetText(text string, hasLongText bool, err error) GetText {
+	return func(ctx context.Context, element selenium.WebElement, isAReply bool) (string, bool, error) {
+		return text, hasLongText, err
 	}
 }
 
@@ -118,6 +121,13 @@ func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
 	}
 }
 
+// MockGetLongText mocks GetLongText function
+func MockGetLongText(text string, err error) GetLongText {
+	return func(ctx context.Context, isAReply bool) (string, error) {
+		return text, err
+	}
+}
+
 // MockTweet mocks a Tweet
 func MockTweet() Tweet {
 	return Tweet{
@@ -147,4 +157,18 @@ func MockQuote(IsAReply, hasText, hasImages bool, text string, images []string) 
 			Images:    images,
 		},
 	}
+}
+
+// MockLongTextElement mocks the tweet Long Text Elements, its dependencies and all the functions that will be executed on them
+func MockLongTextElement() (*elements.MockWebElement, *elements.MockWebElement, *elements.MockWebElement) {
+	mockTweetLongTextWebElement := new(elements.MockWebElement)
+	mockTextPartSpanWebElement := new(elements.MockWebElement)
+	mockTextPartImg := new(elements.MockWebElement)
+	mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement), selenium.WebElement(mockTextPartImg)}, nil)
+	mockTextPartSpanWebElement.On("TagName").Return("span", nil)
+	mockTextPartSpanWebElement.On("Text").Return("Tweet Text ", nil)
+	mockTextPartImg.On("TagName").Return("img", nil)
+	mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", nil)
+
+	return mockTweetLongTextWebElement, mockTextPartSpanWebElement, mockTextPartImg
 }

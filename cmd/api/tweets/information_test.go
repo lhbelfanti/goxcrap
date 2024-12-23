@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"goxcrap/cmd/api/elements"
+	"goxcrap/cmd/api/page"
 	"goxcrap/cmd/api/tweets"
 )
 
@@ -20,11 +21,13 @@ func TestGetTweetInformation_success(t *testing.T) {
 	getQuoteTimestampErr := errors.New("error while executing GetQuoteTimestamp")
 	getQuoteTextErr := errors.New("error while executing GetQuoteText")
 	getQuoteImagesErr := errors.New("error while executing GetQuoteImages")
+	getLongTextErr := errors.New("error while executing GetLongText")
 
 	for _, test := range []struct {
 		isAReply               bool
 		hasQuote               bool
 		isQuoteAReply          bool
+		hasLongText            bool
 		getAvatarError         error
 		getTextError           error
 		getImagesError         error
@@ -33,42 +36,56 @@ func TestGetTweetInformation_success(t *testing.T) {
 		getQuoteTimestampError error
 		getQuoteTextError      error
 		getQuoteImagesError    error
+		getLongTextError       error
 	}{
 		// Basic cases
-		{isAReply: false, hasQuote: false, isQuoteAReply: false},
-		{isAReply: true, hasQuote: false, isQuoteAReply: false},
-		{isAReply: false, hasQuote: true, isQuoteAReply: false},
-		{isAReply: true, hasQuote: true, isQuoteAReply: false},
-		{isAReply: false, hasQuote: true, isQuoteAReply: true},
-		{isAReply: true, hasQuote: true, isQuoteAReply: true},
+		{isAReply: false, hasQuote: false, isQuoteAReply: false, hasLongText: true},
+		{isAReply: true, hasQuote: false, isQuoteAReply: false, hasLongText: true},
+		{isAReply: false, hasQuote: true, isQuoteAReply: false, hasLongText: true},
+		{isAReply: true, hasQuote: true, isQuoteAReply: false, hasLongText: true},
+		{isAReply: false, hasQuote: true, isQuoteAReply: true, hasLongText: true},
+		{isAReply: true, hasQuote: true, isQuoteAReply: true, hasLongText: true},
+		{isAReply: false, hasQuote: false, isQuoteAReply: false, hasLongText: false},
+		{isAReply: true, hasQuote: false, isQuoteAReply: false, hasLongText: false},
+		{isAReply: false, hasQuote: true, isQuoteAReply: false, hasLongText: false},
+		{isAReply: true, hasQuote: true, isQuoteAReply: false, hasLongText: false},
+		{isAReply: false, hasQuote: true, isQuoteAReply: true, hasLongText: false},
+		{isAReply: true, hasQuote: true, isQuoteAReply: true, hasLongText: false},
 		// With errors
-		{isAReply: false, hasQuote: false, isQuoteAReply: false, getAvatarError: getAvatarErr, getTextError: getTextErr, getImagesError: getImagesErr},
-		{isAReply: false, hasQuote: true, isQuoteAReply: false, getQuoteAuthorError: getQuoteAuthorErr, getQuoteAvatarError: getQuoteAvatarErr, getQuoteTimestampError: getQuoteTimestampErr},
+		{isAReply: false, hasQuote: false, isQuoteAReply: false, hasLongText: true, getAvatarError: getAvatarErr, getTextError: getTextErr, getImagesError: getImagesErr},
+		{isAReply: false, hasQuote: true, isQuoteAReply: false, hasLongText: true, getQuoteAuthorError: getQuoteAuthorErr, getQuoteAvatarError: getQuoteAvatarErr, getQuoteTimestampError: getQuoteTimestampErr},
 		// Combination cases
-		{isAReply: true, hasQuote: true, isQuoteAReply: true, getTextError: getTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr, getQuoteImagesError: getQuoteImagesErr},
-		{isAReply: false, hasQuote: true, isQuoteAReply: true, getAvatarError: getAvatarErr, getQuoteAuthorError: getQuoteAuthorErr, getQuoteAvatarError: getQuoteAvatarErr},
+		{isAReply: true, hasQuote: true, isQuoteAReply: true, hasLongText: true, getTextError: getTextErr, getLongTextError: getLongTextErr, getImagesError: getImagesErr, getQuoteTextError: getQuoteTextErr, getQuoteImagesError: getQuoteImagesErr},
+		{isAReply: false, hasQuote: true, isQuoteAReply: true, hasLongText: true, getAvatarError: getAvatarErr, getQuoteAuthorError: getQuoteAuthorErr, getQuoteAvatarError: getQuoteAvatarErr},
 	} {
 		mockIsAReply := tweets.MockIsAReply(test.isAReply)
 		mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
 		mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
 		mockGetAvatar := tweets.MockGetAvatar("https://tweet_avatar.com", test.getAvatarError)
-		mockGetText := tweets.MockGetText("Tweet Text", test.getTextError)
-		mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, test.getImagesError)
+		mockGetText := tweets.MockGetText("Tweet Text", test.hasLongText, test.getTextError)
 		mockHasQuote := tweets.MockHasQuote(test.hasQuote)
+		mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, test.getImagesError)
 		mockIsQuoteAReply := tweets.MockIsQuoteAReply(test.isQuoteAReply)
 		mockGetQuoteAuthor := tweets.MockGetQuoteAuthor("quoteauthor", test.getQuoteAuthorError)
 		mockGetQuoteAvatar := tweets.MockGetQuoteAvatar("https://quote_avatar.com", test.getQuoteAvatarError)
 		mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", test.getQuoteTimestampError)
 		mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", test.getQuoteTextError)
 		mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, test.getQuoteImagesError)
+		mockLoadPage := page.MockLoad(nil)
+		mockGetLongText := tweets.MockGetLongText("Long Tweet Text 🙂", test.getLongTextError)
+		mockGoBack := page.MockGoBack(nil)
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 
-		getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages)
+		getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockLoadPage, mockGetLongText, mockGoBack)
 
 		mockTweet := tweets.MockTweet()
 		mockTweet.IsAReply = test.isAReply
 		mockTweet.HasQuote = test.hasQuote
 		mockTweet.Quote = tweets.MockQuote(test.isQuoteAReply, test.hasQuote, test.hasQuote, "", nil)
+
+		if test.hasLongText && test.getLongTextError == nil {
+			mockTweet.Text = "Long Tweet Text 🙂"
+		}
 
 		if test.hasQuote {
 			mockTweet.Quote.Text = "Quote Text"
@@ -86,35 +103,81 @@ func TestGetTweetInformation_success(t *testing.T) {
 	}
 }
 
-func TestGetTweetBodyInformation_failsWhenFunctionsThrowsError(t *testing.T) {
-	for _, test := range []struct {
-		getAuthorError    error
-		getTimestampError error
-		want              error
-	}{
-		{getAuthorError: errors.New("error while executing GetAuthor"), getTimestampError: nil, want: tweets.FailedToObtainTweetAuthorInformation},
-		{getAuthorError: nil, getTimestampError: errors.New("error while executing GetTimestamp"), want: tweets.FailedToObtainTweetTimestampInformation},
-	} {
-		mockIsAReply := tweets.MockIsAReply(false)
-		mockGetAuthor := tweets.MockGetAuthor("tweetauthor", test.getAuthorError)
-		mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", test.getTimestampError)
-		mockGetAvatar := tweets.MockGetAvatar("https://tweet_avatar.com", nil)
-		mockGetText := tweets.MockGetText("Tweet Text", nil)
-		mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
-		mockHasQuote := tweets.MockHasQuote(false)
-		mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
-		mockGetQuoteAuthor := tweets.MockGetQuoteAuthor("quoteauthor", nil)
-		mockGetQuoteAvatar := tweets.MockGetQuoteAvatar("https://quote_avatar.com", nil)
-		mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", nil)
-		mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
-		mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
-		mockTweetArticleWebElement := new(elements.MockWebElement)
+func TestGetTweetInformation_failsWhenGetAuthorThrowsError(t *testing.T) {
+	mockIsAReply := tweets.MockIsAReply(false)
+	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", errors.New("error while executing GetAuthor"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-		getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages)
+	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 
-		want := test.want
-		_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
+	want := tweets.FailedToObtainTweetAuthorInformation
+	_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
 
-		assert.Equal(t, want, got)
-	}
+	assert.Equal(t, want, got)
+}
+
+func TestGetTweetInformation_failsWhenGetTimestampThrowsError(t *testing.T) {
+	mockIsAReply := tweets.MockIsAReply(false)
+	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
+	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", errors.New("error while executing GetTimestamp"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+
+	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+
+	want := tweets.FailedToObtainTweetTimestampInformation
+	_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
+
+	assert.Equal(t, want, got)
+}
+
+func TestGetTweetInformation_failsWhenLoadPageThrowsError(t *testing.T) {
+	mockIsAReply := tweets.MockIsAReply(false)
+	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
+	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
+	mockGetAvatar := tweets.MockGetAvatar("https://tweet_avatar.com", nil)
+	mockGetText := tweets.MockGetText("Tweet Text", true, nil)
+	mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
+	mockHasQuote := tweets.MockHasQuote(false)
+	mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
+	mockGetQuoteAuthor := tweets.MockGetQuoteAuthor("quoteauthor", nil)
+	mockGetQuoteAvatar := tweets.MockGetQuoteAvatar("https://quote_avatar.com", nil)
+	mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", nil)
+	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
+	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
+	mockLoadPage := page.MockLoad(errors.New("error while executing page.Load"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+
+	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockLoadPage, nil, nil)
+
+	want := tweets.FailedToLoadTweetLongTextPage
+	_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
+
+	assert.Equal(t, want, got)
+}
+
+func TestGetTweetInformation_failsWhenGoBackThrowsError(t *testing.T) {
+	mockIsAReply := tweets.MockIsAReply(false)
+	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
+	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
+	mockGetAvatar := tweets.MockGetAvatar("https://tweet_avatar.com", nil)
+	mockGetText := tweets.MockGetText("Tweet Text", true, nil)
+	mockGetImages := tweets.MockGetImages([]string{"https://url1.com", "https://url2.com"}, nil)
+	mockHasQuote := tweets.MockHasQuote(false)
+	mockIsQuoteAReply := tweets.MockIsQuoteAReply(false)
+	mockGetQuoteAuthor := tweets.MockGetQuoteAuthor("quoteauthor", nil)
+	mockGetQuoteAvatar := tweets.MockGetQuoteAvatar("https://quote_avatar.com", nil)
+	mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", nil)
+	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
+	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
+	mockLoadPage := page.MockLoad(nil)
+	mockGetLongText := tweets.MockGetLongText("Long Tweet Text 🙂", nil)
+	mockGoBack := page.MockGoBack(errors.New("error while executing page.GoBack"))
+	mockTweetArticleWebElement := new(elements.MockWebElement)
+
+	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockLoadPage, mockGetLongText, mockGoBack)
+
+	want := tweets.FailedToGoBackAfterRetrievingTweetLongText
+	_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
+
+	assert.Equal(t, want, got)
 }

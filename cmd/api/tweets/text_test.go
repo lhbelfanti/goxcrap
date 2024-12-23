@@ -13,18 +13,29 @@ import (
 	"goxcrap/cmd/api/tweets"
 )
 
+const (
+	tweetTextXPath              string = "div[position()=2]/div[position()=2]/div[position()=1]"
+	replyTweetTextXPath         string = "div[position()=2]/div[position()=3]/div[position()=1]"
+	tweetShowMoreTextXpath      string = "div[position()=2]/div[position()=2]/div[position()=2]"
+	replyTweetShowMoreTextXPath string = "div[position()=2]/div[position()=3]/div[position()=1]"
+)
+
 func TestGetText_success(t *testing.T) {
 	for _, test := range []struct {
-		isAReply bool
+		isAReply      bool
+		textXPath     string
+		longTextXPath string
 	}{
-		{isAReply: false},
-		{isAReply: true},
+		{isAReply: false, textXPath: tweetTextXPath, longTextXPath: tweetShowMoreTextXpath},
+		{isAReply: true, textXPath: replyTweetTextXPath, longTextXPath: replyTweetShowMoreTextXPath},
 	} {
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTweetLongTextWebElement := new(elements.MockWebElement)
 		mockTextPartSpanWebElement := new(elements.MockWebElement)
 		mockTextPartImg := new(elements.MockWebElement)
-		mockTweetArticleWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.textXPath).Return(selenium.WebElement(mockTweetTextWebElement), nil)
+		mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, test.longTextXPath).Return(selenium.WebElement(mockTweetLongTextWebElement), nil)
 		mockTweetTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement), selenium.WebElement(mockTextPartImg)}, nil)
 		mockTextPartSpanWebElement.On("TagName").Return("span", nil)
 		mockTextPartSpanWebElement.On("Text").Return("text", nil)
@@ -34,9 +45,10 @@ func TestGetText_success(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := "text🙂"
-		got, err := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
+		got, hasLongText, err := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
+		assert.True(t, hasLongText)
 		assert.Nil(t, err)
 		mockTweetArticleWebElement.AssertExpectations(t)
 		mockTweetTextWebElement.AssertExpectations(t)
@@ -66,7 +78,7 @@ func TestGetText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := "text"
-		got, err := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
+		got, _, err := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -91,7 +103,7 @@ func TestGetText_failsWhenFindElementThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextElement
-		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
+		_, _, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -115,7 +127,7 @@ func TestGetText_failsWhenFindElementsThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextParts
-		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
+		_, _, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -141,7 +153,7 @@ func TestGetText_failsWhenTagNameThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextPartTagName
-		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
+		_, _, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
@@ -168,11 +180,130 @@ func TestGetText_failsWhenTextThrowsError(t *testing.T) {
 		getText := tweets.MakeGetText()
 
 		want := tweets.FailedToObtainTweetTextFromSpan
-		_, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
+		_, _, got := getText(context.Background(), mockTweetArticleWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetArticleWebElement.AssertExpectations(t)
 		mockTweetTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+	}
+}
+
+func TestGetLongText_success(t *testing.T) {
+	for _, test := range []struct {
+		isAReply bool
+	}{
+		{isAReply: false},
+		{isAReply: true},
+	} {
+		mockTweetLongTextWebElement, mockTextPartSpanWebElement, mockTextPartImg := tweets.MockLongTextElement()
+		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+
+		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+
+		want := "Tweet Text 🙂"
+		got, err := getLongText(context.Background(), test.isAReply)
+
+		assert.Equal(t, want, got)
+		assert.Nil(t, err)
+		mockTweetLongTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+		mockTextPartImg.AssertExpectations(t)
+	}
+}
+
+func TestGetLongText_successEvenIfEmojisCantBeObtained(t *testing.T) {
+	for _, test := range []struct {
+		isAReply bool
+	}{
+		{isAReply: false},
+		{isAReply: true},
+	} {
+		mockTweetLongTextWebElement, mockTextPartSpanWebElement, mockTextPartImg := tweets.MockLongTextElement()
+		mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", errors.New("error while executing GetAttribute"))
+		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+
+		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+
+		want := "Tweet Text 🙂"
+		got, err := getLongText(context.Background(), test.isAReply)
+
+		assert.Equal(t, want, got)
+		assert.Nil(t, err)
+		mockTweetLongTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+		mockTextPartImg.AssertExpectations(t)
+	}
+}
+
+func TestGetLongText_failsWhenFindElementsThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply bool
+	}{
+		{isAReply: false},
+		{isAReply: true},
+	} {
+		mockTweetLongTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, errors.New("error while executing FindElements"))
+		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+
+		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+
+		want := tweets.FailedToObtainTweetLongTextParts
+		_, got := getLongText(context.Background(), test.isAReply)
+
+		assert.Equal(t, want, got)
+		mockTweetLongTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+	}
+}
+
+func TestGetLongText_failsWhenTagNameThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply bool
+	}{
+		{isAReply: false},
+		{isAReply: true},
+	} {
+		mockTweetLongTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, nil)
+		mockTextPartSpanWebElement.On("TagName").Return("span", errors.New("error while executing TagName"))
+		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+
+		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+
+		want := tweets.FailedToObtainTweetLongTextPartTagName
+		_, got := getLongText(context.Background(), test.isAReply)
+
+		assert.Equal(t, want, got)
+		mockTweetLongTextWebElement.AssertExpectations(t)
+		mockTextPartSpanWebElement.AssertExpectations(t)
+	}
+}
+
+func TestGetLongText_failsWhenTextThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply bool
+	}{
+		{isAReply: false},
+		{isAReply: true},
+	} {
+		mockTweetLongTextWebElement := new(elements.MockWebElement)
+		mockTextPartSpanWebElement := new(elements.MockWebElement)
+		mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, nil)
+		mockTextPartSpanWebElement.On("TagName").Return("span", nil)
+		mockTextPartSpanWebElement.On("Text").Return("text", errors.New("error while executing Text"))
+		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+
+		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+
+		want := tweets.FailedToObtainTweetLongTextFromSpan
+		_, got := getLongText(context.Background(), test.isAReply)
+
+		assert.Equal(t, want, got)
+		mockTweetLongTextWebElement.AssertExpectations(t)
 		mockTextPartSpanWebElement.AssertExpectations(t)
 	}
 }

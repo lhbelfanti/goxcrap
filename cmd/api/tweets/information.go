@@ -3,9 +3,13 @@ package tweets
 import (
 	"context"
 	"errors"
+	"os"
+	"strconv"
+	"time"
 
 	"github.com/tebeka/selenium"
 
+	"goxcrap/cmd/api/page"
 	"goxcrap/internal/log"
 )
 
@@ -13,7 +17,10 @@ import (
 type GetTweetInformation func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GetTweetInformation
-func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestamp GetTimestamp, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages) GetTweetInformation {
+func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestamp GetTimestamp, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages, loadPage page.Load, getLongText GetLongText, goBack page.GoBack) GetTweetInformation {
+	pageLoaderTimeoutValue, _ := strconv.Atoi(os.Getenv("TWEET_PAGE_TIMEOUT"))
+	pageLoaderTimeout := time.Duration(pageLoaderTimeoutValue) * time.Second
+
 	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error) {
 		isTweetAReply := isAReply(tweetArticleElement)
 
@@ -34,7 +41,7 @@ func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestam
 			log.Debug(ctx, err.Error())
 		}
 
-		tweetText, err := getText(ctx, tweetArticleElement, isTweetAReply)
+		tweetText, hasLongText, err := getText(ctx, tweetArticleElement, isTweetAReply)
 		hasText := !errors.Is(err, FailedToObtainTweetTextElement)
 		if err != nil && hasText {
 			log.Debug(ctx, err.Error())
@@ -96,7 +103,7 @@ func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestam
 			}
 		}
 
-		return Tweet{
+		tweet := Tweet{
 			ID:       tweetID,
 			HasQuote: hasAQuote,
 			Data: Data{
@@ -110,6 +117,33 @@ func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestam
 				Images:    tweetImages,
 			},
 			Quote: quote,
-		}, nil
+		}
+
+		// As obtaining the long text requires to load a new page and then go back to the previous one, it is called last.
+		// Worst case scenario, the long text can't be obtained but the rest of the information was already retrieved.
+		if hasLongText {
+			url := "/" + tweetAuthor + "/status/" + tweetID
+
+			err = loadPage(ctx, url, pageLoaderTimeout)
+			if err != nil {
+				log.Error(ctx, err.Error())
+				return tweet, FailedToLoadTweetLongTextPage
+			}
+
+			longText, err := getLongText(ctx, isTweetAReply)
+			if err != nil {
+				log.Debug(ctx, err.Error())
+			} else {
+				tweet.Text = longText
+			}
+
+			err = goBack(ctx)
+			if err != nil {
+				log.Error(ctx, err.Error())
+				return tweet, FailedToGoBackAfterRetrievingTweetLongText
+			}
+		}
+
+		return tweet, nil
 	}
 }

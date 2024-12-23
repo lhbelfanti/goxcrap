@@ -31,10 +31,18 @@ var (
 	FailedToObtainQuotedTweetTimestamp        = errors.New("failed to obtain quoted tweet timestamp")
 	FailedToObtainTweetTimestampInformation   = errors.New("failed to obtain tweet timestamp information")
 
-	FailedToObtainTweetTextElement           = errors.New("failed to obtain tweet text element")
-	FailedToObtainTweetTextParts             = errors.New("failed to obtain tweet text parts")
-	FailedToObtainTweetTextPartTagName       = errors.New("failed to obtain tweet text part tag name")
-	FailedToObtainTweetTextFromSpan          = errors.New("failed to obtain tweet text from span")
+	FailedToObtainTweetTextElement     = errors.New("failed to obtain tweet text element")
+	FailedToObtainTweetTextParts       = errors.New("failed to obtain tweet text parts")
+	FailedToObtainTweetTextPartTagName = errors.New("failed to obtain tweet text part tag name")
+	FailedToObtainTweetTextFromSpan    = errors.New("failed to obtain tweet text from span")
+
+	FailedToLoadTweetLongTextPage              = errors.New("failed to load tweet long text page")
+	FailedToObtainTweetLongTextElement         = errors.New("failed to obtain tweet long text element")
+	FailedToObtainTweetLongTextParts           = errors.New("failed to obtain tweet long text parts")
+	FailedToObtainTweetLongTextPartTagName     = errors.New("failed to obtain tweet long text part tag name")
+	FailedToObtainTweetLongTextFromSpan        = errors.New("failed to obtain tweet long text from span")
+	FailedToGoBackAfterRetrievingTweetLongText = errors.New("failed to go back after retrieving tweet long text")
+
 	FailedToObtainQuotedTweetTextElement     = errors.New("failed to obtain quoted tweet text element")
 	FailedToObtainQuotedTweetTextParts       = errors.New("failed to obtain quoted tweet text parts")
 	FailedToObtainQuotedTweetTextPartTagName = errors.New("failed to obtain quoted tweet text part tag name")
