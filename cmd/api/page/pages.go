@@ -21,6 +21,12 @@ type (
 
 	// GoBack executes window.history.go(-1) to go to the previous page in the history
 	GoBack func(ctx context.Context) error
+
+	// OpenNewTab opens a new tab and navigates to the given page
+	OpenNewTab func(ctx context.Context, page string, timeout time.Duration) error
+
+	// CloseOpenedTabs closes all the opened tabs leaving active only the first one in the slice
+	CloseOpenedTabs func(ctx context.Context) error
 )
 
 // MakeLoad creates a new Load
@@ -68,14 +74,65 @@ func MakeScroll(wd selenium.WebDriver) Scroll {
 	}
 }
 
-// MakeGoBack creates a new GoBack
-func MakeGoBack(wd selenium.WebDriver) GoBack {
-	return func(ctx context.Context) error {
-		goBack := `window.history.go(-1);`
-		_, err := wd.ExecuteScript(goBack, nil)
+// MakeOpenNewTab creates a new OpenNewTab
+func MakeOpenNewTab(wd selenium.WebDriver, loadPage Load) OpenNewTab {
+	return func(ctx context.Context, page string, timeout time.Duration) error {
+		jsOpenNewTab := "window.open('', '_blank');"
+		_, err := wd.ExecuteScript(jsOpenNewTab, nil)
 		if err != nil {
 			log.Error(ctx, err.Error())
-			return FailedToGoBack
+			return FailedToOpenNewTab
+		}
+
+		handles, err := wd.WindowHandles()
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToObtainWindowHandles
+		}
+
+		err = wd.SwitchWindow(handles[len(handles)-1])
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToSwitchWindow
+		}
+
+		err = loadPage(ctx, page, timeout)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToLoadPageOnTheNewTab
+		}
+
+		return nil
+	}
+}
+
+// MakeCloseOpenedTabs creates a new CloseOpenedTabs
+func MakeCloseOpenedTabs(wd selenium.WebDriver) CloseOpenedTabs {
+	return func(ctx context.Context) error {
+		handles, err := wd.WindowHandles()
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToObtainWindowHandles
+		}
+
+		for i := 1; i < len(handles); i++ {
+			err = wd.SwitchWindow(handles[i])
+			if err != nil {
+				log.Info(ctx, err.Error())
+				return FailedToSwitchWindow
+			}
+
+			err = wd.Close()
+			if err != nil {
+				log.Info(ctx, err.Error())
+				return FailedToCloseWindow
+			}
+		}
+
+		err = wd.SwitchWindow(handles[0])
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return FailedToSwitchToMainWindow
 		}
 
 		return nil

@@ -88,25 +88,141 @@ func TestScroll_failsWhenScrollByCodeExecutionThrowsError(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
-func TestGoBack_success(t *testing.T) {
+func TestOpenNewTab_success(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
-	mockWebDriver.On("ExecuteScript", mock.Anything, mock.Anything).Return(nil, nil)
+	mockWebDriver.On("ExecuteScript", `window.open('', '_blank');`, mock.Anything).Return(nil, nil)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", mock.Anything).Return(nil)
+	mockLoadPage := page.MockLoad(nil)
 
-	goBack := page.MakeGoBack(mockWebDriver)
+	openNewTab := page.MakeOpenNewTab(mockWebDriver, mockLoadPage)
 
-	got := goBack(context.Background())
+	got := openNewTab(context.Background(), "www.test.com", 0)
 
 	assert.Nil(t, got)
 }
 
-func TestGoBack_failsWhenGoBackCodeExecutionThrowsError(t *testing.T) {
+func TestOpenNewTab_failsWhenWindowOpenScriptThrowsError(t *testing.T) {
 	mockWebDriver := new(webdriver.Mock)
-	mockWebDriver.On("ExecuteScript", mock.Anything, mock.Anything).Return(nil, errors.New("error while executing code"))
+	mockWebDriver.On("ExecuteScript", `window.open('', '_blank');`, mock.Anything).Return(nil, errors.New("error while executing code"))
+	mockLoadPage := page.MockLoad(nil)
 
-	goBack := page.MakeGoBack(mockWebDriver)
+	openNewTab := page.MakeOpenNewTab(mockWebDriver, mockLoadPage)
 
-	want := page.FailedToGoBack
-	got := goBack(context.Background())
+	want := page.FailedToOpenNewTab
+	got := openNewTab(context.Background(), "www.test.com", 0)
+
+	assert.Equal(t, want, got)
+}
+
+func TestOpenNewTab_failsWhenWindowHandlesThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("ExecuteScript", `window.open('', '_blank');`, mock.Anything).Return(nil, nil)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, errors.New("error while executing driver.WindowHandles"))
+	mockLoadPage := page.MockLoad(nil)
+
+	openNewTab := page.MakeOpenNewTab(mockWebDriver, mockLoadPage)
+
+	want := page.FailedToObtainWindowHandles
+	got := openNewTab(context.Background(), "www.test.com", 0)
+
+	assert.Equal(t, want, got)
+}
+
+func TestOpenNewTab_failsWhenSwitchWindowThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("ExecuteScript", `window.open('', '_blank');`, mock.Anything).Return(nil, nil)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", mock.Anything).Return(errors.New("error while executing driver.SwitchWindow"))
+	mockLoadPage := page.MockLoad(nil)
+
+	openNewTab := page.MakeOpenNewTab(mockWebDriver, mockLoadPage)
+
+	want := page.FailedToSwitchWindow
+	got := openNewTab(context.Background(), "www.test.com", 0)
+
+	assert.Equal(t, want, got)
+}
+
+func TestOpenNewTab_failsWhenLoadPageThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("ExecuteScript", `window.open('', '_blank');`, mock.Anything).Return(nil, nil)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", mock.Anything).Return(nil)
+	mockLoadPage := page.MockLoad(errors.New("error while executing page.Load"))
+
+	openNewTab := page.MakeOpenNewTab(mockWebDriver, mockLoadPage)
+
+	want := page.FailedToLoadPageOnTheNewTab
+	got := openNewTab(context.Background(), "www.test.com", 0)
+
+	assert.Equal(t, want, got)
+}
+
+func TestCloseOpenedTabs_success(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", "b").Return(nil)
+	mockWebDriver.On("Close").Return(nil)
+	mockWebDriver.On("SwitchWindow", "a").Return(nil)
+
+	closeOpenedTabs := page.MakeCloseOpenedTabs(mockWebDriver)
+
+	got := closeOpenedTabs(context.Background())
+
+	assert.Nil(t, got)
+}
+
+func TestCloseOpenedTabs_failsWhenWindowHandlesThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, errors.New("error while executing driver.WindowHandles"))
+
+	closeOpenedTabs := page.MakeCloseOpenedTabs(mockWebDriver)
+
+	want := page.FailedToObtainWindowHandles
+	got := closeOpenedTabs(context.Background())
+
+	assert.Equal(t, want, got)
+}
+
+func TestCloseOpenedTabs_failsWhenFirstCallToSwitchWindowThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", "b").Return(errors.New("error while executing first driver.SwitchWindow"))
+
+	closeOpenedTabs := page.MakeCloseOpenedTabs(mockWebDriver)
+
+	want := page.FailedToSwitchWindow
+	got := closeOpenedTabs(context.Background())
+
+	assert.Equal(t, want, got)
+}
+
+func TestCloseOpenedTabs_failsWhenCloseThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", "b").Return(nil)
+	mockWebDriver.On("Close").Return(errors.New("error while executing driver.Close"))
+
+	closeOpenedTabs := page.MakeCloseOpenedTabs(mockWebDriver)
+
+	want := page.FailedToCloseWindow
+	got := closeOpenedTabs(context.Background())
+
+	assert.Equal(t, want, got)
+}
+
+func TestCloseOpenedTabs_failsWhenSecondSwitchWindowThrowsError(t *testing.T) {
+	mockWebDriver := new(webdriver.Mock)
+	mockWebDriver.On("WindowHandles", mock.Anything).Return([]string{"a", "b"}, nil)
+	mockWebDriver.On("SwitchWindow", "b").Return(nil)
+	mockWebDriver.On("Close").Return(nil)
+	mockWebDriver.On("SwitchWindow", "a").Return(errors.New("error while executing second driver.SwitchWindow"))
+
+	closeOpenedTabs := page.MakeCloseOpenedTabs(mockWebDriver)
+
+	want := page.FailedToSwitchToMainWindow
+	got := closeOpenedTabs(context.Background())
 
 	assert.Equal(t, want, got)
 }
