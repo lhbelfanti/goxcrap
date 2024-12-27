@@ -112,6 +112,7 @@ func TestGetIDFromTweetPage_successEvenWhenFirstFindElementThrowsError(t *testin
 	mockTweetIDATagWebElement := new(elements.MockWebElement)
 	mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, tweetIDElementFromHeaderXPath).Return(selenium.WebElement(new(elements.MockWebElement)), errors.New("error while executing FindElement"))
 	mockTweetArticleWebElement.On("FindElement", selenium.ByXPATH, tweetIDElementFromFooterXPath).Return(selenium.WebElement(mockTweetIDFromFooterWebElement), nil)
+	mockTweetIDFromFooterWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetIDATagWebElement), nil)
 	mockTweetIDATagWebElement.On("GetAttribute", mock.Anything).Return("https://x.com/user/status/123456789", nil)
 
 	getIDFromTweetPage := tweets.MakeGetIDFromTweetPage()

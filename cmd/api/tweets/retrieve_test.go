@@ -3,6 +3,7 @@ package tweets_test
 import (
 	"context"
 	"errors"
+	"goxcrap/internal/log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,9 +24,11 @@ func TestRetrieveAll_success(t *testing.T) {
 	mockScroll := page.MockScroll(nil)
 
 	retrieveAll := tweets.MakeRetrieveAll(mockWaitAndRetrieve, mockRetrieveAll, mockGetTweetID, mockGetTweetInformation, mockScroll)
+	ctx := context.Background()
+	ctx = log.With(ctx, log.Param("page_url", "test"))
 
 	want := []tweets.Tweet{mockTweet}
-	got, err := retrieveAll(context.Background())
+	got, err := retrieveAll(ctx)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -40,9 +43,11 @@ func TestRetrieveAll_successEvenWhenGetTweetIDThrowsError(t *testing.T) {
 	mockScroll := page.MockScroll(nil)
 
 	retrieveAll := tweets.MakeRetrieveAll(mockWaitAndRetrieve, mockRetrieveAll, mockGetTweetID, mockGetTweetInformation, mockScroll)
+	ctx := context.Background()
+	ctx = log.With(ctx, log.Param("page_url", "test"))
 
 	var want []tweets.Tweet
-	got, err := retrieveAll(context.Background())
+	got, err := retrieveAll(ctx)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -57,9 +62,11 @@ func TestRetrieveAll_successEvenWhenGetTweetInformationThrowsError(t *testing.T)
 	mockScroll := page.MockScroll(nil)
 
 	retrieveAll := tweets.MakeRetrieveAll(mockWaitAndRetrieve, mockRetrieveAll, mockGetTweetID, mockGetTweetInformation, mockScroll)
+	ctx := context.Background()
+	ctx = log.With(ctx, log.Param("page_url", "test"))
 
 	var want []tweets.Tweet
-	got, err := retrieveAll(context.Background())
+	got, err := retrieveAll(ctx)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -75,9 +82,11 @@ func TestRetrieveAll_successEvenWhenScrollPageThrowsError(t *testing.T) {
 	mockScroll := page.MockScroll(errors.New("error while executing Scroll"))
 
 	retrieveAll := tweets.MakeRetrieveAll(mockWaitAndRetrieve, mockRetrieveAll, mockGetTweetID, mockGetTweetInformation, mockScroll)
+	ctx := context.Background()
+	ctx = log.With(ctx, log.Param("page_url", "test"))
 
 	want := []tweets.Tweet{mockTweet}
-	got, err := retrieveAll(context.Background())
+	got, err := retrieveAll(ctx)
 
 	assert.Equal(t, want, got)
 	assert.Nil(t, err)
@@ -124,7 +133,7 @@ func TestOpenAndRetrieveArticleByID_success(t *testing.T) {
 
 	openAndRetrieveArticleByID := tweets.MakeOpenAndRetrieveArticleByID(mockOpenNewTab, mockWaitAndRetrieveElements, mockGetIDFromTweetPage)
 
-	want := mockTweetID
+	want := mockArticleWebElement
 	got, err := openAndRetrieveArticleByID(context.Background(), "author", mockTweetID)
 
 	assert.Equal(t, want, got)

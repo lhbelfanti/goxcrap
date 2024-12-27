@@ -238,6 +238,26 @@ func TestGetLongText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 	}
 }
 
+func TestGetLongText_failsWhenFindElementThrowsError(t *testing.T) {
+	for _, test := range []struct {
+		isAReply bool
+	}{
+		{isAReply: false},
+		{isAReply: true},
+	} {
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockTweetTextWebElement := new(elements.MockWebElement)
+		mockTweetWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetTextWebElement), errors.New("error while executing FindElement"))
+
+		getLongText := tweets.MakeGetLongText()
+
+		want := tweets.FailedToObtainTweetLongTextElement
+		_, got := getLongText(context.Background(), mockTweetWebElement, test.isAReply)
+
+		assert.Equal(t, want, got)
+	}
+}
+
 func TestGetLongText_failsWhenFindElementsThrowsError(t *testing.T) {
 	for _, test := range []struct {
 		isAReply bool

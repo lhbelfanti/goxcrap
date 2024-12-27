@@ -41,10 +41,20 @@ func With(ctx context.Context, fields ...field) context.Context {
 func RetrieveParam[T any](ctx context.Context, param string) T {
 	params, ok := ctx.Value(logCtxKey{}).(map[string]interface{})
 	if !ok {
-		params = make(map[string]interface{})
+		return *new(T)
 	}
 
-	return params[param].(T)
+	value, found := params[param]
+	if !found {
+		return *new(T)
+	}
+
+	typedValue, ok := value.(T)
+	if !ok {
+		return *new(T)
+	}
+
+	return typedValue
 }
 
 func withContextParams(ctx context.Context, event *zerolog.Event) *zerolog.Event {

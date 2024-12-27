@@ -145,7 +145,7 @@ func TestGetTweetInformation_failsWhenOpenAndRetrieveTweetArticleByIDThrowsError
 	mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", nil)
 	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
 	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
-	mockOpenAndRetrieveArticleByID := tweets.MockOpenAndRetrieveArticleByID(nil, errors.New("error while executing OpenAndRetrieveArticleByID"))
+	mockOpenAndRetrieveArticleByID := tweets.MockOpenAndRetrieveArticleByID(nil, tweets.FailedToLoadTweetPage)
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
 	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockOpenAndRetrieveArticleByID, nil, nil)
