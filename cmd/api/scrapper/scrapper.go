@@ -24,7 +24,8 @@ func MakeNew(httpClient http.Client, localMode bool) New {
 		// Functions
 		loadPage := page.MakeLoad(webDriver)
 		scrollPage := page.MakeScroll(webDriver)
-		goBack := page.MakeGoBack(webDriver)
+		openNewTab := page.MakeOpenNewTab(webDriver, loadPage)
+		closeOpenedTabs := page.MakeCloseOpenedTabs(webDriver)
 		waitAndRetrieveCondition := elements.MakeWaitAndRetrieveCondition()
 		waitAndRetrieveAllCondition := elements.MakeWaitAndRetrieveAllCondition()
 		waitAndRetrieveElement := elements.MakeWaitAndRetrieve(webDriver, waitAndRetrieveCondition)
@@ -55,8 +56,10 @@ func MakeNew(httpClient http.Client, localMode bool) New {
 		getQuoteTimestamp := tweets.MakeGetQuoteTimestamp()
 		getQuoteText := tweets.MakeGetQuoteText()
 		getQuoteImages := tweets.MakeGetQuoteImages()
-		getTweetLongText := tweets.MakeGetLongText(waitAndRetrieveElement)
-		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetAuthor, getTweetTimestamp, getTweetAvatar, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteAuthor, getQuoteAvatar, getQuoteTimestamp, getQuoteText, getQuoteImages, loadPage, getTweetLongText, goBack)
+		getTweetIDFromTweetPage := tweets.MakeGetIDFromTweetPage()
+		openAndRetrieveArticleByID := tweets.MakeOpenAndRetrieveArticleByID(openNewTab, waitAndRetrieveElements, getTweetIDFromTweetPage)
+		getTweetLongText := tweets.MakeGetLongText()
+		getTweetInformation := tweets.MakeGetTweetInformation(isAReply, getTweetAuthor, getTweetTimestamp, getTweetAvatar, getTweetText, getTweetImages, hasQuote, isQuoteAReply, getQuoteAuthor, getQuoteAvatar, getQuoteTimestamp, getQuoteText, getQuoteImages, openAndRetrieveArticleByID, getTweetLongText, closeOpenedTabs)
 		retrieveAllTweets := tweets.MakeRetrieveAll(waitAndRetrieveElement, waitAndRetrieveElements, getTweetID, getTweetInformation, scrollPage)
 
 		executeScrapper := MakeExecute(login, updateSearchCriteriaExecution, insertSearchCriteriaExecutionDay, executeAdvanceSearch, retrieveAllTweets, saveTweets)

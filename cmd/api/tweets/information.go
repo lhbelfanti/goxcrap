@@ -3,9 +3,6 @@ package tweets
 import (
 	"context"
 	"errors"
-	"os"
-	"strconv"
-	"time"
 
 	"github.com/tebeka/selenium"
 
@@ -17,10 +14,7 @@ import (
 type GetTweetInformation func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error)
 
 // MakeGetTweetInformation creates a new GetTweetInformation
-func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestamp GetTimestamp, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages, loadPage page.Load, getLongText GetLongText, goBack page.GoBack) GetTweetInformation {
-	pageLoaderTimeoutValue, _ := strconv.Atoi(os.Getenv("TWEET_PAGE_TIMEOUT"))
-	pageLoaderTimeout := time.Duration(pageLoaderTimeoutValue) * time.Second
-
+func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestamp GetTimestamp, getAvatar GetAvatar, getText GetText, getImages GetImages, hasQuote HasQuote, isQuoteAReply IsQuoteAReply, getQuoteAuthor GetQuoteAuthor, getQuoteAvatar GetQuoteAvatar, getQuoteTimestamp GetQuoteTimestamp, getQuoteText GetQuoteText, getQuoteImages GetQuoteImages, openAndRetrieveTweetArticleByID OpenAndRetrieveArticleByID, getLongText GetLongText, closeOpenedTabs page.CloseOpenedTabs) GetTweetInformation {
 	return func(ctx context.Context, tweetArticleElement selenium.WebElement, tweetID string) (Tweet, error) {
 		isTweetAReply := isAReply(tweetArticleElement)
 
@@ -119,28 +113,28 @@ func MakeGetTweetInformation(isAReply IsAReply, getAuthor GetAuthor, getTimestam
 			Quote: quote,
 		}
 
-		// As obtaining the long text requires to load a new page and then go back to the previous one, it is called last.
+		// As obtaining the long text requires to open a new tab, retrieve the text and then close it, it is called last.
 		// Worst case scenario, the long text can't be obtained but the rest of the information was already retrieved.
 		if hasLongText {
-			url := "/" + tweetAuthor + "/status/" + tweetID
-
-			err = loadPage(ctx, url, pageLoaderTimeout)
+			tweetElement, err := openAndRetrieveTweetArticleByID(ctx, tweetAuthor, tweetID)
 			if err != nil {
-				log.Error(ctx, err.Error())
-				return tweet, FailedToLoadTweetLongTextPage
-			}
-
-			longText, err := getLongText(ctx, isTweetAReply)
-			if err != nil {
-				log.Debug(ctx, err.Error())
+				if errors.Is(err, FailedToLoadTweetPage) {
+					log.Error(ctx, err.Error())
+					return tweet, err
+				}
 			} else {
-				tweet.Text = longText
+				longText, err := getLongText(ctx, tweetElement, isTweetAReply)
+				if err != nil {
+					log.Debug(ctx, err.Error())
+				} else {
+					tweet.Text = longText
+				}
 			}
 
-			err = goBack(ctx)
-			if err != nil {
-				log.Error(ctx, err.Error())
-				return tweet, FailedToGoBackAfterRetrievingTweetLongText
+			closeOpenedTabsErr := closeOpenedTabs(ctx)
+			if closeOpenedTabsErr != nil {
+				log.Error(ctx, closeOpenedTabsErr.Error())
+				return tweet, FailedToCloseOpenedTabs
 			}
 		}
 

@@ -71,12 +71,13 @@ func TestGetTweetInformation_success(t *testing.T) {
 		mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", test.getQuoteTimestampError)
 		mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", test.getQuoteTextError)
 		mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, test.getQuoteImagesError)
-		mockLoadPage := page.MockLoad(nil)
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockOpenAndRetrieveArticleByID := tweets.MockOpenAndRetrieveArticleByID(mockTweetWebElement, nil)
 		mockGetLongText := tweets.MockGetLongText("Long Tweet Text 🙂", test.getLongTextError)
-		mockGoBack := page.MockGoBack(nil)
+		mockCloseOpenedTabs := page.MockCloseOpenedTabs(nil)
 		mockTweetArticleWebElement := new(elements.MockWebElement)
 
-		getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockLoadPage, mockGetLongText, mockGoBack)
+		getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockOpenAndRetrieveArticleByID, mockGetLongText, mockCloseOpenedTabs)
 
 		mockTweet := tweets.MockTweet()
 		mockTweet.IsAReply = test.isAReply
@@ -130,7 +131,7 @@ func TestGetTweetInformation_failsWhenGetTimestampThrowsError(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
-func TestGetTweetInformation_failsWhenLoadPageThrowsError(t *testing.T) {
+func TestGetTweetInformation_failsWhenOpenAndRetrieveTweetArticleByIDThrowsError(t *testing.T) {
 	mockIsAReply := tweets.MockIsAReply(false)
 	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
 	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
@@ -144,18 +145,18 @@ func TestGetTweetInformation_failsWhenLoadPageThrowsError(t *testing.T) {
 	mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", nil)
 	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
 	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
-	mockLoadPage := page.MockLoad(errors.New("error while executing page.Load"))
+	mockOpenAndRetrieveArticleByID := tweets.MockOpenAndRetrieveArticleByID(nil, errors.New("error while executing OpenAndRetrieveArticleByID"))
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockLoadPage, nil, nil)
+	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockOpenAndRetrieveArticleByID, nil, nil)
 
-	want := tweets.FailedToLoadTweetLongTextPage
+	want := tweets.FailedToLoadTweetPage
 	_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
 
 	assert.Equal(t, want, got)
 }
 
-func TestGetTweetInformation_failsWhenGoBackThrowsError(t *testing.T) {
+func TestGetTweetInformation_failsWhenCloseOpenedTabsThrowsError(t *testing.T) {
 	mockIsAReply := tweets.MockIsAReply(false)
 	mockGetAuthor := tweets.MockGetAuthor("tweetauthor", nil)
 	mockGetTimestamp := tweets.MockGetTimestamp("2024-02-26T18:31:49.000Z", nil)
@@ -169,14 +170,15 @@ func TestGetTweetInformation_failsWhenGoBackThrowsError(t *testing.T) {
 	mockGetQuoteTimestamp := tweets.MockGetQuoteTimestamp("2023-02-26T18:31:49.000Z", nil)
 	mockGetQuoteText := tweets.MockGetQuoteText("Quote Text", nil)
 	mockGetQuoteImages := tweets.MockGetQuoteImages([]string{"https://url1.com", "https://url2.com"}, nil)
-	mockLoadPage := page.MockLoad(nil)
+	mockTweetWebElement := new(elements.MockWebElement)
+	mockOpenAndRetrieveArticleByID := tweets.MockOpenAndRetrieveArticleByID(mockTweetWebElement, nil)
 	mockGetLongText := tweets.MockGetLongText("Long Tweet Text 🙂", nil)
-	mockGoBack := page.MockGoBack(errors.New("error while executing page.GoBack"))
+	mockCloseOpenedTabs := page.MockCloseOpenedTabs(errors.New("error while executing page.CloseOpenedTabs"))
 	mockTweetArticleWebElement := new(elements.MockWebElement)
 
-	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockLoadPage, mockGetLongText, mockGoBack)
+	getTweetInformation := tweets.MakeGetTweetInformation(mockIsAReply, mockGetAuthor, mockGetTimestamp, mockGetAvatar, mockGetText, mockGetImages, mockHasQuote, mockIsQuoteAReply, mockGetQuoteAuthor, mockGetQuoteAvatar, mockGetQuoteTimestamp, mockGetQuoteText, mockGetQuoteImages, mockOpenAndRetrieveArticleByID, mockGetLongText, mockCloseOpenedTabs)
 
-	want := tweets.FailedToGoBackAfterRetrievingTweetLongText
+	want := tweets.FailedToCloseOpenedTabs
 	_, got := getTweetInformation(context.Background(), mockTweetArticleWebElement, "123456789012345")
 
 	assert.Equal(t, want, got)

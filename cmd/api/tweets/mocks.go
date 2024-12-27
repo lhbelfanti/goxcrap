@@ -121,6 +121,13 @@ func MockGetQuoteImages(urls []string, err error) GetQuoteImages {
 	}
 }
 
+// MockOpenAndRetrieveArticleByID mocks OpenAndRetrieveArticleByID function
+func MockOpenAndRetrieveArticleByID(element selenium.WebElement, err error) OpenAndRetrieveArticleByID {
+	return func(ctx context.Context, author, id string) (selenium.WebElement, error) {
+		return element, err
+	}
+}
+
 // MockGetIDFromTweetPage mocks GetIDFromTweetPage function
 func MockGetIDFromTweetPage(id string, err error) GetIDFromTweetPage {
 	return func(ctx context.Context, element selenium.WebElement) (string, error) {
