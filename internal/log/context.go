@@ -37,6 +37,16 @@ func With(ctx context.Context, fields ...field) context.Context {
 	return context.WithValue(ctx, logCtxKey{}, params)
 }
 
+// RetrieveParam retrieves the value of a param saved in the context params map
+func RetrieveParam[T any](ctx context.Context, param string) T {
+	params, ok := ctx.Value(logCtxKey{}).(map[string]interface{})
+	if !ok {
+		params = make(map[string]interface{})
+	}
+
+	return params[param].(T)
+}
+
 func withContextParams(ctx context.Context, event *zerolog.Event) *zerolog.Event {
 	if ctx == nil {
 		return event
