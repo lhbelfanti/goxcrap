@@ -5,6 +5,7 @@ import "errors"
 var (
 	FailedToRetrieveArticles       = errors.New("failed to retrieve articles")
 	EmptyStateNoArticlesToRetrieve = errors.New("empty state, no articles to retrieve")
+	FailedToRetrieveArticle        = errors.New("failed to retrieve article")
 
 	FailedToObtainTweetAuthorElement       = errors.New("failed to obtain tweet author element")
 	FailedToObtainTweetAuthor              = errors.New("failed to obtain tweet author")
@@ -19,9 +20,12 @@ var (
 	FailedToObtainQuotedTweetAvatarImage        = errors.New("failed to obtain quoted tweet avatar image")
 	FailedToObtainQuotedTweetAvatarSrcFromImage = errors.New("failed to obtain quoted tweet avatar src from image")
 
-	FailedToObtainTweetIDElement  = errors.New("failed to obtain tweet ID element")
-	FailedToObtainTweetIDATag     = errors.New("failed to obtain tweet ID a tag")
-	FailedToObtainTweetIDATagHref = errors.New("failed to obtain tweet ID a tag href")
+	FailedToObtainTweetIDElement                    = errors.New("failed to obtain tweet ID element")
+	FailedToObtainTweetIDATag                       = errors.New("failed to obtain tweet ID a tag")
+	FailedToObtainTweetIDATagHref                   = errors.New("failed to obtain tweet ID a tag href")
+	FailedToObtainTweetIDElementFromTweetPageHeader = errors.New("failed to obtain tweet ID from tweet page header")
+	FailedToObtainTweetIDElementFromTweetPageFooter = errors.New("failed to obtain tweet ID from tweet page footer")
+	FailedToObtainTweetIDElementFromTweetPage       = errors.New("failed to obtain tweet ID from tweet page footer")
 
 	FailedToObtainTweetTimestampElement       = errors.New("failed to obtain tweet timestamp element")
 	FailedToObtainTweetTimestampTimeTag       = errors.New("failed to obtain tweet timestamp time tag")
@@ -36,12 +40,12 @@ var (
 	FailedToObtainTweetTextPartTagName = errors.New("failed to obtain tweet text part tag name")
 	FailedToObtainTweetTextFromSpan    = errors.New("failed to obtain tweet text from span")
 
-	FailedToLoadTweetLongTextPage              = errors.New("failed to load tweet long text page")
-	FailedToObtainTweetLongTextElement         = errors.New("failed to obtain tweet long text element")
-	FailedToObtainTweetLongTextParts           = errors.New("failed to obtain tweet long text parts")
-	FailedToObtainTweetLongTextPartTagName     = errors.New("failed to obtain tweet long text part tag name")
-	FailedToObtainTweetLongTextFromSpan        = errors.New("failed to obtain tweet long text from span")
-	FailedToGoBackAfterRetrievingTweetLongText = errors.New("failed to go back after retrieving tweet long text")
+	FailedToLoadTweetPage                  = errors.New("failed to load tweet page")
+	FailedToObtainTweetLongTextElement     = errors.New("failed to obtain tweet long text element")
+	FailedToObtainTweetLongTextParts       = errors.New("failed to obtain tweet long text parts")
+	FailedToObtainTweetLongTextPartTagName = errors.New("failed to obtain tweet long text part tag name")
+	FailedToObtainTweetLongTextFromSpan    = errors.New("failed to obtain tweet long text from span")
+	FailedToCloseOpenedTabs                = errors.New("failed close opened tabs")
 
 	FailedToObtainQuotedTweetTextElement     = errors.New("failed to obtain quoted tweet text element")
 	FailedToObtainQuotedTweetTextParts       = errors.New("failed to obtain quoted tweet text parts")

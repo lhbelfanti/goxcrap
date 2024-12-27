@@ -114,3 +114,63 @@ func TestRetrieveAll_failsWhenWaitAndRetrieveAllThrowsError(t *testing.T) {
 
 	assert.Equal(t, want, got)
 }
+
+func TestOpenAndRetrieveArticleByID_success(t *testing.T) {
+	mockOpenNewTab := page.MockOpenNewTab(nil)
+	mockArticleWebElement := new(elements.MockWebElement)
+	mockWaitAndRetrieveElements := elements.MockWaitAndRetrieveAll([]selenium.WebElement{mockArticleWebElement}, nil)
+	mockTweetID := "12345"
+	mockGetIDFromTweetPage := tweets.MockGetIDFromTweetPage(mockTweetID, nil)
+
+	openAndRetrieveArticleByID := tweets.MakeOpenAndRetrieveArticleByID(mockOpenNewTab, mockWaitAndRetrieveElements, mockGetIDFromTweetPage)
+
+	want := mockTweetID
+	got, err := openAndRetrieveArticleByID(context.Background(), "author", mockTweetID)
+
+	assert.Equal(t, want, got)
+	assert.Nil(t, err)
+}
+
+func TestOpenAndRetrieveArticleByID_failsWhenOpenNewTabThrowsError(t *testing.T) {
+	mockOpenNewTab := page.MockOpenNewTab(errors.New("error while executing OpenAndRetrieveArticleByID"))
+	mockArticleWebElement := new(elements.MockWebElement)
+	mockWaitAndRetrieveElements := elements.MockWaitAndRetrieveAll([]selenium.WebElement{mockArticleWebElement}, nil)
+	mockTweetID := "12345"
+	mockGetIDFromTweetPage := tweets.MockGetIDFromTweetPage(mockTweetID, nil)
+
+	openAndRetrieveArticleByID := tweets.MakeOpenAndRetrieveArticleByID(mockOpenNewTab, mockWaitAndRetrieveElements, mockGetIDFromTweetPage)
+
+	want := tweets.FailedToLoadTweetPage
+	_, got := openAndRetrieveArticleByID(context.Background(), "author", mockTweetID)
+
+	assert.Equal(t, want, got)
+}
+
+func TestOpenAndRetrieveArticleByID_failsWhenWaitAndRetrieveElementsThrowsError(t *testing.T) {
+	mockOpenNewTab := page.MockOpenNewTab(nil)
+	mockWaitAndRetrieveElements := elements.MockWaitAndRetrieveAll([]selenium.WebElement{}, errors.New("error while executing MockWaitAndRetrieveAll"))
+	mockTweetID := "12345"
+	mockGetIDFromTweetPage := tweets.MockGetIDFromTweetPage(mockTweetID, nil)
+
+	openAndRetrieveArticleByID := tweets.MakeOpenAndRetrieveArticleByID(mockOpenNewTab, mockWaitAndRetrieveElements, mockGetIDFromTweetPage)
+
+	want := tweets.FailedToRetrieveArticles
+	_, got := openAndRetrieveArticleByID(context.Background(), "author", mockTweetID)
+
+	assert.Equal(t, want, got)
+}
+
+func TestOpenAndRetrieveArticleByID_failsWhenGetTweetIDFromTweetPageThrowsError(t *testing.T) {
+	mockOpenNewTab := page.MockOpenNewTab(nil)
+	mockArticleWebElement := new(elements.MockWebElement)
+	mockWaitAndRetrieveElements := elements.MockWaitAndRetrieveAll([]selenium.WebElement{mockArticleWebElement}, nil)
+	mockTweetID := "12345"
+	mockGetIDFromTweetPage := tweets.MockGetIDFromTweetPage(mockTweetID, errors.New("error while executing GetIDFromTweetPage"))
+
+	openAndRetrieveArticleByID := tweets.MakeOpenAndRetrieveArticleByID(mockOpenNewTab, mockWaitAndRetrieveElements, mockGetIDFromTweetPage)
+
+	want := tweets.FailedToRetrieveArticle
+	_, got := openAndRetrieveArticleByID(context.Background(), "author", mockTweetID)
+
+	assert.Equal(t, want, got)
+}
