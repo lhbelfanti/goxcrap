@@ -197,12 +197,13 @@ func TestGetLongText_success(t *testing.T) {
 		{isAReply: true},
 	} {
 		mockTweetLongTextWebElement, mockTextPartSpanWebElement, mockTextPartImg := tweets.MockLongTextElement()
-		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockTweetWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetLongTextWebElement), nil)
 
-		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+		getLongText := tweets.MakeGetLongText()
 
 		want := "Tweet Text 🙂"
-		got, err := getLongText(context.Background(), test.isAReply)
+		got, err := getLongText(context.Background(), mockTweetWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -221,12 +222,13 @@ func TestGetLongText_successEvenIfEmojisCantBeObtained(t *testing.T) {
 	} {
 		mockTweetLongTextWebElement, mockTextPartSpanWebElement, mockTextPartImg := tweets.MockLongTextElement()
 		mockTextPartImg.On("GetAttribute", mock.Anything).Return("🙂", errors.New("error while executing GetAttribute"))
-		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockTweetWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetLongTextWebElement), nil)
 
-		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+		getLongText := tweets.MakeGetLongText()
 
 		want := "Tweet Text 🙂"
-		got, err := getLongText(context.Background(), test.isAReply)
+		got, err := getLongText(context.Background(), mockTweetWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		assert.Nil(t, err)
@@ -246,12 +248,13 @@ func TestGetLongText_failsWhenFindElementsThrowsError(t *testing.T) {
 		mockTweetLongTextWebElement := new(elements.MockWebElement)
 		mockTextPartSpanWebElement := new(elements.MockWebElement)
 		mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, errors.New("error while executing FindElements"))
-		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockTweetWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetLongTextWebElement), nil)
 
-		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+		getLongText := tweets.MakeGetLongText()
 
 		want := tweets.FailedToObtainTweetLongTextParts
-		_, got := getLongText(context.Background(), test.isAReply)
+		_, got := getLongText(context.Background(), mockTweetWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetLongTextWebElement.AssertExpectations(t)
@@ -270,12 +273,13 @@ func TestGetLongText_failsWhenTagNameThrowsError(t *testing.T) {
 		mockTextPartSpanWebElement := new(elements.MockWebElement)
 		mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, nil)
 		mockTextPartSpanWebElement.On("TagName").Return("span", errors.New("error while executing TagName"))
-		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockTweetWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetLongTextWebElement), nil)
 
-		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+		getLongText := tweets.MakeGetLongText()
 
 		want := tweets.FailedToObtainTweetLongTextPartTagName
-		_, got := getLongText(context.Background(), test.isAReply)
+		_, got := getLongText(context.Background(), mockTweetWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetLongTextWebElement.AssertExpectations(t)
@@ -295,12 +299,13 @@ func TestGetLongText_failsWhenTextThrowsError(t *testing.T) {
 		mockTweetLongTextWebElement.On("FindElements", mock.Anything, mock.Anything).Return([]selenium.WebElement{selenium.WebElement(mockTextPartSpanWebElement)}, nil)
 		mockTextPartSpanWebElement.On("TagName").Return("span", nil)
 		mockTextPartSpanWebElement.On("Text").Return("text", errors.New("error while executing Text"))
-		mockWaitAndRetrieveElement := elements.MockWaitAndRetrieve(mockTweetLongTextWebElement, nil)
+		mockTweetWebElement := new(elements.MockWebElement)
+		mockTweetWebElement.On("FindElement", mock.Anything, mock.Anything).Return(selenium.WebElement(mockTweetLongTextWebElement), nil)
 
-		getLongText := tweets.MakeGetLongText(mockWaitAndRetrieveElement)
+		getLongText := tweets.MakeGetLongText()
 
 		want := tweets.FailedToObtainTweetLongTextFromSpan
-		_, got := getLongText(context.Background(), test.isAReply)
+		_, got := getLongText(context.Background(), mockTweetWebElement, test.isAReply)
 
 		assert.Equal(t, want, got)
 		mockTweetLongTextWebElement.AssertExpectations(t)

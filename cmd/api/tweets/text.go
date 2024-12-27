@@ -3,21 +3,20 @@ package tweets
 import (
 	"context"
 	"fmt"
-	"os"
-	"strconv"
-	"time"
-
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/elements"
 	"goxcrap/internal/log"
 )
 
 const (
-	tweetTextXPath              string = "div[2]/div[2]/div[1]"
+	tweetTextXPath      string = "div[2]/div[2]/div[1]"
+	replyTweetTextXPath string = "div[2]/div[3]/div[1]"
+
 	tweetShowMoreTextXpath      string = "div[2]/div[2]/div[2]"
-	replyTweetTextXPath         string = "div[2]/div[3]/div[1]"
 	replyTweetShowMoreTextXPath string = "div[2]/div[3]/div[1]"
+
+	tweetLongTextXPath      string = "div[2]/div[2]"
+	replyTweetLongTextXPath string = "div[3]/div[1]/div"
 
 	tweetIsReplyHasOnlyTextQuoteIsReplyTextXPath         string = "div[2]/div[4]/div/div[2]/div/div[2]/div[2]"
 	tweetIsReplyHasOnlyImagesQuoteIsReplyTextXPath       string = "div[2]/div[4]/div[2]/div[2]/div/div[2]/div[2]/div/div[2]"
@@ -39,7 +38,7 @@ type (
 	GetText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply bool) (string, bool, error)
 
 	// GetLongText retrieves the tweet text when it is so long that the Show More link is displayed
-	GetLongText func(ctx context.Context, isAReply bool) (string, error)
+	GetLongText func(ctx context.Context, tweetElement selenium.WebElement, isAReply bool) (string, error)
 
 	// GetQuoteText retrieves the quoted tweet text
 	GetQuoteText func(ctx context.Context, tweetArticleElement selenium.WebElement, isAReply, hasTweetOnlyText, hasTweetOnlyImages, isQuoteAReply bool) (string, error)
@@ -56,6 +55,7 @@ func MakeGetText() GetText {
 		tweetTextElement, err := tweetArticleElement.FindElement(selenium.ByXPATH, globalToLocalXPath(xPath))
 		if err != nil {
 			// This tweet does not contain text
+			log.Debug(ctx, err.Error())
 			return "", false, FailedToObtainTweetTextElement
 		}
 
@@ -77,18 +77,16 @@ func MakeGetText() GetText {
 }
 
 // MakeGetLongText creates a new GetLongText
-func MakeGetLongText(waitAndRetrieveElement elements.WaitAndRetrieve) GetLongText {
-	pageLoaderTimeoutValue, _ := strconv.Atoi(os.Getenv("TWEET_PAGE_TIMEOUT"))
-	pageLoaderTimeout := time.Duration(pageLoaderTimeoutValue) * time.Second
-
-	return func(ctx context.Context, isAReply bool) (string, error) {
-		xPath := tweetShowMoreTextXpath
+func MakeGetLongText() GetLongText {
+	return func(ctx context.Context, tweetElement selenium.WebElement, isAReply bool) (string, error) {
+		xPath := tweetLongTextXPath
 		if isAReply {
-			xPath = replyTweetShowMoreTextXPath
+			xPath = replyTweetLongTextXPath
 		}
 
-		tweetLongTextElement, err := waitAndRetrieveElement(ctx, selenium.ByXPATH, xPath, pageLoaderTimeout)
+		tweetLongTextElement, err := tweetElement.FindElement(selenium.ByXPATH, xPath)
 		if err != nil {
+			log.Warn(ctx, err.Error())
 			return "", FailedToObtainTweetLongTextElement
 		}
 
@@ -182,5 +180,6 @@ func obtainTextFromTweet(ctx context.Context, tweetTextElement selenium.WebEleme
 			tweetText += alt
 		}
 	}
+
 	return tweetText, nil
 }
