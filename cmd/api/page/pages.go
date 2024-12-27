@@ -19,9 +19,6 @@ type (
 	// Scroll executes window.scrollTo, to scroll the page
 	Scroll func(ctx context.Context) error
 
-	// GoBack executes window.history.go(-1) to go to the previous page in the history
-	GoBack func(ctx context.Context) error
-
 	// OpenNewTab opens a new tab and navigates to the given page
 	OpenNewTab func(ctx context.Context, page string, timeout time.Duration) error
 
@@ -115,17 +112,19 @@ func MakeCloseOpenedTabs(wd selenium.WebDriver) CloseOpenedTabs {
 			return FailedToObtainWindowHandles
 		}
 
-		for i := 1; i < len(handles); i++ {
-			err = wd.SwitchWindow(handles[i])
-			if err != nil {
-				log.Info(ctx, err.Error())
-				return FailedToSwitchWindow
-			}
+		if len(handles) > 1 {
+			for i := 1; i < len(handles); i++ {
+				err = wd.SwitchWindow(handles[i])
+				if err != nil {
+					log.Info(ctx, err.Error())
+					return FailedToSwitchWindow
+				}
 
-			err = wd.Close()
-			if err != nil {
-				log.Info(ctx, err.Error())
-				return FailedToCloseWindow
+				err = wd.Close()
+				if err != nil {
+					log.Info(ctx, err.Error())
+					return FailedToCloseWindow
+				}
 			}
 		}
 

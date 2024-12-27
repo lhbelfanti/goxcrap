@@ -18,10 +18,3 @@ func MockScroll(err error) Scroll {
 		return err
 	}
 }
-
-// MockGoBack mocks GoBack function
-func MockGoBack(err error) GoBack {
-	return func(ctx context.Context) error {
-		return err
-	}
-}
