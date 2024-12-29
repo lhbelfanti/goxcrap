@@ -38,7 +38,6 @@ WAIT_TIME_AFTER_LOGIN=<Wait time (in seconds) after the login button is clicked>
 SEARCH_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the search page to load completely before timing out>
 ARTICLES_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the articles elements to appear on the search page before timing out>
 TWEET_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the tweet page to load completely before timing out (used when the 'Show More' link appears on the tweet text)>
-TWEET_LONG_TEXT_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the tweet's long text element to appear before timing out (used when the 'Show More' link appears on the tweet text)>
 RATE_LIMITER_PERIOD=<Period of time of the rate limiter (in seconds)> --> 15 minutes - 900 seconds (December 2024)
 RATE_LIMITER_REQUESTS=<Quantity of requests allowed during the period of time of the rate limiter>  --> 50 requests (December 2024)
 
@@ -80,7 +79,6 @@ SCRAPPER_WAIT_TIME_AFTER_LOGIN=<Wait time (in seconds) after the login button is
 SCRAPPER_SEARCH_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the search page to load completely before timing out>
 SCRAPPER_ARTICLES_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the articles elements to appear on the search page before timing out>
 SCRAPPER_TWEET_PAGE_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the tweet page to load completely before timing out (used when the 'Show More' link appears on the tweet text)>
-SCRAPPER_TWEET_LONG_TEXT_TIMEOUT=<Time limit (in seconds) the scrapper will wait for the tweet's long text element to appear before timing out (used when the 'Show More' link appears on the tweet text)>
 SCRAPPER_RATE_LIMITER_PERIOD=<Period of time of the rate limiter (in seconds)> --> 15 minutes - 900 seconds (December 2024)
 SCRAPPER_RATE_LIMITER_REQUESTS=<Quantity of requests allowed during the period of time of the rate limiter> --> 50 requests (December 2024)
 
