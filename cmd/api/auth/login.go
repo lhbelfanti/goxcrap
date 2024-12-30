@@ -19,9 +19,9 @@ const (
 	emailInputName                 string = "text"
 	passwordInputName              string = "password"
 	usernameInputName              string = "text"
-	nextButtonXPath                string = "/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/button[2]/div"
-	logInButtonXPath               string = "/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div/button/div"
-	unusualActivityNextButtonXPath string = "/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div/div/button/div"
+	nextButtonXPath                string = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/button[2]"
+	logInButtonXPath               string = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div/button"
+	unusualActivityNextButtonXPath string = "/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div/div/button/div"
 )
 
 // Login finds de login button clicks it and then fill the email and password fields to log in the user
