@@ -2,15 +2,10 @@ package broker
 
 import (
 	"context"
-	"fmt"
-	"os"
-
 	"github.com/rabbitmq/amqp091-go"
 
 	"goxcrap/internal/http"
 )
-
-const rabbitmqURL = "amqp://%s:%s@rabbitmq:%s/"
 
 type (
 	// MessageBroker defines the necessary methods for a message broker implementation
@@ -29,6 +24,9 @@ type (
 		// Choose this method OR InitMessageConsumerWithEndpoint to consume the messages.
 		// Using both at the same time will cause a race condition between them to process the messages
 		InitMessageConsumerWithFunction(concurrentMessages int, processorFunc ProcessorFunction)
+
+		// CloseConnection closes the amqp091.Connection
+		CloseConnection()
 	}
 
 	// ProcessorFunction function in charge of processing the messages of the MessageBroker
@@ -44,11 +42,3 @@ type (
 		httpClient http.Client
 	}
 )
-
-func resolveRabbitmqURL() string {
-	user := os.Getenv("RABBITMQ_USER")
-	pass := os.Getenv("RABBITMQ_PASS")
-	port := os.Getenv("RABBITMQ_PORT")
-
-	return fmt.Sprintf(rabbitmqURL, user, pass, port)
-}

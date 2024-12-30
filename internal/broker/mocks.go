@@ -23,3 +23,7 @@ func (m *MockMessageBroker) InitMessageConsumerWithEndpoint(concurrentMessages i
 func (m *MockMessageBroker) InitMessageConsumerWithFunction(concurrentMessages int, processorFunc ProcessorFunction) {
 	return
 }
+
+func (m *MockMessageBroker) CloseConnection() {
+	return
+}

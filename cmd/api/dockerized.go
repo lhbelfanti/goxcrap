@@ -36,18 +36,25 @@ func runDockerized() {
 	newWebDriverManager := webdriver.MakeNewManager(localMode)
 	newScrapper := scrapper.MakeNew(httpClient, localMode)
 
+	/* --- Message Broker --- */
+	// Producer
+	messageBrokerProducer := setup.Init(broker.NewProducer(ctx, httpClient))
+	defer messageBrokerProducer.CloseConnection()
+
+	// Consumer
 	getSearchCriteriaExecution := corpuscreator.MakeGetSearchCriteriaExecution(httpClient, os.Getenv("CORPUS_CREATOR_API_URL"), localMode)
-	messageBroker := setup.Init(broker.NewMessageBroker(ctx, httpClient))
+	messageBrokerConsumer := setup.Init(broker.NewConsumer(ctx, httpClient))
+	defer messageBrokerConsumer.CloseConnection()
 	concurrentMessages := setup.Init(strconv.Atoi(os.Getenv("BROKER_CONCURRENT_MESSAGES")))
-	searchCriteriaMessageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(getSearchCriteriaExecution, newWebDriverManager, newScrapper, messageBroker)
-	go messageBroker.InitMessageConsumerWithFunction(concurrentMessages, searchCriteriaMessageProcessor)
+	searchCriteriaMessageProcessor := scrapper.MakeSearchCriteriaMessageProcessor(getSearchCriteriaExecution, newWebDriverManager, newScrapper, messageBrokerConsumer)
+	go messageBrokerConsumer.InitMessageConsumerWithFunction(concurrentMessages, searchCriteriaMessageProcessor)
 
 	/* --- Router --- */
 	log.Info(ctx, "Initializing router...")
 	router := http.NewServeMux()
 	router.HandleFunc("GET /ping/v1", ping.HandlerV1())
-	router.HandleFunc("POST /criteria/enqueue/v1", criteria.EnqueueHandlerV1(messageBroker))
-	router.HandleFunc("POST /scrapper/execute/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper, messageBroker))
+	router.HandleFunc("POST /criteria/enqueue/v1", criteria.EnqueueHandlerV1(messageBrokerProducer))
+	router.HandleFunc("POST /scrapper/execute/v1", scrapper.ExecuteHandlerV1(newWebDriverManager, newScrapper, messageBrokerProducer))
 	log.Info(ctx, "Router initialized!")
 
 	/* --- Server --- */
