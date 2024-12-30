@@ -1,9 +1,10 @@
-FROM golang:1.22.3-alpine
+FROM golang:1.23.4-alpine
 
 LABEL maintainer="Lucas Belfanti"
 
 # Install necessary dependencies
 RUN apk update && apk add --no-cache \
+    curl \
     chromium \
     chromium-chromedriver \
     nss \
