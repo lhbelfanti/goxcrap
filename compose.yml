@@ -1,8 +1,8 @@
 services:
-  app:
+  scrapper:
     build:
       context: .
-    container_name: goxcrap
+    container_name: scrapper
     command: ["/goxcrap", "--prod"]
     ports:
       - "${SCRAPPER_EXPOSED_PORT}:${SCRAPPER_INTERNAL_PORT}"
@@ -34,8 +34,8 @@ services:
       rabbitmq:
         condition: service_healthy
     networks:
-      - goxcrap_network
-      - shared
+      - scrapper_network
+      - shared_network
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'curl -sSf http://localhost:${SCRAPPER_INTERNAL_PORT}/ping/v1 || exit 1'" ]
@@ -58,7 +58,7 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - goxcrap_network
+      - scrapper_network
     healthcheck:
       test: [ "CMD-SHELL", "rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms" ]
       start_period: 1m
@@ -70,8 +70,10 @@ volumes:
   rabbitmq_data:
 
 networks:
-  goxcrap_network:
+  scrapper_network:
     driver: bridge
-    name: goxcrap_network
-  shared:
+    name: scrapper_network
+  shared_network:
     external: true
+
+
