@@ -2,6 +2,7 @@ services:
   scrapper:
     build:
       context: .
+      dockerfile: Dockerfile_app
     container_name: scrapper
     command: ["/goxcrap", "--prod"]
     ports:
@@ -44,7 +45,9 @@ services:
       retries: 5
 
   rabbitmq:
-    image: "rabbitmq:3-management-alpine"
+    build:
+      context: .
+      dockerfile: Dockerfile_rabbitmq
     container_name: rabbitmq
     hostname: 'goxcrap'
     ports:

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/rabbitmq/amqp091-go"
 
@@ -14,7 +15,11 @@ import (
 func connect(ctx context.Context) (*amqp091.Connection, error) {
 	url := resolveRabbitmqURL()
 	ctx = log.With(ctx, log.Param("rabbitmq_url", url))
-	connection, err := amqp091.Dial(url)
+	connection, err := amqp091.DialConfig(url,
+		amqp091.Config{
+			Heartbeat: 30 * time.Second,
+		},
+	)
 	if err != nil {
 		log.Error(ctx, err.Error())
 		return nil, FailedToInitializeRabbitMQ

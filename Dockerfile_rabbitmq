@@ -1,0 +1,11 @@
+# Dockerfile
+FROM rabbitmq:3-management-alpine
+
+# Copy the configuration file into the container
+COPY rabbitmq.conf /etc/rabbitmq/
+
+# Set the environment variable to point to the config file
+ENV RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf
+
+# Expose RabbitMQ ports
+EXPOSE 5672 15672

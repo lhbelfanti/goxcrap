@@ -22,7 +22,8 @@ import (
 
 func runDockerized() {
 	/* --- Dependencies --- */
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	logLevel := zerolog.DebugLevel
 	if prodEnv {
