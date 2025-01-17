@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"goxcrap/internal/broker"
+	"goxcrap/internal/http/response"
 	"goxcrap/internal/log"
 )
 
@@ -16,21 +17,17 @@ func EnqueueHandlerV1(messageBroker broker.MessageBroker) http.HandlerFunc {
 		var message IncomingBrokerMessageDTO
 		err := json.NewDecoder(r.Body).Decode(&message)
 		if err != nil {
-			log.Error(ctx, err.Error())
-			http.Error(w, InvalidRequestBody, http.StatusBadRequest)
+			response.Send(ctx, w, http.StatusBadRequest, InvalidRequestBody, nil, err)
 			return
 		}
 		ctx = log.With(ctx, log.Param("message", message))
 
 		err = messageBroker.EnqueueMessage(ctx, string(message.Message))
 		if err != nil {
-			log.Error(ctx, err.Error())
-			http.Error(w, FailedToEnqueueTask, http.StatusInternalServerError)
+			response.Send(ctx, w, http.StatusInternalServerError, FailedToEnqueueTask, nil, err)
 			return
 		}
 
-		log.Info(ctx, "Criteria successfully enqueued")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("Criteria successfully enqueued"))
+		response.Send(ctx, w, http.StatusOK, "Criteria successfully enqueued", nil, nil)
 	}
 }

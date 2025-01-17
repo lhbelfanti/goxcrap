@@ -11,6 +11,7 @@ import (
 	"goxcrap/cmd/api/search"
 	"goxcrap/cmd/api/search/criteria"
 	"goxcrap/internal/broker"
+	"goxcrap/internal/http/response"
 	"goxcrap/internal/log"
 	"goxcrap/internal/webdriver"
 )
@@ -26,8 +27,7 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 		var dto criteria.MessageDTO
 		err := json.NewDecoder(teeReader).Decode(&dto)
 		if err != nil {
-			log.Error(ctx, err.Error())
-			http.Error(w, CantDecodeBodyIntoCriteria, http.StatusBadRequest)
+			response.Send(ctx, w, http.StatusBadRequest, CantDecodeBodyIntoCriteria, nil, err)
 			return
 		}
 
@@ -40,20 +40,16 @@ func ExecuteHandlerV1(newWebDriverManager webdriver.NewManager, newScrapper New,
 			if errors.Is(err, FailedToLogin) || errors.Is(err, search.FailedToLoadAdvanceSearchPage) {
 				enqueueErr := messageBroker.EnqueueMessage(ctx, string(bodyBuffer.Bytes()))
 				if enqueueErr != nil {
-					log.Error(ctx, enqueueErr.Error())
-					http.Error(w, CantReEnqueueFailedMessage, http.StatusInternalServerError)
+					response.Send(ctx, w, http.StatusInternalServerError, CantReEnqueueFailedMessage, nil, err)
 					return
 				}
 			}
 
-			log.Error(ctx, err.Error())
-			http.Error(w, FailedToRunScrapper, http.StatusInternalServerError)
+			response.Send(ctx, w, http.StatusInternalServerError, FailedToRunScrapper, nil, err)
 			return
 		}
 
-		log.Info(ctx, "Scrapper successfully executed")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("Scrapper successfully executed"))
+		response.Send(ctx, w, http.StatusOK, "Scrapper successfully executed", nil, nil)
 	}
 }
 
