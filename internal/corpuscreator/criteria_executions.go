@@ -22,7 +22,7 @@ type (
 
 // MakeGetSearchCriteriaExecution creates a new GetSearchCriteriaExecution
 func MakeGetSearchCriteriaExecution(httpClient http.Client, domain string, localMode bool) GetSearchCriteriaExecution {
-	url := domain + "/criteria/executions/%d/v1"
+	url := domain + "/criteria-executions/%d/v1"
 
 	return func(ctx context.Context, executionID int) (Execution, error) {
 		if localMode {
@@ -52,7 +52,7 @@ func MakeGetSearchCriteriaExecution(httpClient http.Client, domain string, local
 
 // MakeUpdateSearchCriteriaExecution creates a new UpdateSearchCriteriaExecution
 func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string, localMode bool) UpdateSearchCriteriaExecution {
-	url := domain + "/criteria/executions/%d/v1"
+	url := domain + "/criteria-executions/%d/v1"
 
 	return func(ctx context.Context, executionID int, body UpdateSearchCriteriaExecutionBody) error {
 		if localMode {
@@ -75,7 +75,7 @@ func MakeUpdateSearchCriteriaExecution(httpClient http.Client, domain string, lo
 
 // MakeInsertSearchCriteriaExecutionDay creates a new InsertSearchCriteriaExecutionDay
 func MakeInsertSearchCriteriaExecutionDay(httpClient http.Client, domain string, localMode bool) InsertSearchCriteriaExecutionDay {
-	url := domain + "/criteria/executions/%d/day/v1"
+	url := domain + "/criteria-executions/%d/day/v1"
 
 	return func(ctx context.Context, executionID int, body InsertSearchCriteriaExecutionDayBody) error {
 		if localMode {
