@@ -106,12 +106,12 @@ func obtainImagesFromTweet(ctx context.Context, tweetImagesElement selenium.WebE
 		tweetImages = append(tweetImages, tweetUrl)
 	}
 
-	if len(tweetImagesElements) > 0 && len(tweetImages) == 0 {
-		return nil, failedToObtainTweetSrcFromImage
-	}
-
 	if len(tweetImages) == 0 {
 		tweetImages = nil
+	}
+
+	if len(tweetImagesElements) > 0 && len(tweetImages) == 0 {
+		return nil, failedToObtainTweetSrcFromImage
 	}
 
 	return tweetImages, nil
