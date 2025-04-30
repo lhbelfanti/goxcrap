@@ -81,7 +81,7 @@ func MakeRetrieveAll(waitAndRetrieveElement elements.WaitAndRetrieve, waitAndRet
 					break
 				}
 
-				// As the scrollPage function was called there could be more tweets to obtain
+				// As the scrollPage function was called, there could be more tweets to obtain
 				continue
 			}
 

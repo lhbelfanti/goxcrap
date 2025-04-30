@@ -7,8 +7,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// field represent a key-value tuple that will be added to the context
 type (
+	// field represents a key-value tuple that will be added to the context
 	field struct {
 		Key   string
 		Value interface{}

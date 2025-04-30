@@ -110,5 +110,9 @@ func obtainImagesFromTweet(ctx context.Context, tweetImagesElement selenium.WebE
 		return nil, failedToObtainTweetSrcFromImage
 	}
 
+	if len(tweetImages) == 0 {
+		tweetImages = nil
+	}
+
 	return tweetImages, nil
 }
