@@ -112,7 +112,7 @@ func createSaveTweetsBody(obtainedTweets []tweets.Tweet, searchCriteria int) cor
 	saveTweetsBody := make(corpuscreator.SaveTweetsBody, 0, len(obtainedTweets))
 	for _, tweet := range obtainedTweets {
 		requestTweet := corpuscreator.TweetDTO{
-			ID:               tweet.ID,
+			StatusID:         tweet.ID,
 			Author:           tweet.Author,
 			PostedAt:         tweet.Timestamp,
 			IsAReply:         tweet.IsAReply,

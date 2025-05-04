@@ -6,7 +6,7 @@ type (
 
 	// TweetDTO represents the tweet to be saved
 	TweetDTO struct {
-		ID               string    `json:"id"`
+		StatusID         string    `json:"status_id"`
 		Author           string    `json:"author"`
 		Avatar           *string   `json:"avatar,omitempty"`
 		PostedAt         string    `json:"posted_at"`

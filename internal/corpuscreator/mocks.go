@@ -45,7 +45,7 @@ func MockTweetDTO() TweetDTO {
 	searchCriteriaID := 1
 
 	return TweetDTO{
-		ID:               "123456789012345",
+		StatusID:         "123456789012345",
 		IsAReply:         true,
 		TextContent:      &textContent,
 		Images:           []string{"test1", "test2"},
