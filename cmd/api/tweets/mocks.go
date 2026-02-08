@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/elements"
+	"github.com/lhbelfanti/goxcrap/cmd/api/elements"
 )
 
 // MockRetrieveAll mocks RetrieveAll function

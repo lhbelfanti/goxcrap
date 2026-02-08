@@ -5,7 +5,7 @@ import (
 
 	"github.com/rabbitmq/amqp091-go"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // openChannel creates a new Message Broker Channel for a given Message Broker Connection and returns it

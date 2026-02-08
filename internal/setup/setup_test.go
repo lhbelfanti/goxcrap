@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/internal/setup"
+	"github.com/lhbelfanti/goxcrap/internal/setup"
 )
 
 func TestInit_success(t *testing.T) {

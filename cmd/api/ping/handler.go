@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"goxcrap/internal/http/response"
+	"github.com/lhbelfanti/goxcrap/internal/http/response"
 )
 
 // HandlerV1 HTTP Handler of the endpoint /ping/v1

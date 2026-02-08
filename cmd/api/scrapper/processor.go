@@ -7,12 +7,12 @@ import (
 	"errors"
 	"io"
 
-	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/internal/broker"
-	"goxcrap/internal/corpuscreator"
-	"goxcrap/internal/log"
-	"goxcrap/internal/webdriver"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/internal/broker"
+	"github.com/lhbelfanti/goxcrap/internal/corpuscreator"
+	"github.com/lhbelfanti/goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/webdriver"
 )
 
 // MakeSearchCriteriaMessageProcessor creates a new broker.ProcessorFunction

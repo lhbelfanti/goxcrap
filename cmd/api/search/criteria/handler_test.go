@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/internal/broker"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/internal/broker"
 )
 
 func TestEnqueueHandlerV1_success(t *testing.T) {

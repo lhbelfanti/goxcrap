@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 func TestNewLogger_successWithNilWriter(t *testing.T) {

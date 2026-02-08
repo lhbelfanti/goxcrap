@@ -6,8 +6,8 @@ import (
 
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/page"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/cmd/api/page"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // GetTweetInformation retrieves the tweet information from the given tweet element

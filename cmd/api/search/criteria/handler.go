@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"goxcrap/internal/broker"
-	"goxcrap/internal/http/response"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/broker"
+	"github.com/lhbelfanti/goxcrap/internal/http/response"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // EnqueueHandlerV1 HTTP Handler of the endpoint /criteria/enqueue/v1

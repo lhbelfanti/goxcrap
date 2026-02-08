@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/cmd/api/elements"
-	"goxcrap/cmd/api/page"
-	"goxcrap/cmd/api/tweets"
+	"github.com/lhbelfanti/goxcrap/cmd/api/elements"
+	"github.com/lhbelfanti/goxcrap/cmd/api/page"
+	"github.com/lhbelfanti/goxcrap/cmd/api/tweets"
 )
 
 func TestGetTweetInformation_success(t *testing.T) {

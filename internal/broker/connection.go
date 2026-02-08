@@ -8,7 +8,7 @@ import (
 
 	"github.com/rabbitmq/amqp091-go"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // connect establish a new connection with the Message Broker and returns it

@@ -6,7 +6,7 @@ import (
 
 	"github.com/tebeka/selenium"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // RetrieveAndFillInput retrieves an input element, clicks on it, and fills it with the inputText param

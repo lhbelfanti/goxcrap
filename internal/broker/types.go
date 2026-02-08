@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/rabbitmq/amqp091-go"
 
-	"goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/http"
 )
 
 type (

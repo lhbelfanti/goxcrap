@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/rabbitmq/amqp091-go"
 
-	"goxcrap/internal/http"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // NewProducer creates a new pointer of RabbitMQMessageBroker for the Message Broker producer

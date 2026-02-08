@@ -5,13 +5,13 @@ import (
 
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/auth"
-	"goxcrap/cmd/api/elements"
-	"goxcrap/cmd/api/page"
-	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/corpuscreator"
-	"goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/cmd/api/auth"
+	"github.com/lhbelfanti/goxcrap/cmd/api/elements"
+	"github.com/lhbelfanti/goxcrap/cmd/api/page"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search"
+	"github.com/lhbelfanti/goxcrap/cmd/api/tweets"
+	"github.com/lhbelfanti/goxcrap/internal/corpuscreator"
+	"github.com/lhbelfanti/goxcrap/internal/http"
 )
 
 // New initializes all the functions of a scrapper (only Execute for now)

@@ -8,8 +8,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"goxcrap/cmd/api/page"
-	"goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/cmd/api/page"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
 )
 
 // ExecuteAdvanceSearch is the first implementation of a search to retrieve tweets then

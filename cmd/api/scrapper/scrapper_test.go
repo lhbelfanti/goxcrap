@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/cmd/api/scrapper"
-	"goxcrap/internal/http"
-	"goxcrap/internal/webdriver"
+	"github.com/lhbelfanti/goxcrap/cmd/api/scrapper"
+	"github.com/lhbelfanti/goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/webdriver"
 )
 
 func TestNew_success(t *testing.T) {

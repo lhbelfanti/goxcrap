@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 type (

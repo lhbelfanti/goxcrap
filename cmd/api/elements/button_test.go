@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/elements"
+	"github.com/lhbelfanti/goxcrap/cmd/api/elements"
 )
 
 func TestRetrieveAndClickButton_success(t *testing.T) {

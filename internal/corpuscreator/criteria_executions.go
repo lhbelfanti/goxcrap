@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"goxcrap/internal/http"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 type (

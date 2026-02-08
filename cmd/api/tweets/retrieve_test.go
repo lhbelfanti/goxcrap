@@ -3,15 +3,15 @@ package tweets_test
 import (
 	"context"
 	"errors"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/elements"
-	"goxcrap/cmd/api/page"
-	"goxcrap/cmd/api/tweets"
+	"github.com/lhbelfanti/goxcrap/cmd/api/elements"
+	"github.com/lhbelfanti/goxcrap/cmd/api/page"
+	"github.com/lhbelfanti/goxcrap/cmd/api/tweets"
 )
 
 func TestRetrieveAll_success(t *testing.T) {

@@ -3,8 +3,8 @@ package webdriver
 import (
 	"context"
 
-	"goxcrap/internal/log"
-	"goxcrap/internal/setup"
+	"github.com/lhbelfanti/goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/setup"
 )
 
 // NewManager initializes a new WebDriver with all its elements

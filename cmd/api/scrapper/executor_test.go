@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/cmd/api/auth"
-	"goxcrap/cmd/api/scrapper"
-	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/corpuscreator"
+	"github.com/lhbelfanti/goxcrap/cmd/api/auth"
+	"github.com/lhbelfanti/goxcrap/cmd/api/scrapper"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/cmd/api/tweets"
+	"github.com/lhbelfanti/goxcrap/internal/corpuscreator"
 )
 
 func TestExecute_success(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"goxcrap/internal/corpuscreator"
-	"goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/corpuscreator"
+	"github.com/lhbelfanti/goxcrap/internal/http"
 )
 
 func TestSaveTweets_success(t *testing.T) {

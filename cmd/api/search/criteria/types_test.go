@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
 )
 
 func TestParseDate(t *testing.T) {

@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/elements"
-	"goxcrap/internal/webdriver"
+	"github.com/lhbelfanti/goxcrap/cmd/api/elements"
+	"github.com/lhbelfanti/goxcrap/internal/webdriver"
 )
 
 func TestWaitAndRetrieve_success(t *testing.T) {

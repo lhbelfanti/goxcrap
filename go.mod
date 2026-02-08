@@ -1,11 +1,11 @@
-module goxcrap
+module github.com/lhbelfanti/goxcrap
 
-go 1.22.3
+go 1.25
 
 require (
 	github.com/joho/godotenv v1.5.1
 	github.com/rabbitmq/amqp091-go v1.10.0
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tebeka/selenium v0.9.9
 )

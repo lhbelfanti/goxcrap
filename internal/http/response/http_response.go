@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // Send writes a standardized JSON response to the client.

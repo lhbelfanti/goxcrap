@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // DockerizedManager represents a Web Driver manager for the dockerized version of this application

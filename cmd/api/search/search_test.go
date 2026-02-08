@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/cmd/api/page"
-	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/cmd/api/page"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
 )
 
 func TestExecuteAdvanceSearch_success(t *testing.T) {

@@ -8,12 +8,12 @@ import (
 	"io"
 	"net/http"
 
-	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/internal/broker"
-	"goxcrap/internal/http/response"
-	"goxcrap/internal/log"
-	"goxcrap/internal/webdriver"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/internal/broker"
+	"github.com/lhbelfanti/goxcrap/internal/http/response"
+	"github.com/lhbelfanti/goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/webdriver"
 )
 
 // ExecuteHandlerV1 HTTP Handler of the endpoint /scrapper/execute/v1

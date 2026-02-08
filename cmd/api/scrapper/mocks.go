@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/tebeka/selenium"
 
-	"goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
 )
 
 // MockNew mocks New function

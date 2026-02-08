@@ -9,15 +9,15 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"goxcrap/cmd/api/ping"
-	"goxcrap/cmd/api/scrapper"
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/internal/broker"
-	"goxcrap/internal/corpuscreator"
-	_http "goxcrap/internal/http"
-	"goxcrap/internal/log"
-	"goxcrap/internal/setup"
-	"goxcrap/internal/webdriver"
+	"github.com/lhbelfanti/goxcrap/cmd/api/ping"
+	"github.com/lhbelfanti/goxcrap/cmd/api/scrapper"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/internal/broker"
+	"github.com/lhbelfanti/goxcrap/internal/corpuscreator"
+	_http "github.com/lhbelfanti/goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/setup"
+	"github.com/lhbelfanti/goxcrap/internal/webdriver"
 )
 
 func runDockerized() {

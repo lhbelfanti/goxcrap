@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"time"
 
-	"goxcrap/cmd/api/auth"
-	"goxcrap/cmd/api/search"
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/cmd/api/tweets"
-	"goxcrap/internal/corpuscreator"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/cmd/api/auth"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/cmd/api/tweets"
+	"github.com/lhbelfanti/goxcrap/internal/corpuscreator"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // Execute starts the X (formerly Twitter) scrapper

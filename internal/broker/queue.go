@@ -5,7 +5,7 @@ import (
 
 	"github.com/rabbitmq/amqp091-go"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // declareQueue declares a new Message Broker Queue and returns it

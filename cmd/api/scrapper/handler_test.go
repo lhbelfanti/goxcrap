@@ -12,10 +12,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"goxcrap/cmd/api/scrapper"
-	"goxcrap/cmd/api/search/criteria"
-	"goxcrap/internal/broker"
-	"goxcrap/internal/webdriver"
+	"github.com/lhbelfanti/goxcrap/cmd/api/scrapper"
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
+	"github.com/lhbelfanti/goxcrap/internal/broker"
+	"github.com/lhbelfanti/goxcrap/internal/webdriver"
 )
 
 func TestExecuteHandlerV1_success(t *testing.T) {

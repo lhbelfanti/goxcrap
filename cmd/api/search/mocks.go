@@ -2,8 +2,8 @@ package search
 
 import (
 	"context"
-	
-	"goxcrap/cmd/api/search/criteria"
+
+	"github.com/lhbelfanti/goxcrap/cmd/api/search/criteria"
 )
 
 // MockExecuteAdvanceSearch mocks ExecuteAdvanceSearch function

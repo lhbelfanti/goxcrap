@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"goxcrap/internal/http"
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/http"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // SaveTweets calls the endpoint in charge of inserting into database the obtained tweets. It sends as body the slice of

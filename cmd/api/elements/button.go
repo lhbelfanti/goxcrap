@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"goxcrap/internal/log"
+	"github.com/lhbelfanti/goxcrap/internal/log"
 )
 
 // RetrieveAndClickButton retrieves a button element and clicks on it

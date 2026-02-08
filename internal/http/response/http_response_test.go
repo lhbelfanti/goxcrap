@@ -10,7 +10,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"goxcrap/internal/http/response"
+	"github.com/lhbelfanti/goxcrap/internal/http/response"
 )
 
 func TestSend_success(t *testing.T) {
