@@ -42,11 +42,11 @@ RATE_LIMITER_PERIOD=<Period of time of the rate limiter (in seconds)> --> 15 min
 RATE_LIMITER_REQUESTS=<Quantity of requests allowed during the period of time of the rate limiter>  --> 50 requests (December 2024)
 
 # External APIs URLs
-CORPUS_CREATOR_API_URL=<Domain of the corpus creator application with all the endpoints defined in the corpuscreator pkg> --> Example: the URL to the AHBCC API
+CORPUS_CREATOR_API_URL=<Domain of the corpus creator application with all the endpoints defined in the corpuscreator pkg> --> Example: the URL to the Corpus Creator API
 ```
 [^1]
 
-[^1]: AHBCC: Adverse Human Behaviour Corpus Creator. More information [here](https://github.com/lhbelfanti/ahbcc)
+[^1]: Corpus Creator: More information [here](https://github.com/lhbelfanti/corpus-creator)
 
 ### Run
 
@@ -92,7 +92,7 @@ RABBITMQ_PASS=<The RabbitMQ password>
 RABBITMQ_PORT=<The RabbitMQ port> --> Usually 5672
 
 # External APIs URLs
-CORPUS_CREATOR_API_URL=<Domain of the corpus creator application with all the endpoints defined in the corpuscreator pkg> --> Example: the URL to the AHBCC API
+CORPUS_CREATOR_API_URL=<Domain of the corpus creator application with all the endpoints defined in the corpuscreator pkg> --> Example: the URL to the Corpus Creator API
 ```
 [^1]
 
